@@ -2,10 +2,10 @@ apiVersion: v1
 entries:
   fission-all:
   - apiVersion: v1
-    appVersion: 0.2.1
-    created: 2017-09-12T15:48:23.189893173-07:00
+    appVersion: 0.3.0-rc
+    created: 2017-09-27T14:32:30.449057-07:00
     description: Fission is a fast serverless framework for Kubernetes.
-    digest: 7db3bba66d2ddf8237ca145438ed574fbfb73c0c4ff7cd1920b2d09f91650bac
+    digest: 260e43bfd32d81b20d3ee232e95c516a46b97d12dcf9731f4fa4352789e7470c
     engine: gotpl
     home: http://fission.io/
     keywords:
@@ -18,14 +18,14 @@ entries:
       name: Ta Ching Chen
     name: fission-all
     urls:
-    - https://github.com/fission/fission/releases/download/v0.2.1/fission-all-0.2.1.tgz
-    version: 0.2.1
+    - fission-all-0.3.0-rc.tgz
+    version: 0.3.0-rc
   fission-core:
   - apiVersion: v1
-    appVersion: 0.2.1
-    created: 2017-09-12T15:48:23.194067615-07:00
+    appVersion: 0.3.0-rc
+    created: 2017-09-27T14:32:30.454639135-07:00
     description: Fission is a fast serverless framework for Kubernetes.
-    digest: 550abeb7e72bd19b44d5e11f045134e19c50b77a3a2bc77c05f438983e5d848c
+    digest: d695fa3558352aa045d3d4f98d171279c062d2d80b1037abc11bb7630db331d3
     engine: gotpl
     home: http://fission.io/
     keywords:
@@ -38,6 +38,6 @@ entries:
       name: Ta Ching Chen
     name: fission-core
     urls:
-    - https://github.com/fission/fission/releases/download/v0.2.1/fission-core-0.2.1.tgz
-    version: 0.2.1
-generated: 2017-09-12T15:48:23.183668059-07:00
+    - fission-core-0.3.0-rc.tgz
+    version: 0.3.0-rc
+generated: 2017-09-27T14:32:30.442742622-07:00
