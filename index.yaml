@@ -3,7 +3,7 @@ entries:
   fission-all:
   - apiVersion: v1
     appVersion: 0.3.0-rc
-    created: 2017-09-27T18:27:31.781667757-07:00
+    created: 2017-09-28T10:27:18.682368054-07:00
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 260e43bfd32d81b20d3ee232e95c516a46b97d12dcf9731f4fa4352789e7470c
     engine: gotpl
@@ -23,7 +23,7 @@ entries:
   fission-core:
   - apiVersion: v1
     appVersion: 0.3.0-rc
-    created: 2017-09-27T18:27:31.783364221-07:00
+    created: 2017-09-28T10:27:18.689827333-07:00
     description: Fission is a fast serverless framework for Kubernetes.
     digest: d695fa3558352aa045d3d4f98d171279c062d2d80b1037abc11bb7630db331d3
     engine: gotpl
@@ -40,4 +40,30 @@ entries:
     urls:
     - https://fission.github.io/fission-charts/fission-core-0.3.0-rc.tgz
     version: 0.3.0-rc
-generated: 2017-09-27T18:27:31.774459531-07:00
+  fission-workflows:
+  - apiVersion: v1
+    appVersion: 0.1.0
+    created: 2017-09-28T10:27:18.700371368-07:00
+    description: Fission Workflows is a fast workflow engine for serverless functions
+      on Kubernetes
+    digest: ef0c09bc755bfd2678d097a78a3a54179e460de92ac8be8a23a47dd59853faa2
+    engine: gotpl
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    - workflows
+    - coordination
+    - orchestration
+    maintainers:
+    - email: erwin@platform9.com
+      name: Erwin van Eyk
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    name: fission-workflows
+    sources:
+    - https://github.com/fission/fission-workflows
+    urls:
+    - https://fission.github.io/fission-charts/fission-workflows-0.1.0.tgz
+    version: 0.1.0
+generated: 2017-09-28T10:27:18.667055751-07:00
