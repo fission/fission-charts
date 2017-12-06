@@ -8,6 +8,7 @@ entries:
     digest: ef56c13cccc2d313ac8e18cb247a3fc3468fe5fc9088d6c9aff4d2b45f818d9b
     engine: gotpl
     home: http://fission.io/
+    icon: http://fission.io/img/fission-logo-whitebg.png
     keywords:
     - fission
     - serverless
