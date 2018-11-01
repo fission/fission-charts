@@ -2,8 +2,27 @@ apiVersion: v1
 entries:
   fission-all:
   - apiVersion: v1
+    appVersion: 0.12.0
+    created: 2018-11-01T21:27:14.996444Z
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 7b9b739abde387bd96689e709ed25ebae879e30575036b0e4fb54544b1c9f10b
+    engine: gotpl
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://fission.github.io/fission-charts/fission-all-0.12.0.tgz
+    version: 0.12.0
+  - apiVersion: v1
     appVersion: 0.11.0
-    created: 2018-10-15T21:49:07.268839Z
+    created: 2018-11-01T21:27:14.993203Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 3804bfd8f3b458eefce64695f4e38d9c0ac404fe8495e15e949739d5c1104e49
     engine: gotpl
@@ -22,7 +41,7 @@ entries:
     version: 0.11.0
   - apiVersion: v1
     appVersion: 0.10.0
-    created: 2018-10-15T21:49:07.266671Z
+    created: 2018-11-01T21:27:14.98917Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: f0315ada0a022ba01fe45b5eb213a7c54f61f7d0294626fc65bc87ed438631cb
     engine: gotpl
@@ -41,7 +60,7 @@ entries:
     version: 0.10.0
   - apiVersion: v1
     appVersion: 0.9.2
-    created: 2018-10-15T21:49:07.286733Z
+    created: 2018-11-01T21:27:15.020593Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: a64c9fef7232198b2ba2bb0f7b3355c1fa44769bceba2da9b2e2436a6865d976
     engine: gotpl
@@ -60,7 +79,7 @@ entries:
     version: 0.9.2
   - apiVersion: v1
     appVersion: 0.9.1
-    created: 2018-10-15T21:49:07.285584Z
+    created: 2018-11-01T21:27:15.019158Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 66316a3af4b551bccb329108253182544708cd7bf9a9858d50e97bb86dfa84ee
     engine: gotpl
@@ -79,7 +98,7 @@ entries:
     version: 0.9.1
   - apiVersion: v1
     appVersion: 0.9.0
-    created: 2018-10-15T21:49:07.284508Z
+    created: 2018-11-01T21:27:15.017859Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 3d20e13db370738efc244596ab0c1fc52dbf1ba9da5aeee82905cd68969519d0
     engine: gotpl
@@ -98,7 +117,7 @@ entries:
     version: 0.9.0
   - apiVersion: v1
     appVersion: 0.8.0
-    created: 2018-10-15T21:49:07.283454Z
+    created: 2018-11-01T21:27:15.016365Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: bf643aab4642c1d9f73235ffe10c51b74e46474d765cefc29139a560c702e515
     engine: gotpl
@@ -117,7 +136,7 @@ entries:
     version: 0.8.0
   - apiVersion: v1
     appVersion: 0.7.2
-    created: 2018-10-15T21:49:07.28232Z
+    created: 2018-11-01T21:27:15.014889Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 7e22eab5663b02570a4e3a94af70970c0d10cbfd95a65383f5db512616a03b90
     engine: gotpl
@@ -136,7 +155,7 @@ entries:
     version: 0.7.2
   - apiVersion: v1
     appVersion: 0.7.1
-    created: 2018-10-15T21:49:07.281363Z
+    created: 2018-11-01T21:27:15.013009Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 0ea6887f39c0f59463b49e632294152c926b62b5afc65202c80045ff71735b05
     engine: gotpl
@@ -155,7 +174,7 @@ entries:
     version: 0.7.1
   - apiVersion: v1
     appVersion: 0.7.0
-    created: 2018-10-15T21:49:07.280419Z
+    created: 2018-11-01T21:27:15.011429Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 18873dc8427a9171843d21b18f1195aacaff61958cf4a9b126cd0fb88431ac2e
     engine: gotpl
@@ -174,7 +193,7 @@ entries:
     version: 0.7.0
   - apiVersion: v1
     appVersion: 0.6.1
-    created: 2018-10-15T21:49:07.278877Z
+    created: 2018-11-01T21:27:15.009873Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 5a17ab8bee880029fe42b9919c6d5319e0abe0751e05d2b410b23bd9f16bc611
     engine: gotpl
@@ -193,7 +212,7 @@ entries:
     version: 0.6.1
   - apiVersion: v1
     appVersion: 0.6.0
-    created: 2018-10-15T21:49:07.276912Z
+    created: 2018-11-01T21:27:15.008529Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: a6c4d56e7cc3d14ee4524bbbe1677d14399288602c9a5bc103356cd826f1df8c
     engine: gotpl
@@ -212,7 +231,7 @@ entries:
     version: 0.6.0
   - apiVersion: v1
     appVersion: 0.5.0
-    created: 2018-10-15T21:49:07.275676Z
+    created: 2018-11-01T21:27:15.007495Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 2f72fe4ba836d84e60538ecf401a508384bb194c979688be69f1370af0c071bb
     engine: gotpl
@@ -231,7 +250,7 @@ entries:
     version: 0.5.0
   - apiVersion: v1
     appVersion: 0.4.1
-    created: 2018-10-15T21:49:07.274535Z
+    created: 2018-11-01T21:27:15.006143Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 4b1d5ea5bd300191fcdbb49daf80931f0a24cfaa5b64f0a1b47297210f56dc29
     engine: gotpl
@@ -250,7 +269,7 @@ entries:
     version: 0.4.1
   - apiVersion: v1
     appVersion: 0.4.0
-    created: 2018-10-15T21:49:07.273408Z
+    created: 2018-11-01T21:27:15.00453Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 0c5e45d43bb8fd2d9011e305e3bc421f2b7ff6ff37c153bd0ee251e04efc22e7
     engine: gotpl
@@ -269,7 +288,7 @@ entries:
     version: 0.4.0
   - apiVersion: v1
     appVersion: 0.3.1
-    created: 2018-10-15T21:49:07.272312Z
+    created: 2018-11-01T21:27:15.001234Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: ef56c13cccc2d313ac8e18cb247a3fc3468fe5fc9088d6c9aff4d2b45f818d9b
     engine: gotpl
@@ -288,7 +307,7 @@ entries:
     version: 0.3.1
   - apiVersion: v1
     appVersion: 0.3.0
-    created: 2018-10-15T21:49:07.271231Z
+    created: 2018-11-01T21:27:14.999749Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: bc559402d95521a50e5601a322cfaf4ff57852a55662926ea5d101fc125a08d9
     engine: gotpl
@@ -307,7 +326,7 @@ entries:
     version: 0.3.0
   - apiVersion: v1
     appVersion: 0.3.0-rc
-    created: 2018-10-15T21:49:07.270013Z
+    created: 2018-11-01T21:27:14.997691Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 260e43bfd32d81b20d3ee232e95c516a46b97d12dcf9731f4fa4352789e7470c
     engine: gotpl
@@ -326,8 +345,27 @@ entries:
     version: 0.3.0-rc
   fission-core:
   - apiVersion: v1
+    appVersion: 0.12.0
+    created: 2018-11-01T21:27:15.028958Z
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: c93949fe0428951ffe5b2fef7133f48d23b82d7b045129bb57ee2de2bd9d9257
+    engine: gotpl
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://fission.github.io/fission-charts/fission-core-0.12.0.tgz
+    version: 0.12.0
+  - apiVersion: v1
     appVersion: 0.11.0
-    created: 2018-10-15T21:49:07.289815Z
+    created: 2018-11-01T21:27:15.025834Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 0db7d23b75db85c8afb25fd608de303a3b3482ea810c22148a6b920b33232a6a
     engine: gotpl
@@ -346,7 +384,7 @@ entries:
     version: 0.11.0
   - apiVersion: v1
     appVersion: 0.10.0
-    created: 2018-10-15T21:49:07.287819Z
+    created: 2018-11-01T21:27:15.021981Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: d8ac31b77525075570e44cc948029fc687890007b3e0abd0f4ce92c49b429668
     engine: gotpl
@@ -365,7 +403,7 @@ entries:
     version: 0.10.0
   - apiVersion: v1
     appVersion: 0.9.2
-    created: 2018-10-15T21:49:07.306Z
+    created: 2018-11-01T21:27:15.063384Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 4893ec8069cf4f01b28fdfd8a7a2b73a65f01ddd3c18b410902f578a1ef19c9d
     engine: gotpl
@@ -384,7 +422,7 @@ entries:
     version: 0.9.2
   - apiVersion: v1
     appVersion: 0.9.1
-    created: 2018-10-15T21:49:07.304896Z
+    created: 2018-11-01T21:27:15.061652Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: c0f590717da59cf7be2ac3c4e006c9375bd0049d3c860be74bb08651fea35133
     engine: gotpl
@@ -403,7 +441,7 @@ entries:
     version: 0.9.1
   - apiVersion: v1
     appVersion: 0.9.0
-    created: 2018-10-15T21:49:07.303772Z
+    created: 2018-11-01T21:27:15.059884Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 23b92a4bfab8861a43ed816f50115f7d8f01836b5d5b0f2286181c42e916cc44
     engine: gotpl
@@ -422,7 +460,7 @@ entries:
     version: 0.9.0
   - apiVersion: v1
     appVersion: 0.8.0
-    created: 2018-10-15T21:49:07.30265Z
+    created: 2018-11-01T21:27:15.058044Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 5473832a696b1e4e3316878f84dad813e3fbcc7b270563d11a0b02345f1b0370
     engine: gotpl
@@ -441,7 +479,7 @@ entries:
     version: 0.8.0
   - apiVersion: v1
     appVersion: 0.7.2
-    created: 2018-10-15T21:49:07.30164Z
+    created: 2018-11-01T21:27:15.056353Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: e890adfe45816fe82b6f48722b88a5f8ffe17d670cf751ec95036a8e4bcb05dd
     engine: gotpl
@@ -460,7 +498,7 @@ entries:
     version: 0.7.2
   - apiVersion: v1
     appVersion: 0.7.1
-    created: 2018-10-15T21:49:07.300838Z
+    created: 2018-11-01T21:27:15.054633Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 5d5606c79b5d83c2e88c371b6bea4a49a599f1a1e26674db3388a63278a47c2c
     engine: gotpl
@@ -479,7 +517,7 @@ entries:
     version: 0.7.1
   - apiVersion: v1
     appVersion: 0.7.0
-    created: 2018-10-15T21:49:07.299919Z
+    created: 2018-11-01T21:27:15.052875Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 91cf2218aede291430c511e4a08e5b02c3eecba3d0d8ee5dbc2c4fd3710e5832
     engine: gotpl
@@ -498,7 +536,7 @@ entries:
     version: 0.7.0
   - apiVersion: v1
     appVersion: 0.6.1
-    created: 2018-10-15T21:49:07.298401Z
+    created: 2018-11-01T21:27:15.049519Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 81d2f1fcff61ae1227bc1728eaaa4ec54b2f096929bde440358b41c7ffb2ece3
     engine: gotpl
@@ -517,7 +555,7 @@ entries:
     version: 0.6.1
   - apiVersion: v1
     appVersion: 0.6.0
-    created: 2018-10-15T21:49:07.297172Z
+    created: 2018-11-01T21:27:15.039072Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 707c7a53115da44e604c820bf42915e2b63c6d075f89a87ff78c0e6c3d0e7b38
     engine: gotpl
@@ -536,7 +574,7 @@ entries:
     version: 0.6.0
   - apiVersion: v1
     appVersion: 0.5.0
-    created: 2018-10-15T21:49:07.295914Z
+    created: 2018-11-01T21:27:15.037487Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 6ee668de0870a52d16a051bb5d60c12e523a87c54269b321bdab6dd97f883ee4
     engine: gotpl
@@ -555,7 +593,7 @@ entries:
     version: 0.5.0
   - apiVersion: v1
     appVersion: 0.4.1
-    created: 2018-10-15T21:49:07.294735Z
+    created: 2018-11-01T21:27:15.035864Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 3360bcd12e15de3a01ef02e068ee8c9b0b8803ac1cc09bc798c1367f5fce5bd7
     engine: gotpl
@@ -574,7 +612,7 @@ entries:
     version: 0.4.1
   - apiVersion: v1
     appVersion: 0.4.0
-    created: 2018-10-15T21:49:07.293459Z
+    created: 2018-11-01T21:27:15.033765Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 7592e188d5db9ff3fdca336b1428e9d567c69f58d3bd0640862f89a18f1e27c3
     engine: gotpl
@@ -593,7 +631,7 @@ entries:
     version: 0.4.0
   - apiVersion: v1
     appVersion: 0.3.0
-    created: 2018-10-15T21:49:07.292227Z
+    created: 2018-11-01T21:27:15.032138Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: f5c7bc77cef5927e7ea953a5e3477443e0267a7926577c246b9b232809738739
     engine: gotpl
@@ -612,7 +650,7 @@ entries:
     version: 0.3.0
   - apiVersion: v1
     appVersion: 0.3.0-rc
-    created: 2018-10-15T21:49:07.290947Z
+    created: 2018-11-01T21:27:15.03051Z
     description: Fission is a fast serverless framework for Kubernetes.
     digest: d695fa3558352aa045d3d4f98d171279c062d2d80b1037abc11bb7630db331d3
     engine: gotpl
@@ -632,7 +670,7 @@ entries:
   fission-workflows:
   - apiVersion: v1
     appVersion: 0.6.0
-    created: 2018-10-15T21:49:07.312104Z
+    created: 2018-11-01T21:27:15.07406Z
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: 47f3f87f75be8fe6191e4477f0dd0f1ebdf13ef7a88fa0626004164da9f8a571
@@ -658,7 +696,7 @@ entries:
     version: 0.6.0
   - apiVersion: v1
     appVersion: 0.5.0
-    created: 2018-10-15T21:49:07.311665Z
+    created: 2018-11-01T21:27:15.072393Z
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: 8ceeca7674a6a01d7ad174bdf361ff87a4a27247617495f751038c17c525c46f
@@ -684,7 +722,7 @@ entries:
     version: 0.5.0
   - apiVersion: v1
     appVersion: 0.4.0
-    created: 2018-10-15T21:49:07.31062Z
+    created: 2018-11-01T21:27:15.070817Z
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: 53b85b377bd2f325d85b7f25cd73b06c7ea2f7783f3115ee55ea836370b5dab8
@@ -710,7 +748,7 @@ entries:
     version: 0.4.0
   - apiVersion: v1
     appVersion: 0.3.0
-    created: 2018-10-15T21:49:07.309426Z
+    created: 2018-11-01T21:27:15.069107Z
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: a51de7ce193094d58e9003259d4c35808219e521c5ffb56d92840350742309e2
@@ -736,7 +774,7 @@ entries:
     version: 0.3.0
   - apiVersion: v1
     appVersion: 0.2.0
-    created: 2018-10-15T21:49:07.308238Z
+    created: 2018-11-01T21:27:15.067425Z
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: 63c617e98f779353972d3e48d7b9898ae9796be704155ffdd0451f52c27d3a9e
@@ -762,7 +800,7 @@ entries:
     version: 0.2.0
   - apiVersion: v1
     appVersion: 0.1.0
-    created: 2018-10-15T21:49:07.307071Z
+    created: 2018-11-01T21:27:15.065559Z
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: ef0c09bc755bfd2678d097a78a3a54179e460de92ac8be8a23a47dd59853faa2
@@ -785,4 +823,4 @@ entries:
     urls:
     - https://fission.github.io/fission-charts/fission-workflows-0.1.0.tgz
     version: 0.1.0
-generated: 2018-10-15T21:49:07.264737Z
+generated: 2018-11-01T21:27:14.981379Z
