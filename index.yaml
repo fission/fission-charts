@@ -12,14 +12,13 @@ entries:
     description: Fission is a fast serverless framework for Kubernetes.
     digest: bba6bc572e74ff9e85dcb81cf228b701190dade74525d2f410e2fdcd33169654
     home: http://fission.io/
+    icon: https://fission.io/images/fission-white-logo.png
     keywords:
     - fission
     - serverless
     maintainers:
-    - email: soamvasani+1@gmail.com
-      name: Soam Vasani
-    - email: hello@tachingchen.com
-      name: Ta Ching Chen
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
     name: fission-all
     urls:
     - https://fission.github.io/fission-charts/fission-all-1.9.0.tgz
