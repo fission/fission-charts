@@ -2,8 +2,31 @@ apiVersion: v1
 entries:
   fission-all:
   - apiVersion: v1
+    appVersion: 1.11.0
+    created: "2020-09-16T15:55:41.974148Z"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://kubernetes-charts.storage.googleapis.com
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: ba9ff8b5e6b4b0056668fd0b27efc43953df9ade407fb3e594ff4597c3065700
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://fission.github.io/fission-charts/fission-all-1.11.0.tgz
+    version: 1.11.0
+  - apiVersion: v1
     appVersion: 1.10.0
-    created: "2020-06-29T19:29:51.389502Z"
+    created: "2020-09-16T15:55:41.968766Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -26,7 +49,7 @@ entries:
     version: 1.10.0
   - apiVersion: v1
     appVersion: 1.9.0
-    created: "2020-06-29T19:29:51.455211Z"
+    created: "2020-09-16T15:55:42.032509Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -35,20 +58,21 @@ entries:
     description: Fission is a fast serverless framework for Kubernetes.
     digest: bba6bc572e74ff9e85dcb81cf228b701190dade74525d2f410e2fdcd33169654
     home: http://fission.io/
-    icon: https://fission.io/images/fission-white-logo.png
     keywords:
     - fission
     - serverless
     maintainers:
-    - email: vishal@infracloud.io
-      name: Vishal Biyani
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
     name: fission-all
     urls:
     - https://fission.github.io/fission-charts/fission-all-1.9.0.tgz
     version: 1.9.0
   - apiVersion: v1
     appVersion: 1.8.0
-    created: "2020-06-29T19:29:51.449057Z"
+    created: "2020-09-16T15:55:42.026038Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -71,7 +95,7 @@ entries:
     version: 1.8.0
   - apiVersion: v1
     appVersion: 1.7.1
-    created: "2020-06-29T19:29:51.444303Z"
+    created: "2020-09-16T15:55:42.02138Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -94,7 +118,7 @@ entries:
     version: 1.7.1
   - apiVersion: v1
     appVersion: 1.7.0
-    created: "2020-06-29T19:29:51.438831Z"
+    created: "2020-09-16T15:55:42.016451Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -117,7 +141,7 @@ entries:
     version: 1.7.0
   - apiVersion: v1
     appVersion: 1.7.0-rc.2
-    created: "2020-06-29T19:29:51.433845Z"
+    created: "2020-09-16T15:55:42.011955Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -140,7 +164,7 @@ entries:
     version: 1.7.0-rc.2
   - apiVersion: v1
     appVersion: 1.7.0-rc.1
-    created: "2020-06-29T19:29:51.428383Z"
+    created: "2020-09-16T15:55:42.006811Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -163,7 +187,7 @@ entries:
     version: 1.7.0-rc.1
   - apiVersion: v1
     appVersion: 1.6.0
-    created: "2020-06-29T19:29:51.424081Z"
+    created: "2020-09-16T15:55:42.001934Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -186,7 +210,7 @@ entries:
     version: 1.6.0
   - apiVersion: v1
     appVersion: 1.5.0
-    created: "2020-06-29T19:29:51.420356Z"
+    created: "2020-09-16T15:55:41.998358Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -209,7 +233,7 @@ entries:
     version: 1.5.0
   - apiVersion: v1
     appVersion: 1.4.1
-    created: "2020-06-29T19:29:51.416117Z"
+    created: "2020-09-16T15:55:41.994345Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -232,7 +256,7 @@ entries:
     version: 1.4.1
   - apiVersion: v1
     appVersion: 1.4.0
-    created: "2020-06-29T19:29:51.412469Z"
+    created: "2020-09-16T15:55:41.989862Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -255,7 +279,7 @@ entries:
     version: 1.4.0
   - apiVersion: v1
     appVersion: 1.3.0
-    created: "2020-06-29T19:29:51.406478Z"
+    created: "2020-09-16T15:55:41.986339Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -278,7 +302,7 @@ entries:
     version: 1.3.0
   - apiVersion: v1
     appVersion: 1.2.1
-    created: "2020-06-29T19:29:51.401309Z"
+    created: "2020-09-16T15:55:41.981853Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -301,7 +325,7 @@ entries:
     version: 1.2.1
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-06-29T19:29:51.393389Z"
+    created: "2020-09-16T15:55:41.977761Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -324,7 +348,7 @@ entries:
     version: 1.2.0
   - apiVersion: v1
     appVersion: 1.1.0
-    created: "2020-06-29T19:29:51.38423Z"
+    created: "2020-09-16T15:55:41.963619Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -347,7 +371,7 @@ entries:
     version: 1.1.0
   - apiVersion: v1
     appVersion: 1.0.0
-    created: "2020-06-29T19:29:51.379628Z"
+    created: "2020-09-16T15:55:41.960177Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -370,7 +394,7 @@ entries:
     version: 1.0.0
   - apiVersion: v1
     appVersion: 1.0-rc2
-    created: "2020-06-29T19:29:51.376215Z"
+    created: "2020-09-16T15:55:41.956801Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -393,7 +417,7 @@ entries:
     version: 1.0-rc2
   - apiVersion: v1
     appVersion: 1.0-rc1
-    created: "2020-06-29T19:29:51.372152Z"
+    created: "2020-09-16T15:55:41.95281Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -416,7 +440,7 @@ entries:
     version: 1.0-rc1
   - apiVersion: v1
     appVersion: 0.12.0
-    created: "2020-06-29T19:29:51.354273Z"
+    created: "2020-09-16T15:55:41.933864Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -439,7 +463,7 @@ entries:
     version: 0.12.0
   - apiVersion: v1
     appVersion: 0.11.0
-    created: "2020-06-29T19:29:51.337172Z"
+    created: "2020-09-16T15:55:41.929274Z"
     dependencies:
     - name: prometheus
       repository: https://kubernetes-charts.storage.googleapis.com
@@ -461,7 +485,7 @@ entries:
     version: 0.11.0
   - apiVersion: v1
     appVersion: 0.10.0
-    created: "2020-06-29T19:29:51.332004Z"
+    created: "2020-09-16T15:55:41.925014Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: f0315ada0a022ba01fe45b5eb213a7c54f61f7d0294626fc65bc87ed438631cb
     home: http://fission.io/
@@ -479,7 +503,7 @@ entries:
     version: 0.10.0
   - apiVersion: v1
     appVersion: 0.9.2
-    created: "2020-06-29T19:29:51.368742Z"
+    created: "2020-09-16T15:55:41.949306Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: a64c9fef7232198b2ba2bb0f7b3355c1fa44769bceba2da9b2e2436a6865d976
     home: http://fission.io/
@@ -497,7 +521,7 @@ entries:
     version: 0.9.2
   - apiVersion: v1
     appVersion: 0.9.1
-    created: "2020-06-29T19:29:51.367827Z"
+    created: "2020-09-16T15:55:41.948435Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 66316a3af4b551bccb329108253182544708cd7bf9a9858d50e97bb86dfa84ee
     home: http://fission.io/
@@ -515,7 +539,7 @@ entries:
     version: 0.9.1
   - apiVersion: v1
     appVersion: 0.9.0
-    created: "2020-06-29T19:29:51.366889Z"
+    created: "2020-09-16T15:55:41.947524Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 3d20e13db370738efc244596ab0c1fc52dbf1ba9da5aeee82905cd68969519d0
     home: http://fission.io/
@@ -533,7 +557,7 @@ entries:
     version: 0.9.0
   - apiVersion: v1
     appVersion: 0.8.0
-    created: "2020-06-29T19:29:51.365998Z"
+    created: "2020-09-16T15:55:41.946615Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: bf643aab4642c1d9f73235ffe10c51b74e46474d765cefc29139a560c702e515
     home: http://fission.io/
@@ -551,7 +575,7 @@ entries:
     version: 0.8.0
   - apiVersion: v1
     appVersion: 0.7.2
-    created: "2020-06-29T19:29:51.364994Z"
+    created: "2020-09-16T15:55:41.945295Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 7e22eab5663b02570a4e3a94af70970c0d10cbfd95a65383f5db512616a03b90
     home: http://fission.io/
@@ -569,7 +593,7 @@ entries:
     version: 0.7.2
   - apiVersion: v1
     appVersion: 0.7.1
-    created: "2020-06-29T19:29:51.363736Z"
+    created: "2020-09-16T15:55:41.944136Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 0ea6887f39c0f59463b49e632294152c926b62b5afc65202c80045ff71735b05
     home: http://fission.io/
@@ -587,7 +611,7 @@ entries:
     version: 0.7.1
   - apiVersion: v1
     appVersion: 0.7.0
-    created: "2020-06-29T19:29:51.362806Z"
+    created: "2020-09-16T15:55:41.942902Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 18873dc8427a9171843d21b18f1195aacaff61958cf4a9b126cd0fb88431ac2e
     home: http://fission.io/
@@ -605,7 +629,7 @@ entries:
     version: 0.7.0
   - apiVersion: v1
     appVersion: 0.6.1
-    created: "2020-06-29T19:29:51.361669Z"
+    created: "2020-09-16T15:55:41.941795Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 5a17ab8bee880029fe42b9919c6d5319e0abe0751e05d2b410b23bd9f16bc611
     home: http://fission.io/
@@ -623,7 +647,7 @@ entries:
     version: 0.6.1
   - apiVersion: v1
     appVersion: 0.6.0
-    created: "2020-06-29T19:29:51.36079Z"
+    created: "2020-09-16T15:55:41.940894Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: a6c4d56e7cc3d14ee4524bbbe1677d14399288602c9a5bc103356cd826f1df8c
     home: http://fission.io/
@@ -641,7 +665,7 @@ entries:
     version: 0.6.0
   - apiVersion: v1
     appVersion: 0.5.0
-    created: "2020-06-29T19:29:51.359925Z"
+    created: "2020-09-16T15:55:41.939914Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 2f72fe4ba836d84e60538ecf401a508384bb194c979688be69f1370af0c071bb
     home: http://fission.io/
@@ -659,7 +683,7 @@ entries:
     version: 0.5.0
   - apiVersion: v1
     appVersion: 0.4.1
-    created: "2020-06-29T19:29:51.359101Z"
+    created: "2020-09-16T15:55:41.938829Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 4b1d5ea5bd300191fcdbb49daf80931f0a24cfaa5b64f0a1b47297210f56dc29
     home: http://fission.io/
@@ -677,7 +701,7 @@ entries:
     version: 0.4.1
   - apiVersion: v1
     appVersion: 0.4.0
-    created: "2020-06-29T19:29:51.358295Z"
+    created: "2020-09-16T15:55:41.938044Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 0c5e45d43bb8fd2d9011e305e3bc421f2b7ff6ff37c153bd0ee251e04efc22e7
     home: http://fission.io/
@@ -695,7 +719,7 @@ entries:
     version: 0.4.0
   - apiVersion: v1
     appVersion: 0.3.1
-    created: "2020-06-29T19:29:51.357487Z"
+    created: "2020-09-16T15:55:41.937295Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: ef56c13cccc2d313ac8e18cb247a3fc3468fe5fc9088d6c9aff4d2b45f818d9b
     home: http://fission.io/
@@ -713,7 +737,7 @@ entries:
     version: 0.3.1
   - apiVersion: v1
     appVersion: 0.3.0
-    created: "2020-06-29T19:29:51.35625Z"
+    created: "2020-09-16T15:55:41.936413Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: bc559402d95521a50e5601a322cfaf4ff57852a55662926ea5d101fc125a08d9
     home: http://fission.io/
@@ -731,7 +755,7 @@ entries:
     version: 0.3.0
   - apiVersion: v1
     appVersion: 0.3.0-rc
-    created: "2020-06-29T19:29:51.355379Z"
+    created: "2020-09-16T15:55:41.935409Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 260e43bfd32d81b20d3ee232e95c516a46b97d12dcf9731f4fa4352789e7470c
     home: http://fission.io/
@@ -749,8 +773,31 @@ entries:
     version: 0.3.0-rc
   fission-core:
   - apiVersion: v1
+    appVersion: 1.11.0
+    created: "2020-09-16T15:55:42.076382Z"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://kubernetes-charts.storage.googleapis.com
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 28d02d65ad57455e857df5db17f2c05bcf7c1f78f16c4997656994517e1de6e0
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://fission.github.io/fission-charts/fission-core-1.11.0.tgz
+    version: 1.11.0
+  - apiVersion: v1
     appVersion: 1.10.0
-    created: "2020-06-29T19:29:51.504002Z"
+    created: "2020-09-16T15:55:42.072164Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -773,7 +820,7 @@ entries:
     version: 1.10.0
   - apiVersion: v1
     appVersion: 1.9.0
-    created: "2020-06-29T19:29:51.562232Z"
+    created: "2020-09-16T15:55:42.130562Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -796,7 +843,7 @@ entries:
     version: 1.9.0
   - apiVersion: v1
     appVersion: 1.8.0
-    created: "2020-06-29T19:29:51.557548Z"
+    created: "2020-09-16T15:55:42.125482Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -819,7 +866,7 @@ entries:
     version: 1.8.0
   - apiVersion: v1
     appVersion: 1.7.1
-    created: "2020-06-29T19:29:51.553398Z"
+    created: "2020-09-16T15:55:42.121144Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -842,7 +889,7 @@ entries:
     version: 1.7.1
   - apiVersion: v1
     appVersion: 1.7.0
-    created: "2020-06-29T19:29:51.548744Z"
+    created: "2020-09-16T15:55:42.116412Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -865,7 +912,7 @@ entries:
     version: 1.7.0
   - apiVersion: v1
     appVersion: 1.7.0-rc.2
-    created: "2020-06-29T19:29:51.54429Z"
+    created: "2020-09-16T15:55:42.112113Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -888,7 +935,7 @@ entries:
     version: 1.7.0-rc.2
   - apiVersion: v1
     appVersion: 1.7.0-rc.1
-    created: "2020-06-29T19:29:51.538897Z"
+    created: "2020-09-16T15:55:42.106923Z"
     dependencies:
     - condition: prometheus.enabled
       name: prometheus
@@ -911,7 +958,7 @@ entries:
     version: 1.7.0-rc.1
   - apiVersion: v1
     appVersion: 1.6.0
-    created: "2020-06-29T19:29:51.53464Z"
+    created: "2020-09-16T15:55:42.10301Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -934,7 +981,7 @@ entries:
     version: 1.6.0
   - apiVersion: v1
     appVersion: 1.5.0
-    created: "2020-06-29T19:29:51.53091Z"
+    created: "2020-09-16T15:55:42.09923Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -957,7 +1004,7 @@ entries:
     version: 1.5.0
   - apiVersion: v1
     appVersion: 1.4.1
-    created: "2020-06-29T19:29:51.526521Z"
+    created: "2020-09-16T15:55:42.095927Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -980,7 +1027,7 @@ entries:
     version: 1.4.1
   - apiVersion: v1
     appVersion: 1.4.0
-    created: "2020-06-29T19:29:51.521689Z"
+    created: "2020-09-16T15:55:42.092169Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -1003,7 +1050,7 @@ entries:
     version: 1.4.0
   - apiVersion: v1
     appVersion: 1.3.0
-    created: "2020-06-29T19:29:51.516842Z"
+    created: "2020-09-16T15:55:42.088129Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -1026,7 +1073,7 @@ entries:
     version: 1.3.0
   - apiVersion: v1
     appVersion: 1.2.1
-    created: "2020-06-29T19:29:51.511969Z"
+    created: "2020-09-16T15:55:42.08459Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -1049,7 +1096,7 @@ entries:
     version: 1.2.1
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-06-29T19:29:51.508285Z"
+    created: "2020-09-16T15:55:42.080809Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -1072,7 +1119,7 @@ entries:
     version: 1.2.0
   - apiVersion: v1
     appVersion: 1.1.0
-    created: "2020-06-29T19:29:51.499223Z"
+    created: "2020-09-16T15:55:42.067255Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -1095,7 +1142,7 @@ entries:
     version: 1.1.0
   - apiVersion: v1
     appVersion: 1.0.0
-    created: "2020-06-29T19:29:51.494445Z"
+    created: "2020-09-16T15:55:42.063988Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -1118,7 +1165,7 @@ entries:
     version: 1.0.0
   - apiVersion: v1
     appVersion: 1.0-rc2
-    created: "2020-06-29T19:29:51.490231Z"
+    created: "2020-09-16T15:55:42.059638Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -1141,7 +1188,7 @@ entries:
     version: 1.0-rc2
   - apiVersion: v1
     appVersion: 1.0-rc1
-    created: "2020-06-29T19:29:51.485934Z"
+    created: "2020-09-16T15:55:42.056384Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -1164,7 +1211,7 @@ entries:
     version: 1.0-rc1
   - apiVersion: v1
     appVersion: 0.12.0
-    created: "2020-06-29T19:29:51.462828Z"
+    created: "2020-09-16T15:55:42.040269Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
@@ -1187,7 +1234,7 @@ entries:
     version: 0.12.0
   - apiVersion: v1
     appVersion: 0.11.0
-    created: "2020-06-29T19:29:51.459533Z"
+    created: "2020-09-16T15:55:42.037108Z"
     dependencies:
     - name: prometheus
       repository: https://kubernetes-charts.storage.googleapis.com
@@ -1209,7 +1256,7 @@ entries:
     version: 0.11.0
   - apiVersion: v1
     appVersion: 0.10.0
-    created: "2020-06-29T19:29:51.456316Z"
+    created: "2020-09-16T15:55:42.033864Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: d8ac31b77525075570e44cc948029fc687890007b3e0abd0f4ce92c49b429668
     home: http://fission.io/
@@ -1227,7 +1274,7 @@ entries:
     version: 0.10.0
   - apiVersion: v1
     appVersion: 0.9.2
-    created: "2020-06-29T19:29:51.480994Z"
+    created: "2020-09-16T15:55:42.053249Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 4893ec8069cf4f01b28fdfd8a7a2b73a65f01ddd3c18b410902f578a1ef19c9d
     home: http://fission.io/
@@ -1245,7 +1292,7 @@ entries:
     version: 0.9.2
   - apiVersion: v1
     appVersion: 0.9.1
-    created: "2020-06-29T19:29:51.47973Z"
+    created: "2020-09-16T15:55:42.052462Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: c0f590717da59cf7be2ac3c4e006c9375bd0049d3c860be74bb08651fea35133
     home: http://fission.io/
@@ -1263,7 +1310,7 @@ entries:
     version: 0.9.1
   - apiVersion: v1
     appVersion: 0.9.0
-    created: "2020-06-29T19:29:51.478219Z"
+    created: "2020-09-16T15:55:42.051141Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 23b92a4bfab8861a43ed816f50115f7d8f01836b5d5b0f2286181c42e916cc44
     home: http://fission.io/
@@ -1281,7 +1328,7 @@ entries:
     version: 0.9.0
   - apiVersion: v1
     appVersion: 0.8.0
-    created: "2020-06-29T19:29:51.476992Z"
+    created: "2020-09-16T15:55:42.050312Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 5473832a696b1e4e3316878f84dad813e3fbcc7b270563d11a0b02345f1b0370
     home: http://fission.io/
@@ -1299,7 +1346,7 @@ entries:
     version: 0.8.0
   - apiVersion: v1
     appVersion: 0.7.2
-    created: "2020-06-29T19:29:51.475773Z"
+    created: "2020-09-16T15:55:42.049523Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: e890adfe45816fe82b6f48722b88a5f8ffe17d670cf751ec95036a8e4bcb05dd
     home: http://fission.io/
@@ -1317,7 +1364,7 @@ entries:
     version: 0.7.2
   - apiVersion: v1
     appVersion: 0.7.1
-    created: "2020-06-29T19:29:51.47446Z"
+    created: "2020-09-16T15:55:42.048663Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 5d5606c79b5d83c2e88c371b6bea4a49a599f1a1e26674db3388a63278a47c2c
     home: http://fission.io/
@@ -1335,7 +1382,7 @@ entries:
     version: 0.7.1
   - apiVersion: v1
     appVersion: 0.7.0
-    created: "2020-06-29T19:29:51.473257Z"
+    created: "2020-09-16T15:55:42.047832Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 91cf2218aede291430c511e4a08e5b02c3eecba3d0d8ee5dbc2c4fd3710e5832
     home: http://fission.io/
@@ -1353,7 +1400,7 @@ entries:
     version: 0.7.0
   - apiVersion: v1
     appVersion: 0.6.1
-    created: "2020-06-29T19:29:51.472178Z"
+    created: "2020-09-16T15:55:42.046979Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 81d2f1fcff61ae1227bc1728eaaa4ec54b2f096929bde440358b41c7ffb2ece3
     home: http://fission.io/
@@ -1371,7 +1418,7 @@ entries:
     version: 0.6.1
   - apiVersion: v1
     appVersion: 0.6.0
-    created: "2020-06-29T19:29:51.471129Z"
+    created: "2020-09-16T15:55:42.046149Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 707c7a53115da44e604c820bf42915e2b63c6d075f89a87ff78c0e6c3d0e7b38
     home: http://fission.io/
@@ -1389,7 +1436,7 @@ entries:
     version: 0.6.0
   - apiVersion: v1
     appVersion: 0.5.0
-    created: "2020-06-29T19:29:51.470178Z"
+    created: "2020-09-16T15:55:42.045281Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 6ee668de0870a52d16a051bb5d60c12e523a87c54269b321bdab6dd97f883ee4
     home: http://fission.io/
@@ -1407,7 +1454,7 @@ entries:
     version: 0.5.0
   - apiVersion: v1
     appVersion: 0.4.1
-    created: "2020-06-29T19:29:51.468967Z"
+    created: "2020-09-16T15:55:42.044331Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 3360bcd12e15de3a01ef02e068ee8c9b0b8803ac1cc09bc798c1367f5fce5bd7
     home: http://fission.io/
@@ -1425,7 +1472,7 @@ entries:
     version: 0.4.1
   - apiVersion: v1
     appVersion: 0.4.0
-    created: "2020-06-29T19:29:51.467718Z"
+    created: "2020-09-16T15:55:42.043379Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: 7592e188d5db9ff3fdca336b1428e9d567c69f58d3bd0640862f89a18f1e27c3
     home: http://fission.io/
@@ -1443,7 +1490,7 @@ entries:
     version: 0.4.0
   - apiVersion: v1
     appVersion: 0.3.0
-    created: "2020-06-29T19:29:51.466049Z"
+    created: "2020-09-16T15:55:42.042402Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: f5c7bc77cef5927e7ea953a5e3477443e0267a7926577c246b9b232809738739
     home: http://fission.io/
@@ -1461,7 +1508,7 @@ entries:
     version: 0.3.0
   - apiVersion: v1
     appVersion: 0.3.0-rc
-    created: "2020-06-29T19:29:51.464929Z"
+    created: "2020-09-16T15:55:42.041535Z"
     description: Fission is a fast serverless framework for Kubernetes.
     digest: d695fa3558352aa045d3d4f98d171279c062d2d80b1037abc11bb7630db331d3
     home: http://fission.io/
@@ -1480,7 +1527,7 @@ entries:
   fission-workflows:
   - apiVersion: v1
     appVersion: 0.6.0
-    created: "2020-06-29T19:29:51.57012Z"
+    created: "2020-09-16T15:55:42.136204Z"
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: 47f3f87f75be8fe6191e4477f0dd0f1ebdf13ef7a88fa0626004164da9f8a571
@@ -1505,7 +1552,7 @@ entries:
     version: 0.6.0
   - apiVersion: v1
     appVersion: 0.5.0
-    created: "2020-06-29T19:29:51.568952Z"
+    created: "2020-09-16T15:55:42.135558Z"
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: 8ceeca7674a6a01d7ad174bdf361ff87a4a27247617495f751038c17c525c46f
@@ -1530,7 +1577,7 @@ entries:
     version: 0.5.0
   - apiVersion: v1
     appVersion: 0.4.0
-    created: "2020-06-29T19:29:51.567742Z"
+    created: "2020-09-16T15:55:42.1349Z"
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: 53b85b377bd2f325d85b7f25cd73b06c7ea2f7783f3115ee55ea836370b5dab8
@@ -1555,7 +1602,7 @@ entries:
     version: 0.4.0
   - apiVersion: v1
     appVersion: 0.3.0
-    created: "2020-06-29T19:29:51.566517Z"
+    created: "2020-09-16T15:55:42.134124Z"
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: a51de7ce193094d58e9003259d4c35808219e521c5ffb56d92840350742309e2
@@ -1580,7 +1627,7 @@ entries:
     version: 0.3.0
   - apiVersion: v1
     appVersion: 0.2.0
-    created: "2020-06-29T19:29:51.565325Z"
+    created: "2020-09-16T15:55:42.133105Z"
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: 63c617e98f779353972d3e48d7b9898ae9796be704155ffdd0451f52c27d3a9e
@@ -1605,7 +1652,7 @@ entries:
     version: 0.2.0
   - apiVersion: v1
     appVersion: 0.1.0
-    created: "2020-06-29T19:29:51.564027Z"
+    created: "2020-09-16T15:55:42.13183Z"
     description: Fission Workflows is a fast workflow engine for serverless functions
       on Kubernetes
     digest: ef0c09bc755bfd2678d097a78a3a54179e460de92ac8be8a23a47dd59853faa2
@@ -1627,4 +1674,4 @@ entries:
     urls:
     - https://fission.github.io/fission-charts/fission-workflows-0.1.0.tgz
     version: 0.1.0
-generated: "2020-06-29T19:29:51.329474Z"
+generated: "2020-09-16T15:55:41.922536Z"
