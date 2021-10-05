@@ -1,4 +1,6 @@
-# Fission Charts
+# Fission Charts 
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/fission)](https://artifacthub.io/packages/search?repo=fission)
+
 Repo for Fission Helm charts
 
 ## Usage
