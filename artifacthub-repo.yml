@@ -1,0 +1,7 @@
+# Artifact Hub repository metadata file
+#
+# Reference:  https://github.com/artifacthub/hub/blob/master/docs/metadata/artifacthub-repo.yml
+repositoryID: f16a239e-5d33-40d2-86e7-44cfa10c7e9f
+owners: # (optional, used to claim repository ownership)
+  - name: Sanket Sudake
+    email: sanketsudake@gmail.com
