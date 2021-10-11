@@ -1,11 +1,30 @@
-# Fission Charts 
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/fission)](https://artifacthub.io/packages/search?repo=fission)
+# Fission Community Kubernetes Helm Charts
 
-Repo for Fission Helm charts
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/fission/.github/blob/main/LICENSE) [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/fission)](https://artifacthub.io/packages/search?repo=fission)
 
 ## Usage
 
-1. [Install Helm](https://docs.helm.sh/using_helm/#installing-helm) on your Kubernetes cluster
-2. Add this repo to Helm `helm repo add fission-charts https://fission.github.io/fission-charts/`
-3. Fetch repo updates `helm repo update`
-4. Install one of the charts, for example fission-all: `helm install fission-charts/fission-all`
+[Helm](https://helm.sh) must be installed to use the charts.
+Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
+
+Once Helm is set up properly, add the repo as follows:
+
+```console
+helm repo add fission-charts https://fission.github.io/fission-charts/
+```
+
+You can then run `helm search repo fission-charts` to see the charts available.
+
+## Installation
+
+Please check the [installation guide](https://fission.io/docs/installation/) for more information.
+
+## Contributing
+
+The source code of all [Fission](https://fission.io) community [Helm](https://helm.sh) charts can be found on Github: <https://github.com/fission/fission/tree/master/charts>
+
+We'd love to have you contribute!
+
+## License
+
+[Apache 2.0 License](https://github.com/fission/.github/blob/main/LICENSE).
