@@ -1,6 +1,6 @@
 # Fission Community Kubernetes Helm Charts
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/fission/.github/blob/main/LICENSE) [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/fission)](https://artifacthub.io/packages/search?repo=fission)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/fission/.github/blob/main/LICENSE) [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/fission-charts)](https://artifacthub.io/packages/search?repo=fission-charts)
 
 ## Usage
 
