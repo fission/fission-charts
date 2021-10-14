@@ -5,3 +5,5 @@ repositoryID: d079fd85-a515-43ee-b416-a9c699e390d0
 owners: # (optional, used to claim repository ownership)
   - name: Sanket Sudake
     email: sanketsudake@gmail.com
+ignore: # (optional, packages that should not be indexed by Artifact Hub)
+  - name: fission-workflows
