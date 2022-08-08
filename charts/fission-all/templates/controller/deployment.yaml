@@ -22,6 +22,9 @@ spec:
         prometheus.io/path: "/metrics"
         prometheus.io/port: "8080"
     spec:
+      {{- if .Values.controller.securityContext.enabled }}
+      securityContext: {{- omit .Values.controller.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
       containers:
       - name: controller
         image: {{ include "fission-bundleImage" . | quote }}
@@ -39,7 +42,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        {{- include "opentracing.envs" . | indent 8 }}
         {{- include "opentelemtry.envs" . | indent 8 }}
         resources:
           {{- toYaml .Values.controller.resources | nindent 10 }}

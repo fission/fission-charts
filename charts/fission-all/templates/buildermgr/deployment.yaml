@@ -19,6 +19,9 @@ spec:
         prometheus.io/path: "/metrics"
         prometheus.io/port: "8080"
     spec:
+      {{- if .Values.buildermgr.securityContext.enabled }}
+      securityContext: {{- omit .Values.buildermgr.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
       containers:
       - name: buildermgr
         image: {{ include "fission-bundleImage" . | quote }}
@@ -52,7 +55,6 @@ spec:
           value: {{ .Values.pprof.enabled | quote }}
         - name: HELM_RELEASE_NAME
           value: {{ .Release.Name | quote }}
-        {{- include "opentracing.envs" . | indent 8 }}
         {{- include "opentelemtry.envs" . | indent 8 }}
         ports:
           - containerPort: 8080
