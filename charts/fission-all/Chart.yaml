@@ -1,23 +1,15 @@
-apiVersion: v2
-appVersion: v1.17.0-rc1
+apiVersion: v1
+appVersion: 0.11.0
 description: Fission is a fast serverless framework for Kubernetes.
-home: https://fission.io/
-icon: https://fission.io/images/fission-logo-white.svg
+engine: gotpl
+home: http://fission.io/
 keywords:
 - fission
 - serverless
-- platform
-- faas
-- functions
-- Integration & Delivery
 maintainers:
-- email: vishal@infracloud.io
-  name: Vishal Biyani
-- email: sanket@infracloud.io
-  name: Sanket Sudake
+- email: soamvasani@platform9.com
+  name: Soam Vasani
+- email: contact@tachingchen.com
+  name: Ta Ching Chen
 name: fission-all
-sources:
-- https://github.com/fission/fission
-- https://github.com/fission/keda-connectors
-type: application
-version: v1.17.0-rc1
+version: 0.11.0

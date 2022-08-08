@@ -1,9 +1,0 @@
-{{- if .Values.runtimePodSpec.enabled }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: runtime-podspec-patch
-data: 
-  spec: |
-    {{- toYaml .Values.runtimePodSpec.podSpec | nindent 4 }}
-{{- end -}}
