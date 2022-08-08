@@ -1,6 +1,4 @@
-{{- if .Values.server.enabled -}}
-{{- if not .Values.server.statefulSet.enabled -}}
-apiVersion: {{ template "prometheus.deployment.apiVersion" . }}
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
 {{- if .Values.server.deploymentAnnotations }}
@@ -8,12 +6,13 @@ metadata:
 {{ toYaml .Values.server.deploymentAnnotations | indent 4 }}
 {{- end }}
   labels:
-    {{- include "prometheus.server.labels" . | nindent 4 }}
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
-  selector:
-    matchLabels:
-      {{- include "prometheus.server.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.server.replicaCount }}
   {{- if .Values.server.strategy }}
   strategy:
@@ -26,11 +25,14 @@ spec:
 {{ toYaml .Values.server.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        {{- include "prometheus.server.labels" . | nindent 8 }}
-        {{- if .Values.server.podLabels}}
-        {{ toYaml .Values.server.podLabels | nindent 8 }}
-        {{- end}}
+        app: {{ template "prometheus.name" . }}
+        component: "{{ .Values.server.name }}"
+        release: {{ .Release.Name }}
     spec:
+{{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 8 }}
+{{- end }}
 {{- if .Values.server.priorityClassName }}
       priorityClassName: "{{ .Values.server.priorityClassName }}"
 {{- end }}
@@ -38,9 +40,19 @@ spec:
       schedulerName: "{{ .Values.server.schedulerName }}"
 {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
-      {{- if .Values.server.extraInitContainers }}
+      {{- if .Values.initChownData.enabled }}
       initContainers:
-{{ toYaml .Values.server.extraInitContainers | indent 8 }}
+      - name: "{{ .Values.initChownData.name }}"
+        image: "{{ .Values.initChownData.image.repository }}:{{ .Values.initChownData.image.tag }}"
+        imagePullPolicy: "{{ .Values.initChownData.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.initChownData.resources | indent 12 }}
+        # 65534 is the nobody user that prometheus uses.
+        command: ["chown", "-R", "65534:65534", "{{ .Values.server.persistentVolume.mountPath }}"]
+        volumeMounts:
+        - name: storage-volume
+          mountPath: {{ .Values.server.persistentVolume.mountPath }}
+          subPath: "{{ .Values.server.persistentVolume.subPath }}"
       {{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
@@ -52,9 +64,6 @@ spec:
           {{- range $key, $value := .Values.configmapReload.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
-          {{- range .Values.configmapReload.extraVolumeDirs }}
-            - --volume-dir={{ . }}
-          {{- end }}
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
@@ -64,22 +73,17 @@ spec:
           {{- range .Values.configmapReload.extraConfigmapMounts }}
             - name: {{ $.Values.configmapReload.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
-              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
 
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
-          {{- if .Values.server.env }}
-          env:
-{{ toYaml .Values.server.env | indent 12}}
-          {{- end }}
           args:
           {{- if .Values.server.retention }}
-            - --storage.tsdb.retention.time={{ .Values.server.retention }}
+            - --storage.tsdb.retention={{ .Values.server.retention }}
           {{- end }}
-            - --config.file={{ .Values.server.configPath }}
+            - --config.file=/etc/config/prometheus.yml
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
@@ -93,23 +97,20 @@ spec:
           {{- if .Values.server.enableAdminApi }}
             - --web.enable-admin-api
           {{- end }}
-          {{- if .Values.server.skipTSDBLock }}
-            - --storage.tsdb.no-lockfile
-          {{- end }}
           ports:
             - containerPort: 9090
           readinessProbe:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/ready
               port: 9090
-            initialDelaySeconds: {{ .Values.server.readinessProbeInitialDelay }}
-            timeoutSeconds: {{ .Values.server.readinessProbeTimeout }}
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
           livenessProbe:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/healthy
               port: 9090
-            initialDelaySeconds: {{ .Values.server.livenessProbeInitialDelay }}
-            timeoutSeconds: {{ .Values.server.livenessProbeTimeout }}
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:
@@ -121,31 +122,18 @@ spec:
           {{- range .Values.server.extraHostPathMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
-              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
           {{- range .Values.server.extraConfigmapMounts }}
             - name: {{ $.Values.server.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
-              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
           {{- range .Values.server.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
-              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
-          {{- if .Values.server.extraVolumeMounts }}
-            {{ toYaml .Values.server.extraVolumeMounts | nindent 12 }}
-          {{- end }}
-      {{- if .Values.server.sidecarContainers }}
-      {{- toYaml .Values.server.sidecarContainers | nindent 8 }}
-      {{- end }}
-    {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-       {{ toYaml .Values.imagePullSecrets | indent 2 }}
-    {{- end }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
@@ -172,16 +160,8 @@ spec:
           persistentVolumeClaim:
             claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "prometheus.server.fullname" . }}{{- end }}
         {{- else }}
-          emptyDir:
-          {{- if .Values.server.emptyDir.sizeLimit }}
-            sizeLimit: {{ .Values.server.emptyDir.sizeLimit }}
-          {{- else }}
-            {}
-          {{- end -}}
+          emptyDir: {}
         {{- end -}}
-{{- if .Values.server.extraVolumes }}
-{{ toYaml .Values.server.extraVolumes | indent 8}}
-{{- end }}
       {{- range .Values.server.extraHostPathMounts }}
         - name: {{ .name }}
           hostPath:
@@ -207,5 +187,3 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
-{{- end -}}
-{{- end -}}

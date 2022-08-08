@@ -1,4 +1,4 @@
-{{- if and .Values.kubeStateMetrics.enabled .Values.kubeStateMetrics.enabled -}}
+{{- if .Values.kubeStateMetrics.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,7 +7,11 @@ metadata:
 {{ toYaml .Values.kubeStateMetrics.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    {{- include "prometheus.kubeStateMetrics.labels" . | nindent 4 }}
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.kubeStateMetrics.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 {{- if .Values.kubeStateMetrics.service.labels }}
 {{ toYaml .Values.kubeStateMetrics.service.labels | indent 4 }}
 {{- end }}
@@ -35,6 +39,8 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    {{- include "prometheus.kubeStateMetrics.matchLabels" . | nindent 4 }}
+    app: {{ template "prometheus.name" . }}
+    component: "{{ .Values.kubeStateMetrics.name }}"
+    release: {{ .Release.Name }}
   type: "{{ .Values.kubeStateMetrics.service.type }}"
 {{- end }}

@@ -1,5 +1,3 @@
-{{- if .Values.server.enabled -}}
-{{- if not .Values.server.statefulSet.enabled -}}
 {{- if .Values.server.persistentVolume.enabled -}}
 {{- if not .Values.server.persistentVolume.existingClaim -}}
 apiVersion: v1
@@ -10,7 +8,11 @@ metadata:
 {{ toYaml .Values.server.persistentVolume.annotations | indent 4 }}
   {{- end }}
   labels:
-    {{- include "prometheus.server.labels" . | nindent 4 }}
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
   accessModes:
@@ -25,7 +27,5 @@ spec:
   resources:
     requests:
       storage: "{{ .Values.server.persistentVolume.size }}"
-{{- end -}}
-{{- end -}}
 {{- end -}}
 {{- end -}}
