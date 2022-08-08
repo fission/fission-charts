@@ -10,13 +10,14 @@ serviceType: ClusterIP
 routerServiceType: LoadBalancer
 
 ## Image base repository
+## Leave it empty for using existing local image
 repository: index.docker.io
 
 ## Fission image repository
 image: fission/fission-bundle
 
 ## Fission image version
-imageTag: 1.4.1
+imageTag: 1.5.0
 
 ## Image pull policy
 pullPolicy: IfNotPresent
@@ -25,7 +26,7 @@ pullPolicy: IfNotPresent
 fetcherImage: fission/fetcher
 
 ## Fission fetcher image version
-fetcherImageTag: 1.4.1
+fetcherImageTag: 1.5.0
 
 ## Port at which Fission controller service should be exposed
 controllerPort: 31313
@@ -101,7 +102,7 @@ persistence:
 ## Extend the container specs for the core fission pods. 
 ## Can be used to add things like affinty/tolerations/nodeSelectors/etc.
 ## For example:
-## extraCoreComponmentPodConfig:
+## extraCoreComponentPodConfig:
 ##   affinity:
 ##     nodeAffinity:
 ##       requiredDuringSchedulingIgnoredDuringExecution:
@@ -111,7 +112,7 @@ persistence:
 ##               operator: In
 ##               values:
 ##                 - app
-extraCoreComponmentPodConfig:
+extraCoreComponentPodConfig:
 #  affinity:
 #  tolerations:
 #  nodeSelector:
