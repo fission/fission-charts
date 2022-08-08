@@ -22,6 +22,9 @@ spec:
         prometheus.io/path: "/metrics"
         prometheus.io/port: "8080"
     spec:
+      {{- if .Values.storagesvc.securityContext.enabled }}
+      securityContext: {{- omit .Values.storagesvc.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
       containers:
       - name: storagesvc
         image: {{ include "fission-bundleImage" . | quote }}
@@ -33,8 +36,12 @@ spec:
         args: ["--storageServicePort", "8000", "--storageType", "local"]
         {{- end }}
         env:
+        - name: PRUNE_ENABLED
+          value: "{{.Values.storagesvc.archivePruner.enabled}}"
+        {{- if .Values.storagesvc.archivePruner.enabled }}
         - name: PRUNE_INTERVAL
-          value: "{{.Values.pruneInterval}}"
+          value: "{{.Values.storagesvc.archivePruner.interval}}"
+        {{- end }}
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
         - name: PPROF_ENABLED
