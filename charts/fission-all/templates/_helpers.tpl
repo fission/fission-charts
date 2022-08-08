@@ -25,29 +25,9 @@ controller/config.go
 {{- define "config" -}}
 canary:
   enabled: {{ .Values.canaryDeployment.enabled }}
-  {{- if .Values.prometheus.enabled }}
+  {{- if .Values.prometheusDeploy }}
   prometheusSvc: "http://{{ .Release.Name }}-prometheus-server.{{ .Release.Namespace }}"
-  {{- else }}
-  prometheusSvc: {{ .Values.prometheus.serviceEndpoint | default "" | quote }}
   {{- end }}
   {{- printf "\n" -}}
 {{- end -}}
 
-{{/*
-This template generates the image name for the deployment depending on the value of "repository" field in values.yaml file.
-*/}}
-{{- define "fission-bundleImage" -}}
-{{- if .Values.repository -}}
-  {{- if eq .Values.imageTag "" -}}
-    {{ .Values.repository }}/{{ .Values.image }}
-  {{- else -}}
-    {{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}
-  {{- end }}
-{{- else -}}
-  {{- if eq .Values.imageTag "" -}}
-    {{ .Values.image }}
-  {{- else -}}
-    {{ .Values.image }}:{{ .Values.imageTag }}
-  {{- end }}
-{{- end }}
-{{- end -}}
