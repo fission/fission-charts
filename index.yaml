@@ -1,3 +1,2265 @@
 apiVersion: v1
-entries: {}
-generated: "2022-08-08T18:53:34.956+05:30"
+entries:
+  fission-all:
+  - apiVersion: v2
+    appVersion: v1.17.0-rc1
+    created: "2022-08-08T18:58:27.076219+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: e776958742ee7a22fb80348b1507a122e798a5c37932418070743e943d5d396a
+    home: https://fission.io/
+    icon: https://fission.io/images/fission-logo-white.svg
+    keywords:
+    - fission
+    - serverless
+    - platform
+    - faas
+    - functions
+    - Integration & Delivery
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    sources:
+    - https://github.com/fission/fission
+    - https://github.com/fission/keda-connectors
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-v1.17.0-rc1/fission-all-v1.17.0-rc1.tgz
+    version: v1.17.0-rc1
+  - apiVersion: v2
+    appVersion: v1.16.0
+    created: "2022-08-08T18:58:26.788528+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: e3915a8b01b7b3f44dd064200309b6392a1f8d98743d8d7045dca1809f1cc170
+    home: https://fission.io/
+    icon: https://fission.io/images/fission-logo-white.svg
+    keywords:
+    - fission
+    - serverless
+    - platform
+    - faas
+    - functions
+    - Integration & Delivery
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    sources:
+    - https://github.com/fission/fission
+    - https://github.com/fission/keda-connectors
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-v1.16.0/fission-all-v1.16.0.tgz
+    version: v1.16.0
+  - apiVersion: v2
+    appVersion: v1.16.0-rc2
+    created: "2022-08-08T18:58:26.487255+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: d337e2525c85808de81bda36692f7e8f5419df2972dde8f134490aa73d75c293
+    home: https://fission.io/
+    icon: https://fission.io/images/fission-logo-white.svg
+    keywords:
+    - fission
+    - serverless
+    - platform
+    - faas
+    - functions
+    - Integration & Delivery
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    sources:
+    - https://github.com/fission/fission
+    - https://github.com/fission/keda-connectors
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-v1.16.0-rc2/fission-all-v1.16.0-rc2.tgz
+    version: v1.16.0-rc2
+  - apiVersion: v2
+    appVersion: v1.16.0-rc1
+    created: "2022-08-08T18:58:26.190791+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 14.11.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 4074603b59922a2a33b49288ac81c04b81aba5ec7db7cf334458c11c0bc3e6a9
+    home: https://fission.io/
+    icon: https://fission.io/images/fission-logo-white.svg
+    keywords:
+    - fission
+    - serverless
+    - platform
+    - faas
+    - functions
+    - Integration & Delivery
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    sources:
+    - https://github.com/fission/fission
+    - https://github.com/fission/keda-connectors
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-v1.16.0-rc1/fission-all-v1.16.0-rc1.tgz
+    version: v1.16.0-rc1
+  - apiVersion: v2
+    appVersion: v1.15.1
+    created: "2022-08-08T18:58:25.865339+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 14.11.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 7a7afa8ea6eb649f97cc2802777038461924cd107fbc61356d60bbe8d93da4c7
+    home: https://fission.io/
+    icon: https://fission.io/images/fission-logo-white.svg
+    keywords:
+    - fission
+    - serverless
+    - platform
+    - faas
+    - functions
+    - Integration & Delivery
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    sources:
+    - https://github.com/fission/fission
+    - https://github.com/fission/keda-connectors
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-v1.15.1/fission-all-v1.15.1.tgz
+    version: v1.15.1
+  - apiVersion: v2
+    appVersion: v1.15.0
+    created: "2022-08-08T18:58:25.5566+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 14.11.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 64222937a6ae83c0ce1e7f484acdbf835b36bdfd0085d345a5c83d56864c6e74
+    home: https://fission.io/
+    icon: https://fission.io/images/fission-logo-white.svg
+    keywords:
+    - fission
+    - serverless
+    - platform
+    - faas
+    - functions
+    - Integration & Delivery
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    sources:
+    - https://github.com/fission/fission
+    - https://github.com/fission/keda-connectors
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-v1.15.0/fission-all-v1.15.0.tgz
+    version: v1.15.0
+  - apiVersion: v2
+    appVersion: v1.15.0-rc2
+    created: "2022-08-08T18:58:25.229261+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 14.11.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: f9e3168ba6d71886047030c7e7b545b5c18b3710781a1a051d808bb1b98f3d00
+    home: https://fission.io/
+    icon: https://fission.io/images/fission-logo-white.svg
+    keywords:
+    - fission
+    - serverless
+    - platform
+    - faas
+    - functions
+    - Integration & Delivery
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    sources:
+    - https://github.com/fission/fission
+    - https://github.com/fission/keda-connectors
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-v1.15.0-rc2/fission-all-v1.15.0-rc2.tgz
+    version: v1.15.0-rc2
+  - apiVersion: v2
+    appVersion: v1.15.0-rc1
+    created: "2022-08-08T18:58:24.904897+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 13.2.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: e5557c0ae5238a804915a360247d8e171198f0739745cc877db5abb9d333d7aa
+    home: https://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-v1.15.0-rc1/fission-all-v1.15.0-rc1.tgz
+    version: v1.15.0-rc1
+  - apiVersion: v2
+    appVersion: 1.14.1
+    created: "2022-08-08T18:58:17.19997+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 13.2.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 9fdded70b2add1c536d6779946f83f62ac1e9bdf8b13c1ea0957e6e08afd04dd
+    home: https://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.14.1/fission-all-1.14.1.tgz
+    version: 1.14.1
+  - apiVersion: v2
+    appVersion: 1.14.0
+    created: "2022-08-08T18:58:16.901262+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 13.2.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 2e89ba308feb5f50f0d16ea5d92749ce1a55899eac656f96ea490ee32feef847
+    home: https://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.14.0/fission-all-1.14.0.tgz
+    version: 1.14.0
+  - apiVersion: v2
+    appVersion: 1.13.1
+    created: "2022-08-08T18:58:16.590142+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 13.2.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 8904132a196d95fa999cc7525f7e33edb7dd02a47f237a75efff25dc15a2af4a
+    home: https://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.13.1/fission-all-1.13.1.tgz
+    version: 1.13.1
+  - apiVersion: v2
+    appVersion: 1.13.0
+    created: "2022-08-08T18:58:16.278159+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 13.2.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: da5a207616ca8a17a1975e32227e1ada6312ef425e4e0cb1ecbfe990ec68f9f0
+    home: https://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.13.0/fission-all-1.13.0.tgz
+    version: 1.13.0
+  - apiVersion: v1
+    appVersion: 1.12.0
+    created: "2022-08-08T18:58:15.970615+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://charts.helm.sh/stable
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 941aa1e2ecf931dfb024c042665a9ba8fc1d8b3ec9a3a574a45315b044c2a037
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.12.0/fission-all-1.12.0.tgz
+    version: 1.12.0
+  - apiVersion: v1
+    appVersion: 1.11.2
+    created: "2022-08-08T18:58:15.669512+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: cc4ddb732cd2832e715609b0775088c090a67c1d440012914a0ae912a4aefa97
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.11.2/fission-all-1.11.2.tgz
+    version: 1.11.2
+  - apiVersion: v1
+    appVersion: 1.11.1
+    created: "2022-08-08T18:58:15.360209+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 09670ffc9437328b302eb2a3aaca3e382d83cd0ba643ecbbc2f82e78902372c3
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.11.1/fission-all-1.11.1.tgz
+    version: 1.11.1
+  - apiVersion: v1
+    appVersion: 1.11.0
+    created: "2022-08-08T18:58:15.056453+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 66f188febded792664459bc9ce99f3b6cadd564f8e37b63c3a8007633e4ae1dc
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.11.0/fission-all-1.11.0.tgz
+    version: 1.11.0
+  - apiVersion: v1
+    appVersion: 1.10.0
+    created: "2022-08-08T18:58:14.74614+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: a187e7d2a03227e5382893cf26847fd6392a70c026d1e2b8ef05551067a44826
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.10.0/fission-all-1.10.0.tgz
+    version: 1.10.0
+  - apiVersion: v1
+    appVersion: 1.9.0
+    created: "2022-08-08T18:58:24.600563+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: f9176c48904cf431c6376c5c00eda5e655f020bf8b1c21448966f92b19d5e44d
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.9.0/fission-all-1.9.0.tgz
+    version: 1.9.0
+  - apiVersion: v1
+    appVersion: 1.8.0
+    created: "2022-08-08T18:58:24.263222+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: b7124284028aa5f0f989428d251e0fd77c78db1abf8657ac1a3ba3e19d7fb277
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.8.0/fission-all-1.8.0.tgz
+    version: 1.8.0
+  - apiVersion: v1
+    appVersion: 1.7.1
+    created: "2022-08-08T18:58:23.941589+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 970fabb475f7914b92e4510ae9b712472e1c65889969986986d994f34d9f278c
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.7.1/fission-all-1.7.1.tgz
+    version: 1.7.1
+  - apiVersion: v1
+    appVersion: 1.7.0
+    created: "2022-08-08T18:58:23.636504+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: ed1aee5ccbea4786e1d997b914102f47a63feccb417bc1700d7ceabcace4018a
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.7.0/fission-all-1.7.0.tgz
+    version: 1.7.0
+  - apiVersion: v1
+    appVersion: 1.7.0-rc.2
+    created: "2022-08-08T18:58:23.325265+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 72fd05f71c93b125fdf3c0b276047457badb12d0d53766e7f5f210da42754ab7
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.7.0-rc.2/fission-all-1.7.0-rc.2.tgz
+    version: 1.7.0-rc.2
+  - apiVersion: v1
+    appVersion: 1.7.0-rc.1
+    created: "2022-08-08T18:58:22.992844+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 93f9c6d134632d2615c265d363bf6d448fb5b4d3d2b3f501af11d9c28c8e2b66
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.7.0-rc.1/fission-all-1.7.0-rc.1.tgz
+    version: 1.7.0-rc.1
+  - apiVersion: v1
+    appVersion: 1.6.0
+    created: "2022-08-08T18:58:22.674598+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: c9e9e45e1ab35d874b805629cc305ab1b7b4a7e3bc1836153ad960b6bb5b8f01
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.6.0/fission-all-1.6.0.tgz
+    version: 1.6.0
+  - apiVersion: v1
+    appVersion: 1.5.0
+    created: "2022-08-08T18:58:22.350646+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 8664f825cb6bb1a1fc1d6abf172f7ad4c3135175e5da0d40dda034ad209a83e8
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.5.0/fission-all-1.5.0.tgz
+    version: 1.5.0
+  - apiVersion: v1
+    appVersion: 1.4.1
+    created: "2022-08-08T18:58:21.867191+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 477f6bf889ed303fb4cfa9af691dc0798df696845ee6acad7e289cb8e41a0103
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.4.1/fission-all-1.4.1.tgz
+    version: 1.4.1
+  - apiVersion: v1
+    appVersion: 1.4.0
+    created: "2022-08-08T18:58:21.56751+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 0cf50e4f13efd41b01d538607c7941ba4fc12efdf2e97cfcf3a3ffd1383bbd2d
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.4.0/fission-all-1.4.0.tgz
+    version: 1.4.0
+  - apiVersion: v1
+    appVersion: 1.3.0
+    created: "2022-08-08T18:58:21.269992+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 0aef75df654f44bd44ceda19868dbc2a18cc0b99f90cbe7ac30f0506c9895c49
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.3.0/fission-all-1.3.0.tgz
+    version: 1.3.0
+  - apiVersion: v1
+    appVersion: 1.2.1
+    created: "2022-08-08T18:58:20.953495+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 7d341169c48300d2d78e2fff74fecfaf533ef54e4da618a79d6211b5afafe222
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.2.1/fission-all-1.2.1.tgz
+    version: 1.2.1
+  - apiVersion: v1
+    appVersion: 1.2.0
+    created: "2022-08-08T18:58:17.509237+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: a1ed5ccea6d5c0b7e1a9752c489c982924fae95025dc172cdd7e7f4188b1ea79
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.2.0/fission-all-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v1
+    appVersion: 1.1.0
+    created: "2022-08-08T18:58:14.44561+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 479bd65655609360385fcd4f3a09418b4f1b9f3eca4b7488224ad0a2623aac42
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.1.0/fission-all-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v1
+    appVersion: 1.0.0
+    created: "2022-08-08T18:58:14.136262+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 478969f16ee60a232d431c8a75f5a930bb7bdd7a2296236f670733277bf64a4b
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.0.0/fission-all-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v1
+    appVersion: 1.0-rc2
+    created: "2022-08-08T18:58:13.832154+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: cd2e711a569d2854c5d8318777c8e355498faeac7d2486509a2df46c3edfea60
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.0-rc2/fission-all-1.0-rc2.tgz
+    version: 1.0-rc2
+  - apiVersion: v1
+    appVersion: 1.0-rc1
+    created: "2022-08-08T18:58:13.525506+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: a111db5eee1c14bad91c84e6f1b215d8d5bfe043077d549a0c026fa1c214b93b
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.0-rc1/fission-all-1.0-rc1.tgz
+    version: 1.0-rc1
+  - apiVersion: v1
+    appVersion: 0.12.0
+    created: "2022-08-08T18:58:08.693907+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 4b7237789aa5d913e59b2b09ed2c973464a0484f864acf98bc5a2dcc2108fad7
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.12.0/fission-all-0.12.0.tgz
+    version: 0.12.0
+  - apiVersion: v1
+    appVersion: 0.11.0
+    created: "2022-08-08T18:58:08.386891+05:30"
+    dependencies:
+    - name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: ca7d35e139900e8da283f2d9ef19114399b5de0475aabfd3ff8066824b32f62f
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.11.0/fission-all-0.11.0.tgz
+    version: 0.11.0
+  - apiVersion: v1
+    appVersion: 0.10.0
+    created: "2022-08-08T18:58:08.036774+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 93ce1f497886bb7aefd8232d0eb74db69637bf6099c24bba862709821f723994
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.10.0/fission-all-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v1
+    appVersion: 0.9.2
+    created: "2022-08-08T18:58:13.196157+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: c9e131649bf983a30a5ae9e3650389e67464a31ceb08e6dc909705cf2fac01dd
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.9.2/fission-all-0.9.2.tgz
+    version: 0.9.2
+  - apiVersion: v1
+    appVersion: 0.9.1
+    created: "2022-08-08T18:58:12.910884+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 4d643bedd62110a6f856c8cfcf8c736c01f10e42535589aa67aa00380d93c783
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.9.1/fission-all-0.9.1.tgz
+    version: 0.9.1
+  - apiVersion: v1
+    appVersion: 0.9.0
+    created: "2022-08-08T18:58:12.628027+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 5b22f624504a3ddd7b05a3b92b419756d06e7703a1c572abc9abb46b9721f757
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.9.0/fission-all-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v1
+    appVersion: 0.8.0
+    created: "2022-08-08T18:58:12.330669+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 06b831ae6291bdfe89bfcef76e9ce89d72b3cf282174b50bf003343f2545e60e
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.8.0/fission-all-0.8.0.tgz
+    version: 0.8.0
+  - apiVersion: v1
+    appVersion: 0.7.2
+    created: "2022-08-08T18:58:11.993307+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 65e9f3cc63fcbca6433030f6cc0f75816eeea6980582e679011552fa684d99d5
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.7.2/fission-all-0.7.2.tgz
+    version: 0.7.2
+  - apiVersion: v1
+    appVersion: 0.7.1
+    created: "2022-08-08T18:58:11.704635+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: f858aecf185c6f804d062c9b7e0c8f71e24430eaa2155955748653d419ca39ba
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.7.1/fission-all-0.7.1.tgz
+    version: 0.7.1
+  - apiVersion: v1
+    appVersion: 0.7.0
+    created: "2022-08-08T18:58:11.388726+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: f118ac8774b1c82999b2fa15a3a3674621f82331bd5d65b624b8bca81c5ccb25
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.7.0/fission-all-0.7.0.tgz
+    version: 0.7.0
+  - apiVersion: v1
+    appVersion: 0.6.1
+    created: "2022-08-08T18:58:11.085827+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 7c1956a350f633637e412ac825d74595270a3f721fd936e5d2ee480ec250cbf7
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.6.1/fission-all-0.6.1.tgz
+    version: 0.6.1
+  - apiVersion: v1
+    appVersion: 0.6.0
+    created: "2022-08-08T18:58:10.782695+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: f22822e354cee1b21a83beb0308885a84ad304882a79f98a67a1bd6432992064
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.6.0/fission-all-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v1
+    appVersion: 0.5.0
+    created: "2022-08-08T18:58:10.489943+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 3b3153eda76494cd5349f6b7df22d772f7207c124fe1546aae992f85a75a04fa
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.5.0/fission-all-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v1
+    appVersion: 0.4.1
+    created: "2022-08-08T18:58:10.206187+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 3edffee47ee308233168e4c3ccbe3ef9661da3e162822d69fa1ad76dde688f75
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.4.1/fission-all-0.4.1.tgz
+    version: 0.4.1
+  - apiVersion: v1
+    appVersion: 0.4.0
+    created: "2022-08-08T18:58:09.902514+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 1724f72cf6e2e0ef6e96cd9fdcced156397b12adc9a75d725d7256fc8b7923b5
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.4.0/fission-all-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v1
+    appVersion: 0.3.1
+    created: "2022-08-08T18:58:09.599085+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 83bf0ad00f7946d8afa072115dd22953bf411cbde69158825f7c6f18a80dfb6f
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.3.1/fission-all-0.3.1.tgz
+    version: 0.3.1
+  - apiVersion: v1
+    appVersion: 0.3.0
+    created: "2022-08-08T18:58:09.31089+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 3d7438932bfa57f3df475cd3d83d921c4d306d8dc092769b10173d24b458b6ea
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.3.0/fission-all-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v1
+    appVersion: 0.3.0-rc
+    created: "2022-08-08T18:58:09.016843+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: f3711bbcc15c1b8b12f5ba7d6bc4665e7033c13762b85166aa08b54121c48d8a
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.3.0-rc/fission-all-0.3.0-rc.tgz
+    version: 0.3.0-rc
+  fission-core:
+  - apiVersion: v2
+    appVersion: v1.15.0-rc1
+    created: "2022-08-08T18:58:40.524927+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 13.2.1
+    deprecated: true
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 70a7d3312b9c5bb30712b6df8df143da4141916a90f3387753916b0edc5a0ca2
+    home: https://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-core
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-v1.15.0-rc1/fission-core-v1.15.0-rc1.tgz
+    version: v1.15.0-rc1
+  - apiVersion: v2
+    appVersion: 1.14.1
+    created: "2022-08-08T18:58:36.22731+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 13.2.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: ebaff059845056886fddf66e6f227037e9bce34d20262b57bf7fb57e0344e172
+    home: https://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-core
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.14.1/fission-core-1.14.1.tgz
+    version: 1.14.1
+  - apiVersion: v2
+    appVersion: 1.14.0
+    created: "2022-08-08T18:58:35.918611+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 13.2.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 3776fefac58f71fb041e6e6311655894204bb2848b86bad192f78070d1676947
+    home: https://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-core
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.14.0/fission-core-1.14.0.tgz
+    version: 1.14.0
+  - apiVersion: v2
+    appVersion: 1.13.1
+    created: "2022-08-08T18:58:35.5946+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 13.2.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 5884acdca3c6b9027154c616bb224e82eda9f40f04fa42142f061588a1fb6fde
+    home: https://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-core
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.13.1/fission-core-1.13.1.tgz
+    version: 1.13.1
+  - apiVersion: v2
+    appVersion: 1.13.0
+    created: "2022-08-08T18:58:35.277473+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 13.2.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: bb70eda9b4ed81e011025f28fc0efe415bcbbdaed9dad8a6d0d89e53716a515c
+    home: https://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-core
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.13.0/fission-core-1.13.0.tgz
+    version: 1.13.0
+  - apiVersion: v1
+    appVersion: 1.12.0
+    created: "2022-08-08T18:58:34.960894+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://charts.helm.sh/stable
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: e7a580968bcbaa3e09f5c2357b16b10e0abdcd8199e66461a763c710914fb553
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.12.0/fission-core-1.12.0.tgz
+    version: 1.12.0
+  - apiVersion: v1
+    appVersion: 1.11.2
+    created: "2022-08-08T18:58:34.638369+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: ae8c99e095b569e4366a1b43138348377b54da74349702af91c8455e3c35abba
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.11.2/fission-core-1.11.2.tgz
+    version: 1.11.2
+  - apiVersion: v1
+    appVersion: 1.11.1
+    created: "2022-08-08T18:58:34.332674+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: b8d22c5c7eb2ff11ca7146c84b9154d70dbc4a905c731bd128c6d23a03782ce4
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.11.1/fission-core-1.11.1.tgz
+    version: 1.11.1
+  - apiVersion: v1
+    appVersion: 1.11.0
+    created: "2022-08-08T18:58:34.027587+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 2486840b66bee7cdc68053433f57b8e7ff74a16563733160099b69debdd49bef
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.11.0/fission-core-1.11.0.tgz
+    version: 1.11.0
+  - apiVersion: v1
+    appVersion: 1.10.0
+    created: "2022-08-08T18:58:33.715646+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 70136ce7531af3ce5776e41e5d8022539fb2d3e1bd453b41293339265d990051
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.10.0/fission-core-1.10.0.tgz
+    version: 1.10.0
+  - apiVersion: v1
+    appVersion: 1.9.0
+    created: "2022-08-08T18:58:40.197467+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 43ee263025584d99f2e6edf3dc9582e8dce9961dfb60f9439468fb9c69ec7c04
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.9.0/fission-core-1.9.0.tgz
+    version: 1.9.0
+  - apiVersion: v1
+    appVersion: 1.8.0
+    created: "2022-08-08T18:58:39.900049+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 97f86ca425994fc71d6ae7f99570edabd717dd15fe6134b1cb1dfc73628ab711
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.8.0/fission-core-1.8.0.tgz
+    version: 1.8.0
+  - apiVersion: v1
+    appVersion: 1.7.1
+    created: "2022-08-08T18:58:39.599929+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 471c4f075801f8a9e92bfa2dca01e2a9f703da235f507cdfbc8997fb813bd451
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.7.1/fission-core-1.7.1.tgz
+    version: 1.7.1
+  - apiVersion: v1
+    appVersion: 1.7.0
+    created: "2022-08-08T18:58:39.29527+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 5bb4c8418074848934d6389c7f394384990e80e6a10f12925258b45d89a8a527
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.7.0/fission-core-1.7.0.tgz
+    version: 1.7.0
+  - apiVersion: v1
+    appVersion: 1.7.0-rc.2
+    created: "2022-08-08T18:58:38.989185+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: c7a6e6bf2a681c6389096ed571842684f363417d4c822641d032c0c6abd33800
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.7.0-rc.2/fission-core-1.7.0-rc.2.tgz
+    version: 1.7.0-rc.2
+  - apiVersion: v1
+    appVersion: 1.7.0-rc.1
+    created: "2022-08-08T18:58:38.68008+05:30"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 9.3.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: a80a4bd29c5feafd52f6bd0587b0ea74aeaa22e1e0d4c1c4a4f2d1a49040051d
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani+1@gmail.com
+      name: Soam Vasani
+    - email: hello@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.7.0-rc.1/fission-core-1.7.0-rc.1.tgz
+    version: 1.7.0-rc.1
+  - apiVersion: v1
+    appVersion: 1.6.0
+    created: "2022-08-08T18:58:38.358778+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 2bac8917b0ca6f2da2934218a82543f8645bedc9a1b7db3ff031bbf962724adc
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.6.0/fission-core-1.6.0.tgz
+    version: 1.6.0
+  - apiVersion: v1
+    appVersion: 1.5.0
+    created: "2022-08-08T18:58:38.054208+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 4a3b57daf10dd7d59cbe51ccc9e0ff2372e719acff258dcd17c44d7f900c92ee
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.5.0/fission-core-1.5.0.tgz
+    version: 1.5.0
+  - apiVersion: v1
+    appVersion: 1.4.1
+    created: "2022-08-08T18:58:37.755186+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 91ef548ab1df70182ead0bcea05748f7db9717804c796ad18d9b2191fb39c6a8
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.4.1/fission-core-1.4.1.tgz
+    version: 1.4.1
+  - apiVersion: v1
+    appVersion: 1.4.0
+    created: "2022-08-08T18:58:37.454818+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 16c7e00bbe566256d5faba6d93ec24f3e8039af41a56770ef737adbcf11b8ec1
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.4.0/fission-core-1.4.0.tgz
+    version: 1.4.0
+  - apiVersion: v1
+    appVersion: 1.3.0
+    created: "2022-08-08T18:58:37.140489+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: b2a28479093108b238a8512f6f8f7ae9bf30bfe9e9e6df63ba1af8d670a176a7
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.3.0/fission-core-1.3.0.tgz
+    version: 1.3.0
+  - apiVersion: v1
+    appVersion: 1.2.1
+    created: "2022-08-08T18:58:36.843046+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 0e2a094fddb20713f8a88b1d81cfd0d79afc9d859603ce9e66bbe7d02c7b7531
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.2.1/fission-core-1.2.1.tgz
+    version: 1.2.1
+  - apiVersion: v1
+    appVersion: 1.2.0
+    created: "2022-08-08T18:58:36.545377+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: b5645aa972e985af9f75fbddf68977929767296d13a4b9245d7e7322e947ec62
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.2.0/fission-core-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v1
+    appVersion: 1.1.0
+    created: "2022-08-08T18:58:33.422142+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: f8da2a71f1d0820469a2934280b35fef92b49ee089e444ba420918a6dd3872f2
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.1.0/fission-core-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v1
+    appVersion: 1.0.0
+    created: "2022-08-08T18:58:33.112151+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 00f5373c7aa806356b7338a1c8708a684fa52dc454b925aaa2c6d10abb4ace57
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.0.0/fission-core-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v1
+    appVersion: 1.0-rc2
+    created: "2022-08-08T18:58:32.794897+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 46ac80f2234391fa728f1a10cecf2667fda866d11dfee6642b2dd8c8b24fcf73
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.0-rc2/fission-core-1.0-rc2.tgz
+    version: 1.0-rc2
+  - apiVersion: v1
+    appVersion: 1.0-rc1
+    created: "2022-08-08T18:58:32.496502+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 8a25a9fb712b246a62d3297eb3a0762cffe2dd44bb0f44fca6f55ec0630224bb
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-1.0-rc1/fission-core-1.0-rc1.tgz
+    version: 1.0-rc1
+  - apiVersion: v1
+    appVersion: 0.12.0
+    created: "2022-08-08T18:58:27.996997+05:30"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 95ca07594fd486a1b764974cd0ac2932809fe415e15d535caffc9da99866abf7
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.12.0/fission-core-0.12.0.tgz
+    version: 0.12.0
+  - apiVersion: v1
+    appVersion: 0.11.0
+    created: "2022-08-08T18:58:27.698695+05:30"
+    dependencies:
+    - name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 8c6fd5ad01c3b491246a28d834366267f25442e8c910cacc3bc5db60e8eff0fd
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.11.0/fission-core-0.11.0.tgz
+    version: 0.11.0
+  - apiVersion: v1
+    appVersion: 0.10.0
+    created: "2022-08-08T18:58:27.387947+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 93234d308212a16877cda4fc3af046edbb4e449b47afe5812a7149f7283ff723
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.10.0/fission-core-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v1
+    appVersion: 0.9.2
+    created: "2022-08-08T18:58:32.187361+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: d62f074a02a88a4404f32300f2f0d17571fe3cb4181f7611ce6932a37459bc76
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.9.2/fission-core-0.9.2.tgz
+    version: 0.9.2
+  - apiVersion: v1
+    appVersion: 0.9.1
+    created: "2022-08-08T18:58:31.846927+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 4b929f2633b377968db8a86e6b9edab8df419e1c4398aad9f8e8d2ec2f2272e0
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.9.1/fission-core-0.9.1.tgz
+    version: 0.9.1
+  - apiVersion: v1
+    appVersion: 0.9.0
+    created: "2022-08-08T18:58:31.565136+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 96fee39c33802065af4a26fb7ffdaa460fa1f808dcc4e28a89c04d776f7b9002
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.9.0/fission-core-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v1
+    appVersion: 0.8.0
+    created: "2022-08-08T18:58:31.279295+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 64fb1bc577e4ef8810bedf25c9fd75f484fc2e9e32fb3db47ad90088641cea95
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.8.0/fission-core-0.8.0.tgz
+    version: 0.8.0
+  - apiVersion: v1
+    appVersion: 0.7.2
+    created: "2022-08-08T18:58:30.995992+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 40801db972d6b2af579e2034c6269f80c91a41ad0dd28cbd1d4824281c71755a
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.7.2/fission-core-0.7.2.tgz
+    version: 0.7.2
+  - apiVersion: v1
+    appVersion: 0.7.1
+    created: "2022-08-08T18:58:30.707744+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 6587bdd984f43a985be34bb96f986cd0c98723a3eb7424d6e5936cf28619c062
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.7.1/fission-core-0.7.1.tgz
+    version: 0.7.1
+  - apiVersion: v1
+    appVersion: 0.7.0
+    created: "2022-08-08T18:58:30.422491+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 54e5aa51ca7fec7622a98e0d148ffef242b59887de137bba7da2e07b68a9cd6c
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.7.0/fission-core-0.7.0.tgz
+    version: 0.7.0
+  - apiVersion: v1
+    appVersion: 0.6.1
+    created: "2022-08-08T18:58:30.118701+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: f755fe2d3f49f1ff76f2d9a4985fa88767fdedef2ea4edb0253b091a6217fd87
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.6.1/fission-core-0.6.1.tgz
+    version: 0.6.1
+  - apiVersion: v1
+    appVersion: 0.6.0
+    created: "2022-08-08T18:58:29.832156+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: b44beadb71bd8caf694122edc4334120697e051e63c29ca6ce58748a64be03e1
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.6.0/fission-core-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v1
+    appVersion: 0.5.0
+    created: "2022-08-08T18:58:29.540463+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 2674ed3a01b4e68de47526a16487d8d96cb47e180bf50b52377b5270c0bdba6a
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.5.0/fission-core-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v1
+    appVersion: 0.4.1
+    created: "2022-08-08T18:58:29.24969+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: e7ab6090f7be9d8c7a0ca2f84259c24f41cf38c11bba1646f17c518af97937e7
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.4.1/fission-core-0.4.1.tgz
+    version: 0.4.1
+  - apiVersion: v1
+    appVersion: 0.4.0
+    created: "2022-08-08T18:58:28.942314+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 2098283470ae147b5a127c4953ce2f20593d0a84a307953155123a3268576483
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.4.0/fission-core-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v1
+    appVersion: 0.3.0
+    created: "2022-08-08T18:58:28.596369+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: b4e9cf826d0fa71d666ce07cb38cbaaefd91b8beb9014e15019e5bf7897147da
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.3.0/fission-core-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v1
+    appVersion: 0.3.0-rc
+    created: "2022-08-08T18:58:28.30264+05:30"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: deba282725cb397c192b93b7ee56afe1d322b13ed32426b3fc87b0dc8996a309
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-core
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-core-0.3.0-rc/fission-core-0.3.0-rc.tgz
+    version: 0.3.0-rc
+  fission-workflows:
+  - apiVersion: v1
+    appVersion: 0.6.0
+    created: "2022-08-08T18:58:42.3073+05:30"
+    description: Fission Workflows is a fast workflow engine for serverless functions
+      on Kubernetes
+    digest: 1c7572b6138b9babc1e0f83b67412c0ebaf732bf2c1c355d2e2b8b12c7d3f9a0
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    - workflows
+    - coordination
+    - orchestration
+    - function-as-a-service
+    maintainers:
+    - email: erwin@platform9.com
+      name: Erwin van Eyk
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    name: fission-workflows
+    sources:
+    - https://github.com/fission/fission-workflows
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-workflows-0.6.0/fission-workflows-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v1
+    appVersion: 0.5.0
+    created: "2022-08-08T18:58:42.009973+05:30"
+    description: Fission Workflows is a fast workflow engine for serverless functions
+      on Kubernetes
+    digest: ef5d572829b425aaf96551530c61313432369e090ccb60682599e63bd0e852bb
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    - workflows
+    - coordination
+    - orchestration
+    - function-as-a-service
+    maintainers:
+    - email: erwin@platform9.com
+      name: Erwin van Eyk
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    name: fission-workflows
+    sources:
+    - https://github.com/fission/fission-workflows
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-workflows-0.5.0/fission-workflows-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v1
+    appVersion: 0.4.0
+    created: "2022-08-08T18:58:41.707356+05:30"
+    description: Fission Workflows is a fast workflow engine for serverless functions
+      on Kubernetes
+    digest: 7273cf3897be961eafd4005cad1477fe061b144a84ef2ed9398c271a60b31511
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    - workflows
+    - coordination
+    - orchestration
+    - function-as-a-service
+    maintainers:
+    - email: erwin@platform9.com
+      name: Erwin van Eyk
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    name: fission-workflows
+    sources:
+    - https://github.com/fission/fission-workflows
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-workflows-0.4.0/fission-workflows-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v1
+    appVersion: 0.3.0
+    created: "2022-08-08T18:58:41.416789+05:30"
+    description: Fission Workflows is a fast workflow engine for serverless functions
+      on Kubernetes
+    digest: 7ef59e3a9398ff2be6c32628646a0bf10fc38747ae108d83efe8352ecbd0d43a
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    - workflows
+    - coordination
+    - orchestration
+    - function-as-a-service
+    maintainers:
+    - email: erwin@platform9.com
+      name: Erwin van Eyk
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    name: fission-workflows
+    sources:
+    - https://github.com/fission/fission-workflows
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-workflows-0.3.0/fission-workflows-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v1
+    appVersion: 0.2.0
+    created: "2022-08-08T18:58:41.117033+05:30"
+    description: Fission Workflows is a fast workflow engine for serverless functions
+      on Kubernetes
+    digest: 4d33918b94689277f7da9c6dd7c4fed73c47479fa88b46938d93fc8335908d20
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    - workflows
+    - coordination
+    - orchestration
+    - function-as-a-service
+    maintainers:
+    - email: erwin@platform9.com
+      name: Erwin van Eyk
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    name: fission-workflows
+    sources:
+    - https://github.com/fission/fission-workflows
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-workflows-0.2.0/fission-workflows-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v1
+    appVersion: 0.1.0
+    created: "2022-08-08T18:58:40.815407+05:30"
+    description: Fission Workflows is a fast workflow engine for serverless functions
+      on Kubernetes
+    digest: c3b3d3304c94da2393564eb03329c24e2857581297c1f10dd447a9767cddf6ce
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    - workflows
+    - coordination
+    - orchestration
+    maintainers:
+    - email: erwin@platform9.com
+      name: Erwin van Eyk
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    name: fission-workflows
+    sources:
+    - https://github.com/fission/fission-workflows
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-workflows-0.1.0/fission-workflows-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-08-08T18:58:42.308466+05:30"
