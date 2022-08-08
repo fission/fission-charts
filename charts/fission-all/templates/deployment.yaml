@@ -1,5 +1,78 @@
+{{ if .Values.openshift }}
+
+# For openshift
+
 ---
-{{- if .Values.createNamespace }}
+apiVersion: v1
+kind: ProjectRequest
+metadata:
+  name: fission
+  labels:
+    name: fission
+
+---
+apiVersion: v1
+kind: ProjectRequest
+metadata:
+  name: {{ .Values.functionNamespace }}
+  labels:
+    name: fission-function
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fission-admin
+  namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: v1
+kind: ClusterRole
+metadata:
+  name: fission:fission-admin
+rules:
+- apiGroups:
+  - extensions
+  attributeRestrictions: null
+  resources:
+  - deployments
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - ""
+  attributeRestrictions: null
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - update
+
+---
+apiVersion: v1
+groupNames: null
+kind: RoleBinding
+metadata:
+  name: fission:fission-admin
+  namespace: {{ .Values.functionNamespace }}
+roleRef:
+  name: fission:fission-admin
+subjects:
+- kind: ServiceAccount
+  name: fission-admin
+  namespace: {{ .Release.Namespace }}
+userNames:
+- system:serviceaccount:fission:fission-admin
+
+{{ else }}
+
+# For all environments except openshift
+
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -7,9 +80,6 @@ metadata:
   labels:
     name: fission-function
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    {{- if .Values.enableIstio }}
-    istio-injection: enabled
-    {{- end }}
 
 ---
 apiVersion: v1
@@ -19,40 +89,6 @@ metadata:
   labels:
     name: fission-builder
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    {{- if .Values.enableIstio }}
-    istio-injection: enabled
-    {{- end }}
-{{- end }}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: secret-configmap-getter
-rules:
-- apiGroups:
-  - '*'
-  resources:
-  - secrets
-  - configmaps
-  verbs:
-  - get
-  - watch
-  - list
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: package-getter
-rules:
-- apiGroups:
-  - '*'
-  resources:
-  - packages
-  verbs:
-  - get
-  - watch
-  - list
 
 ---
 apiVersion: v1
@@ -77,10 +113,25 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 
 ---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: fission-function-admin
+  namespace: {{ .Values.functionNamespace }}
+subjects:
+  - kind: ServiceAccount
+    name: fission-svc
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: admin
+  apiGroup: rbac.authorization.k8s.io
+
+---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: fission-crd
+  name: fission-tpr
 subjects:
 - kind: ServiceAccount
   name: fission-svc
@@ -96,6 +147,21 @@ kind: ServiceAccount
 metadata:
   name: fission-fetcher
   namespace: {{ .Values.functionNamespace }}
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: fission-fetcher-tpr
+subjects:
+- kind: ServiceAccount
+  name: fission-fetcher
+  namespace: {{ .Values.functionNamespace }}
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -104,13 +170,20 @@ metadata:
   namespace: {{ .Values.builderNamespace }}
 
 ---
-apiVersion: v1
-kind: ConfigMap
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: feature-config
-  namespace: {{ .Release.Namespace }}
-data:
-  "config.yaml": {{ include "config" . | b64enc }}
+  name: fission-builder-tpr
+subjects:
+- kind: ServiceAccount
+  name: fission-builder
+  namespace: {{ .Values.builderNamespace }}
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+
+{{ end }}
 
 ---
 apiVersion: extensions/v1beta1
@@ -125,43 +198,15 @@ spec:
     metadata:
       labels:
         svc: controller
-        application: fission-api
     spec:
       containers:
       - name: controller
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--controllerPort", "8888"]
-        env:
-          - name: FISSION_FUNCTION_NAMESPACE
-            value: "{{ .Values.functionNamespace }}"
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-        readinessProbe:
-          httpGet:
-            path: "/healthz"
-            port: 8888
-          initialDelaySeconds: 1
-          periodSeconds: 1
-          failureThreshold: 30
-        livenessProbe:
-          httpGet:
-            path: "/healthz"
-            port: 8888
-          initialDelaySeconds: 35
-          periodSeconds: 5
-        volumeMounts:
-        - name: config-volume
-          mountPath: /etc/config/config.yaml
-          subPath: config.yaml
       serviceAccount: fission-svc
-      volumes:
-      - name: config-volume
-        configMap:
-          name: feature-config
+
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -174,65 +219,23 @@ spec:
   template:
     metadata:
       labels:
-        application: fission-router
         svc: router
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: "/metrics"
-        prometheus.io/port: "8080"
     spec:
       containers:
       - name: router
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--routerPort", "8888", "--executorUrl", "http://executor.{{ .Release.Namespace }}"]
-        env:
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: ROUTER_ROUND_TRIP_TIMEOUT
-            value: {{ .Values.routerRoundTripTimeout | default "50ms" | quote }}
-          - name: ROUTER_ROUNDTRIP_TIMEOUT_EXPONENT
-            value: {{ .Values.routerRoundTripTimeoutExponent | default 2 | quote }}
-          - name: ROUTER_ROUND_TRIP_KEEP_ALIVE_TIME
-            value: {{ .Values.routerRoundTripKeepAliveTime | default "30s" | quote }}
-          - name: ROUTER_ROUND_TRIP_MAX_RETRIES
-            value: {{ .Values.routerRoundTripMaxRetries | default 10 | quote }}
-          - name: ROUTER_ROUND_TRIP_SVC_ADDRESS_MAX_RETRIES
-            value: {{ .Values.routerRoundTripSvcAddressMaxRetries | default 5 | quote }}
-          - name: ROUTER_ROUND_TRIP_SVC_ADDRESS_UPDATE_TIMEOUT
-            value: {{ .Values.routerRoundTripSvcAddressUpdateTimeout | default 30 | quote }}
-          - name: DEBUG_ENV
-            value: {{ .Values.debugEnv | quote }}
-        readinessProbe:
-          httpGet:
-            path: "/router-healthz"
-            port: 8888
-          initialDelaySeconds: 1
-          periodSeconds: 1
-          failureThreshold: 30
-        livenessProbe:
-          httpGet:
-            path: "/router-healthz"
-            port: 8888
-          initialDelaySeconds: 35
-          periodSeconds: 5
-        ports:
-        - containerPort: 8080
-          name: metrics
-        - containerPort: 8888
-          name: http
+        args: ["--routerPort", "8888", "--poolmgrUrl", "http://poolmgr.{{ .Release.Namespace }}"]
       serviceAccount: fission-svc
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: executor
+  name: poolmgr
   labels:
-    svc: executor
+    svc: poolmgr
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   type: ClusterIP
@@ -240,13 +243,13 @@ spec:
   - port: 80
     targetPort: 8888
   selector:
-    svc: executor
+    svc: poolmgr
 
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: executor
+  name: poolmgr
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -254,18 +257,14 @@ spec:
   template:
     metadata:
       labels:
-        svc: executor
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: "/metrics"
-        prometheus.io/port: "8080"
+        svc: poolmgr
     spec:
       containers:
-      - name: executor
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+      - name: poolmgr
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--executorPort", "8888", "--namespace", "{{ .Values.functionNamespace }}", "--fission-namespace", "{{ .Release.Namespace }}"]
+        args: ["--poolmgrPort", "8888", "--namespace", "{{ .Values.functionNamespace }}", "--fission-namespace", "{{ .Release.Namespace }}"]
         env:
         - name: FETCHER_IMAGE
           value: "{{ .Values.fetcherImage }}:{{ .Values.fetcherImageTag }}"
@@ -273,35 +272,23 @@ spec:
           value: "{{ .Values.pullPolicy }}"
         - name: RUNTIME_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
-        - name: ENABLE_ISTIO
-          value: "{{ .Values.enableIstio }}"
-        - name: FETCHER_MINCPU
-          value: {{ .Values.fetcherMinCpu | default "10m" | quote }}
-        - name: FETCHER_MINMEM
-          value: {{ .Values.fetcherMinMem | default "16Mi" | quote }}
-        - name: FETCHER_MAXCPU
-          value: {{ .Values.fetcherMaxCpu | default "40m" | quote }}
-        - name: FETCHER_MAXMEM
-          value: {{ .Values.fetcherMaxMem | default "128Mi" | quote }}          
-        readinessProbe:
-          httpGet:
-            path: "/healthz"
-            port: 8888
-          initialDelaySeconds: 1
-          periodSeconds: 1
-          failureThreshold: 30
-        livenessProbe:
-          httpGet:
-            path: "/healthz"
-            port: 8888
-          initialDelaySeconds: 35
-          periodSeconds: 5
-        ports:
-        - containerPort: 8080
-          name: metrics
-        - containerPort: 8888
-          name: http
       serviceAccount: fission-svc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: buildermgr
+  labels:
+    svc: buildermgr
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8889
+  selector:
+    svc: buildermgr
 
 ---
 apiVersion: extensions/v1beta1
@@ -319,17 +306,15 @@ spec:
     spec:
       containers:
       - name: buildermgr
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--builderMgr", "--storageSvcUrl", "http://storagesvc.{{ .Release.Namespace }}", "--envbuilder-namespace", "{{ .Values.builderNamespace }}"]
+        args: ["--builderMgrPort", "8889", "--storageSvcUrl", "http://storagesvc.{{ .Release.Namespace }}", "--envbuilder-namespace", "{{ .Values.builderNamespace }}"]
         env:
         - name: FETCHER_IMAGE
           value: "{{ .Values.fetcherImage }}:{{ .Values.fetcherImageTag }}"
         - name: FETCHER_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
-        - name: ENABLE_ISTIO
-          value: "{{ .Values.enableIstio }}"
       serviceAccount: fission-svc
 
 ---
@@ -348,10 +333,10 @@ spec:
     spec:
       containers:
       - name: kubewatcher
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--kubewatcher", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
+        args: ["--kubewatcher"]
       serviceAccount: fission-svc
 
 ---
@@ -386,7 +371,7 @@ spec:
     spec:
       containers:
       - name: influxdb
-        image: fission/influxdb
+        image: tutum/influxdb
         env:
           - name: PRE_CREATE_DB
             value: fissionFunctionLog
@@ -402,48 +387,6 @@ spec:
                 key: password
 
 ---
-{{- if .Values.heapster }}
-apiVersion: v1
-kind: Service
-metadata:
-  name: heapster
-  namespace: kube-system
-  labels:
-    svc: heapster
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    kubernetes.io/cluster-service: 'true'
-    kubernetes.io/name: heapster
-spec:
-  type: ClusterIP 
-  ports:
-  - port: 80
-    targetPort: 8082
-  selector:
-    svc: heapster
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: heapster
-  namespace: kube-system
-  labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        svc: heapster
-    spec:
-      containers:
-      - name: heapster
-        image: gcr.io/google_containers/heapster-amd64:v1.5.0
-        command: 
-        - /heapster
-        - --source=kubernetes:https://kubernetes.default
-      serviceAccount: {{ .Release.Namespace }}/fission-svc
----      
-{{- end -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -457,8 +400,27 @@ spec:
         svc: logger
     spec:
       containers:
+        - name: logger
+          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          command: ["/fission-bundle"]
+          args: ["--logger"]
+          volumeMounts:
+            - name: container-log
+              mountPath: /var/log/containers
+              readOnly: true
+            - name: docker-log
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+            - name: fission-log
+              mountPath: /var/log/fission
+              readOnly: false
+          ports:
+            - containerPort: 1234
+              hostPort: 1234
+              protocol: TCP
         - name: fluentd
-          image: "{{ .Values.repository }}/{{ .Values.logger.fluentdImage }}:{{ .Values.logger.fluentdImageTag }}"
+          image: {{ .Values.logger.fluentdImage }}
           imagePullPolicy: {{ .Values.pullPolicy }}
           env:
             - name: INFLUXDB_ADDRESS
@@ -477,11 +439,9 @@ spec:
                 secretKeyRef:
                   name: influxdb
                   key: password
-            - name: FLUENTD_PATH
-              value: /var/log/containers/*{{.Values.functionNamespace}}*.log
           volumeMounts:
             - name: container-log
-              mountPath: /var/log/
+              mountPath: /var/log/containers
               readOnly: true
             - name: docker-log
               mountPath: /var/lib/docker/containers
@@ -493,15 +453,14 @@ spec:
       volumes:
         - name: container-log
           hostPath:
-              path: /var/log/
+              path: /var/log/containers
         - name: docker-log
           hostPath:
               path: /var/lib/docker/containers
         - name: fission-log
           hostPath:
               path: /var/log/fission
-  updateStrategy:
-    type: RollingUpdate
+
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -518,10 +477,10 @@ spec:
     spec:
       containers:
       - name: timer
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--timer", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
+        args: ["--timer"]
       serviceAccount: fission-svc
 
 #
@@ -545,14 +504,13 @@ spec:
 #    spec:
 #      containers:
 #      - name: nginx
-#        image: {{ .Values.repository }}/{{ .Values.fissionUiImage }}
+#        image: {{ .Values.fissionUiImage }}
 #      - name: kubectl-proxy
-#        image: {{ .Values.repository }}/lachlanevenson/k8s-kubectl
+#        image: lachlanevenson/k8s-kubectl
 #        args: ["proxy", "--port", "8001", "--address", "127.0.0.1"]
 #      serviceAccount: fission-svc
 
 ---
-{{- if .Values.nats.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -569,21 +527,17 @@ spec:
       containers:
       - name: nats-streaming
         image: nats-streaming
-        args: [
-          "--cluster_id", "{{ .Values.nats.clusterID }}",
-          "--auth", "{{ .Values.nats.authToken }}",
-          "--max_channels", "0"
-        ]
-
+        args: ["--cluster_id", "{{ .Values.nats.clusterID }}", "--auth", "{{ .Values.nats.authToken }}"]
         ports:
         - containerPort: 4222
           hostPort: 4222
           protocol: TCP
+
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: mqtrigger-nats-streaming
+  name: mqtrigger
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -592,36 +546,6 @@ spec:
     metadata:
       labels:
         svc: mqtrigger
-        messagequeue: nats-streaming
-    spec:
-      containers:
-      - name: mqtrigger
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
-        imagePullPolicy: {{ .Values.pullPolicy }}
-        command: ["/fission-bundle"]
-        args: ["--mqt", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
-        env:
-        - name: MESSAGE_QUEUE_TYPE
-          value: nats-streaming
-        - name: MESSAGE_QUEUE_URL
-          value: nats://{{ .Values.nats.authToken }}@nats-streaming:4222
-      serviceAccount: fission-svc
-{{- end }}
----
-{{- if .Values.kafka.enabled }}
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: mqtrigger-kafka
-  labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        svc: mqtrigger
-        messagequeue: kafka
     spec:
       containers:
       - name: mqtrigger
@@ -631,45 +555,11 @@ spec:
         args: ["--mqt"]
         env:
         - name: MESSAGE_QUEUE_TYPE
-          value: kafka
+          value: nats-streaming
         - name: MESSAGE_QUEUE_URL
-          value: "{{.Values.kafka.brokers}}"
+          value: nats://{{ .Values.nats.authToken }}@nats-streaming:4222
       serviceAccount: fission-svc
-{{- end }}
----
-{{- if .Values.azureStorageQueue.enabled }}
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: mqtrigger-azure-storage-queue
-  labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        svc: mqtrigger
-        messagequeue: azure-storage-queue
-    spec:
-      containers:
-      - name: mqtrigger
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-        imagePullPolicy: {{ .Values.pullPolicy }}
-        command: ["/fission-bundle"]
-        args: ["--mqt", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
-        env:
-        - name: MESSAGE_QUEUE_TYPE
-          value: azure-storage-queue
-        - name: AZURE_STORAGE_ACCOUNT_NAME
-          value: {{ required "An Azure storage account name is required." .Values.azureStorageQueue.accountName }}
-        - name: AZURE_STORAGE_ACCOUNT_KEY
-          valueFrom:
-            secretKeyRef:
-              name: azure-storage-account-key
-              key: key
-      serviceAccount: fission-svc
-{{- end }}
+
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -683,37 +573,20 @@ spec:
     metadata:
       labels:
         svc: storagesvc
-        application: fission-storage
     spec:
       containers:
       - name: storagesvc
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--storageServicePort", "8000", "--filePath", "/fission"]
-        env:
-        - name: PRUNE_INTERVAL
-          value: "{{.Values.pruneInterval}}"
         volumeMounts:
         - name: fission-storage
           mountPath: /fission
-        readinessProbe:
-          httpGet:
-            path: "/healthz"
-            port: 8000
-          initialDelaySeconds: 1
-          periodSeconds: 1
-          failureThreshold: 30
-        livenessProbe:
-          httpGet:
-            path: "/healthz"
-            port: 8000
-          initialDelaySeconds: 35
-          periodSeconds: 5
       serviceAccount: fission-svc
       volumes:
       - name: fission-storage
-      {{- if .Values.persistence.enabled }}
+      {{- if .Values.persistence.enabled }}   
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default "fission-storage-pvc" }}
       {{- else }}
