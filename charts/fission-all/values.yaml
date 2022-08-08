@@ -9,6 +9,9 @@ serviceType: ClusterIP
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP.
 routerServiceType: LoadBalancer
 
+## Image base repository
+repository: index.docker.io
+
 ## Fission image repository
 image: fission/fission-bundle
 
@@ -16,13 +19,13 @@ image: fission/fission-bundle
 pullPolicy: IfNotPresent
 
 ## Fission image version
-imageTag: 0.9.2
+imageTag: 1.0.0
 
 ## Fission fetcher repository
 fetcherImage: fission/fetcher
 
 ## Fission fetcher image version
-fetcherImageTag: 0.9.2
+fetcherImageTag: 1.0.0
 
 ## Port at which Fission controller service should be exposed
 controllerPort: 31313
@@ -32,6 +35,9 @@ routerPort: 31314
 
 ## Port at which NATS streaming service should be exposed
 natsStreamingPort: 31316
+
+## Set to false if you create the namespaces manually
+createNamespace: true
 
 ## Namespace in which to run fission functions (this is different from
 ## the release namespace)
@@ -48,27 +54,43 @@ enableIstio: false
 logger:
   influxdbAdmin: "admin"
   fluentdImage: fission/fluentd
-  fluentdImageTag: 0.9.2
-
-## Type of Queue you would like to use
-## currently supports nats-streaming, azure-storage-queue
-messageQueue:
-  type: nats-streaming
+  fluentdImageTag: 1.0.0
 
 ## Message queue trigger config
-### NATS Streaming
+### NATS Streaming, enabled by default
 nats:
+  enabled: true
   authToken: "defaultFissionAuthToken"
   clusterID: "fissionMQTrigger"
 
-## Required if messageQueue type is azure-storage-queue
+## Azure-storage-queue: enable and configure the details
 azureStorageQueue:
+  enabled: false
   key: ""
   accountName: ""
+  
+## Kafka: enable and configure the details
+kafka:
+  enabled: false
+  brokers: 'broker.kafka:9092'
+  ## version of Kafka broker
+  ## Must be a string in the format "major.minor.veryMinor.patch"
+  ## Should be >= 0.11.0.0 to enable Kafka record headers support
+  # version: "0.11.0.0"
 
 ## Persist data to a persistent volume.
 persistence:
+  ## If true, fission will create/use a Persistent Volume Claim
+  ## If false, use emptyDir
+  ##
   enabled: true
+
+  ## A manually managed Persistent Volume Claim name
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  ##
+  # existingClaim:
+
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
@@ -76,6 +98,7 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+
   accessMode: ReadWriteOnce
   size: 8Gi
 
@@ -83,6 +106,8 @@ persistence:
 ## false to disable analytics.
 analytics: true
 
+## Internally used for generating an analytics job for non-helm installs
+analyticsNonHelmInstall: false
 
 ## Enable Heapster only in clusters where heapster does not exist already
 heapster: false
@@ -94,3 +119,20 @@ pruneInterval: 60
 
 ## Fission pre-install/pre-upgrade checks live in this image
 preUpgradeChecksImage: fission/pre-upgrade-checks
+
+## if there are any pod specialization errors when a function is triggered and this flag is set to true, the error
+## summary is returned as part of http response
+debugEnv: true
+
+
+## set this flag to true if prometheus needs to be deployed along with fission
+prometheusDeploy: true
+
+## set this flag to false if you dont need canary deployment feature
+canaryDeployment:
+  enabled: true
+
+
+# Use these flags to enable opentracing, the variable is endpoint of Jaeger collector in the format shown below
+#traceCollectorEndpoint: "http://jaeger-collector.jaeger.svc:14268/api/traces?format=jaeger.thrift"
+#traceSamplingRate: 0.75
