@@ -6,14 +6,18 @@ metadata:
     svc: router
     application: fission-router
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+{{- if .Values.router.svcAnnotations }}
+  annotations:
+{{ toYaml .Values.router.svcAnnotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.routerServiceType }}
   ports:
   - port: 80
     targetPort: 8888
-{{ if eq .Values.routerServiceType "NodePort" }}
+{{- if eq .Values.routerServiceType "NodePort" }}
     nodePort: {{ .Values.routerPort }}
-{{ end }}
+{{- end }}
   selector:
     svc: router
 
@@ -31,14 +35,14 @@ spec:
   ports:
   - port: 80
     targetPort: 8888
-{{ if eq .Values.serviceType "NodePort" }}
+{{- if eq .Values.serviceType "NodePort" }}
     nodePort: {{ .Values.controllerPort }}
-{{ end }}
+{{- end }}
   selector:
     svc: controller
 
+{{- if and .Values.nats.enabled (not .Values.nats.external) }}
 ---
-{{- if .Values.nats.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -51,9 +55,9 @@ spec:
   ports:
   - port: 4222
     targetPort: 4222
-{{ if eq .Values.serviceType "NodePort" }}
+{{- if eq .Values.serviceType "NodePort" }}
     nodePort: {{ .Values.natsStreamingPort }}
-{{ end }}
+{{- end }}
   selector:
     svc: nats-streaming
 {{- end }}
@@ -73,3 +77,19 @@ spec:
     targetPort: 8000
   selector:
     svc: storagesvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: executor
+  labels:
+    svc: executor
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8888
+  selector:
+    svc: executor
