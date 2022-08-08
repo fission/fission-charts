@@ -72,6 +72,7 @@ rules:
   - services
   - serviceaccounts
   - namespaces
+  - events
   verbs:
   - create
   - delete
@@ -147,6 +148,13 @@ rules:
   - triggerauthentications/status
   verbs:
   - '*'
+- apiGroups:
+  - metrics.k8s.io
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
 
 
 ---
@@ -204,8 +212,17 @@ rules:
   resources:
   - configmaps
   - secrets
+  - pods
   verbs:
   - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - '*'
 - apiGroups:
   - fission.io
   resources:
@@ -1078,18 +1095,50 @@ spec:
           value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
+        - name: CONNECTOR_IMAGE_PULL_POLICY
+          value: "{{ .Values.pullPolicy }}"
         - name: KAFKA_IMAGE
           value: "{{ .Values.mqt_keda.connector_images.kafka.image }}:{{ .Values.mqt_keda.connector_images.kafka.tag }}"
         - name: RABBITMQ_IMAGE
           value: "{{ .Values.mqt_keda.connector_images.rabbitmq.image }}:{{ .Values.mqt_keda.connector_images.rabbitmq.tag }}"
         - name: AWS-KINESIS-STREAM_IMAGE
-          value: "{{ .Values.mqt_keda.connector_images.awskinesis.image }}:{{ .Values.mqt_keda.connector_images.awskinesis.tag }}"           
+          value: "{{ .Values.mqt_keda.connector_images.awskinesis.image }}:{{ .Values.mqt_keda.connector_images.awskinesis.tag }}"
         - name: AWS-SQS-QUEUE_IMAGE
           value: "{{ .Values.mqt_keda.connector_images.aws_sqs.image }}:{{ .Values.mqt_keda.connector_images.aws_sqs.tag }}"
         - name: STAN_IMAGE
-          value: "{{ .Values.mqt_keda.connector_images.nats_steaming.image }}:{{ .Values.mqt_keda.connector_images.nats_steaming.tag }}"          
+          value: "{{ .Values.mqt_keda.connector_images.nats_steaming.image }}:{{ .Values.mqt_keda.connector_images.nats_steaming.tag }}"
+        - name: GCP-PUB-SUB_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.gcp_pub_sub.image }}:{{ .Values.mqt_keda.connector_images.gcp_pub_sub.tag }}"
       serviceAccountName: fission-svc
 {{- if .Values.extraCoreComponentPodConfig }}
 {{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 {{- end }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Values.functionNamespace }}
+  name: event-fetcher
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["events"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: fission-fetcher-pod-reader
+  namespace: {{ .Values.functionNamespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: event-fetcher
+subjects:
+- kind: ServiceAccount
+  name: fission-fetcher
+  namespace: {{ .Values.functionNamespace }}
