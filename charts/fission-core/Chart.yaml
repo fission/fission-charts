@@ -1,14 +1,20 @@
-apiVersion: v1
-appVersion: 1.12.0
+apiVersion: v2
+appVersion: 1.13.0
+dependencies:
+- condition: prometheus.enabled
+  name: prometheus
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 13.2.1
 description: Fission is a fast serverless framework for Kubernetes.
-home: http://fission.io/
+home: https://fission.io/
 keywords:
 - fission
 - serverless
 maintainers:
-- email: soamvasani+1@gmail.com
-  name: Soam Vasani
-- email: hello@tachingchen.com
-  name: Ta Ching Chen
+- email: vishal@infracloud.io
+  name: Vishal Biyani
+- email: sanket@infracloud.io
+  name: Sanket Sudake
 name: fission-core
-version: 1.12.0
+type: application
+version: 1.13.0
