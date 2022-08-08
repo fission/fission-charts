@@ -3,10 +3,17 @@
 #
 
 # Bundle image
-bundleImage: fission/fission-workflows-bundle:0.1.0
+bundleImage: fission/fission-workflows-bundle
 
 # Image of the Fission environment for Fission Workflows
-envImage: fission/workflow-env:0.1.0
+envImage: fission/workflow-env
+
+# Image of the Fission build environment for Fission Workflows
+buildEnvImage: fission/workflow-build-env
+
+tag: 0.2.0
+
+pullPolicy: IfNotPresent
 
 # Deploy optional Workflow api-server?
 apiserver: true
@@ -14,11 +21,13 @@ apiserver: true
 # Fission configuration
 fnenv:
   fission:
-    controller: http://controller.fission
-    poolmgr: http://poolmgr.fission
+    ns: fission
+    controller: http://controller
+    executor: http://executor
 
 # Message queue config
 nats:
   authToken: defaultFissionAuthToken
   cluster: fissionMQTrigger
-  location: nats-streaming:4222
+  location: nats-streaming
+  port: 4222
