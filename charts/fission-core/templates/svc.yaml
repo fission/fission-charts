@@ -4,13 +4,14 @@ metadata:
   name: router
   labels:
     svc: router
+    application: fission-router
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.routerServiceType }}
   ports:
   - port: 80
     targetPort: 8888
-{{ if eq .Values.serviceType "NodePort" }}
+{{ if eq .Values.routerServiceType "NodePort" }}
     nodePort: {{ .Values.routerPort }}
 {{ end }}
   selector:
@@ -23,6 +24,7 @@ metadata:
   name: controller
   labels:
     svc: controller
+    application: fission-api
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   type: {{ .Values.serviceType }}

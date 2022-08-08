@@ -3,14 +3,17 @@
 #
 
 ## Kubernetes configuration
-## For minikube, set this to NodePort, elsewhere use LoadBalancer.
-serviceType: LoadBalancer
+## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP.
+serviceType: ClusterIP
+
+## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP.
+routerServiceType: LoadBalancer
 
 ## Fission image repository
 image: fission/fission-bundle
 
 ## Fission image version
-imageTag: 0.5.0
+imageTag: 0.6.0
 
 ## Image pull policy
 pullPolicy: IfNotPresent
@@ -19,7 +22,7 @@ pullPolicy: IfNotPresent
 fetcherImage: fission/fetcher
 
 ## Fission fetcher image version
-fetcherImageTag: 0.5.0
+fetcherImageTag: 0.6.0
 
 ## Port at which Fission controller service should be exposed
 controllerPort: 31313
@@ -34,6 +37,9 @@ functionNamespace: fission-function
 ## Namespace in which to run fission builders (this is different from
 ## the release namespace)
 builderNamespace: fission-builder
+
+## Enable istio integration
+enableIstio: false
 
 ## Persist data to a persistent volume.
 persistence:
