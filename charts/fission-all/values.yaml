@@ -9,9 +9,6 @@ serviceType: ClusterIP
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP.
 routerServiceType: LoadBalancer
 
-## Image base repository
-repository: index.docker.io
-
 ## Fission image repository
 image: fission/fission-bundle
 
@@ -19,13 +16,13 @@ image: fission/fission-bundle
 pullPolicy: IfNotPresent
 
 ## Fission image version
-imageTag: 1.0-rc1
+imageTag: 0.11.0
 
 ## Fission fetcher repository
 fetcherImage: fission/fetcher
 
 ## Fission fetcher image version
-fetcherImageTag: 1.0-rc1
+fetcherImageTag: 0.11.0
 
 ## Port at which Fission controller service should be exposed
 controllerPort: 31313
@@ -54,7 +51,7 @@ enableIstio: false
 logger:
   influxdbAdmin: "admin"
   fluentdImage: fission/fluentd
-  fluentdImageTag: 1.0-rc1
+  fluentdImageTag: 0.11.0
 
 ## Message queue trigger config
 ### NATS Streaming, enabled by default
@@ -91,8 +88,6 @@ persistence:
 ## false to disable analytics.
 analytics: true
 
-## Internally used for generating an analytics job for non-helm installs
-analyticsNonHelmInstall: false
 
 ## Enable Heapster only in clusters where heapster does not exist already
 heapster: false
@@ -104,14 +99,3 @@ pruneInterval: 60
 
 ## Fission pre-install/pre-upgrade checks live in this image
 preUpgradeChecksImage: fission/pre-upgrade-checks
-
-## if there are any pod specialization errors when a function is triggered and this flag is set to true, the error
-## summary is returned as part of http response
-debugEnv: true
-
-## set this flag to true if prometheus needs to be deployed along with fission
-prometheusDeploy: true
-
-## set this flag to false if you dont need canary deployment feature
-canaryDeployment:
-  enabled: true
