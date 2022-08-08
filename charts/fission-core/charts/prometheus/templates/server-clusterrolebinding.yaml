@@ -1,10 +1,13 @@
-{{- if .Values.server.enabled -}}
 {{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
   labels:
-    {{- include "prometheus.server.labels" . | nindent 4 }}
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
   name: {{ template "prometheus.server.fullname" . }}
 subjects:
   - kind: ServiceAccount
@@ -14,5 +17,4 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: {{ template "prometheus.server.fullname" . }}
-{{- end }}
 {{- end }}
