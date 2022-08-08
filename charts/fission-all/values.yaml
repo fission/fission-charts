@@ -20,7 +20,7 @@ image: fission/fission-bundle
 pullPolicy: IfNotPresent
 
 ## Fission image version
-imageTag: 1.8.0
+imageTag: 1.9.0
 
 ## Port at which Fission controller service should be exposed
 controllerPort: 31313
@@ -29,6 +29,7 @@ controllerPort: 31313
 routerPort: 31314
 
 ## Port at which NATS streaming service should be exposed
+## (only if nats enabled and not external)
 natsStreamingPort: 31316
 
 ## Set to false if you create the namespaces manually
@@ -49,7 +50,7 @@ fetcher:
   ## Fetcher repository
   image: fission/fetcher
   ## Fetcher image version
-  imageTag: 1.8.0
+  imageTag: 1.9.0
   
   ## Fetcher is only for to downloading or uploading archive.
   ## Normally, you don't need to change the value here, unless necessary.
@@ -75,6 +76,17 @@ logger:
   ## the containers are limited to write hostPath volume. Hence, we have to enable
   ## security context and set privileged to true.
   enableSecurityContext: false
+
+  ## Enable PodSecurityPolicies to allow privileged container
+  ## Only required in some clusters and when enableSecurityContext is true
+  podSecurityPolicy:
+    enabled: false
+   
+    ## Configure additional capabilities
+    additionalCapabilities:
+    # example values for linkerd
+    #- NET_RAW
+    #- NET_ADMIN
 
 executor:
   adoptExistingResources: false
@@ -131,9 +143,27 @@ router:
 ## Message queue trigger config
 ### NATS Streaming, enabled by default
 nats:
+  # whether or not to use NATS
   enabled: true
+
+  # if true, don't install NATS, but
+  external: false
+
+  # Address of NATS server (domain:port)
+  # change from default for external NATS
+  hostaddress: 'nats-streaming:4222'
+
+  # Authorization token to use with NATS
   authToken: "defaultFissionAuthToken"
+
+  # NATS streaming clusterID
   clusterID: "fissionMQTrigger"
+
+  # Client name registered with NATS streaming 
+  clientID: "fission"
+
+  # Queue group registered with NATS streaming 
+  queueGroup: "fission-messageQueueNatsTrigger"
 
 ## Azure-storage-queue: enable and configure the details
 azureStorageQueue:
