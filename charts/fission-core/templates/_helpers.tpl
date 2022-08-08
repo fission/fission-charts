@@ -42,3 +42,29 @@ This template generates the image name for the deployment depending on the value
     {{ .Values.image }}:{{ .Values.imageTag }}    
 {{- end }}
 {{- end -}}
+
+{{- define "opentelemtry.envs" }}
+- name: OTEL_EXPORTER_OTLP_ENDPOINT
+  value: "{{ .Values.openTelemetry.otlpCollectorEndpoint }}"
+- name: OTEL_EXPORTER_OTLP_INSECURE
+  value: "{{ .Values.openTelemetry.otlpInsecure }}"
+{{- if .Values.openTelemetry.otlpHeaders }}
+- name: OTEL_EXPORTER_OTLP_HEADERS
+  value: "{{ .Values.openTelemetry.otlpHeaders }}"
+{{- end }}
+- name: OTEL_TRACES_SAMPLER
+  value: "{{ .Values.openTelemetry.tracesSampler }}"
+- name: OTEL_TRACES_SAMPLER_ARG
+  value: "{{ .Values.openTelemetry.tracesSamplingRate }}"
+- name: OTEL_PROPAGATORS
+  value: "{{ .Values.openTelemetry.propagators }}"
+{{- end }}
+
+{{- define "opentracing.envs" }}
+- name: OPENTRACING_ENABLED
+  value: {{ .Values.openTracing.enabled | default false | quote }}
+- name: TRACE_JAEGER_COLLECTOR_ENDPOINT
+  value: "{{ .Values.openTracing.collectorEndpoint }}"
+- name: TRACING_SAMPLING_RATE
+  value: {{ .Values.openTracing.samplingRate | default "0.5" | quote }}
+{{- end }}
