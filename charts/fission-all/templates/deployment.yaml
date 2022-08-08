@@ -118,6 +118,8 @@ metadata:
   name: controller
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: controller
+    application: fission-api
 spec:
   replicas: 1
   template:
@@ -128,7 +130,7 @@ spec:
     spec:
       containers:
       - name: controller
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: {{ include "fission-bundleImage" . | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--controllerPort", "8888", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
@@ -168,8 +170,8 @@ spec:
       - name: config-volume
         configMap:
           name: feature-config
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 ---
 apiVersion: extensions/v1beta1
@@ -178,13 +180,15 @@ metadata:
   name: router
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: router
+    application: fission-router
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        application: fission-router
         svc: router
+        application: fission-router
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
@@ -192,7 +196,7 @@ spec:
     spec:
       containers:
       - name: router
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: {{ include "fission-bundleImage" . | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--routerPort", "8888", "--executorUrl", "http://executor.{{ .Release.Namespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
@@ -245,8 +249,8 @@ spec:
         - containerPort: 8888
           name: http
       serviceAccount: fission-svc
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 
 ---
@@ -272,6 +276,7 @@ metadata:
   name: executor
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: executor
 spec:
   replicas: 1
   template:
@@ -285,7 +290,7 @@ spec:
     spec:
       containers:
       - name: executor
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: {{ include "fission-bundleImage" . | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--executorPort", "8888", "--namespace", "{{ .Values.functionNamespace }}", "--fission-namespace", "{{ .Release.Namespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
@@ -331,8 +336,8 @@ spec:
         - containerPort: 8888
           name: http
       serviceAccount: fission-svc
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 
 ---
@@ -342,6 +347,7 @@ metadata:
   name: buildermgr
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: buildermgr
 spec:
   replicas: 1
   template:
@@ -351,7 +357,7 @@ spec:
     spec:
       containers:
       - name: buildermgr
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: {{ include "fission-bundleImage" . | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--builderMgr", "--storageSvcUrl", "http://storagesvc.{{ .Release.Namespace }}", "--envbuilder-namespace", "{{ .Values.builderNamespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
@@ -379,8 +385,8 @@ spec:
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
       serviceAccount: fission-svc
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 
 ---
@@ -390,6 +396,7 @@ metadata:
   name: kubewatcher
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: kubewatcher
 spec:
   replicas: 1
   template:
@@ -399,7 +406,7 @@ spec:
     spec:
       containers:
       - name: kubewatcher
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: {{ include "fission-bundleImage" . | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--kubewatcher", "--routerUrl", "http://router.{{ .Release.Namespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
@@ -409,8 +416,8 @@ spec:
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
       serviceAccount: fission-svc
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 
 ---
@@ -436,6 +443,7 @@ metadata:
   name: influxdb
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: influxdb
 spec:
   replicas: 1
   template:
@@ -460,8 +468,8 @@ spec:
             secretKeyRef:
               name: influxdb
               key: password
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 
 {{- if .Values.heapster }}
@@ -491,6 +499,7 @@ metadata:
   namespace: kube-system
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: heapster
 spec:
   replicas: 1
   template:
@@ -514,6 +523,7 @@ metadata:
   name: timer
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: timer
 spec:
   replicas: 1
   template:
@@ -523,7 +533,7 @@ spec:
     spec:
       containers:
       - name: timer
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: {{ include "fission-bundleImage" . | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--timer", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
@@ -531,8 +541,8 @@ spec:
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
       serviceAccount: fission-svc
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 
 #
@@ -608,8 +618,8 @@ spec:
             port: 4223
           initialDelaySeconds: 30
           periodSeconds: 5
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 ---
 apiVersion: extensions/v1beta1
@@ -618,6 +628,8 @@ metadata:
   name: mqtrigger-nats-streaming
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: mqtrigger
+    messagequeue: nats-streaming
 spec:
   replicas: 1
   template:
@@ -628,7 +640,7 @@ spec:
     spec:
       containers:
       - name: mqtrigger
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: {{ include "fission-bundleImage" . | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--mqt", "--routerUrl", "http://router.{{ .Release.Namespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
@@ -642,8 +654,8 @@ spec:
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
       serviceAccount: fission-svc
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 {{- end }}
 
@@ -655,6 +667,8 @@ metadata:
   name: mqtrigger-kafka
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: mqtrigger
+    messagequeue: kafka
 spec:
   replicas: 1
   template:
@@ -681,8 +695,8 @@ spec:
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
       serviceAccount: fission-svc
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 {{- end }}
 
@@ -694,6 +708,8 @@ metadata:
   name: mqtrigger-azure-storage-queue
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: mqtrigger
+    messagequeue: azure-storage-queue
 spec:
   replicas: 1
   template:
@@ -723,8 +739,8 @@ spec:
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
       serviceAccount: fission-svc
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
 {{- end }}
 ---
@@ -734,6 +750,8 @@ metadata:
   name: storagesvc
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: storagesvc
+    application: fission-storage
 spec:
   replicas: 1
   template:
@@ -744,7 +762,7 @@ spec:
     spec:
       containers:
       - name: storagesvc
-        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: {{ include "fission-bundleImage" . | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--storageServicePort", "8000", "--filePath", "/fission", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
@@ -783,6 +801,6 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-{{- if .Values.extraCoreComponmentPodConfig }}
-{{ toYaml .Values.extraCoreComponmentPodConfig | indent 6 -}}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
