@@ -7,7 +7,11 @@ metadata:
 {{ toYaml .Values.pushgateway.service.annotations | indent 4}}
 {{- end }}
   labels:
-    {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.pushgateway.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 {{- if .Values.pushgateway.service.labels }}
 {{ toYaml .Values.pushgateway.service.labels | indent 4}}
 {{- end }}
@@ -35,6 +39,8 @@ spec:
       protocol: TCP
       targetPort: 9091
   selector:
-    {{- include "prometheus.pushgateway.matchLabels" . | nindent 4 }}
+    app: {{ template "prometheus.name" . }}
+    component: "{{ .Values.pushgateway.name }}"
+    release: {{ .Release.Name }}
   type: "{{ .Values.pushgateway.service.type }}"
 {{- end }}
