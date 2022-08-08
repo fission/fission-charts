@@ -49,9 +49,114 @@ rules:
   resources:
   - packages
   verbs:
+  - '*'
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  verbs:
+  - '*'
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fission-cr-admin
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - pods
+  - secrets
+  - services
+  - serviceaccounts
+  - namespaces
+  - events
+  verbs:
+  - create
+  - delete
   - get
-  - watch
   - list
+  - watch
+  - patch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - deployments/scale
+  - replicasets
+  verbs:
+  - '*'
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - watch
+  - patch
+- apiGroups:
+  - fission.io
+  resources:
+  - canaryconfigs
+  - environments
+  - functions
+  - httptriggers
+  - kuberneteswatchtriggers
+  - messagequeuetriggers
+  - packages
+  - timetriggers
+  verbs:
+  - '*'
+- apiGroups:
+  - autoscaling
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - '*'
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  verbs:
+  - '*'
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["clusterroles"]
+  verbs: ["bind"]
+- apiGroups:
+  - keda.sh
+  resources:
+  - scaledjobs
+  - scaledobjects
+  - scaledjobs/finalizers
+  - scaledjobs/status
+  - triggerauthentications
+  - triggerauthentications/status
+  verbs:
+  - '*'
+- apiGroups:
+  - keda.k8s.io
+  resources:
+  - scaledjobs
+  - scaledobjects
+  - scaledjobs/finalizers
+  - scaledjobs/status
+  - triggerauthentications
+  - triggerauthentications/status
+  verbs:
+  - '*'
+- apiGroups:
+  - metrics.k8s.io
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+
 
 ---
 apiVersion: v1
@@ -86,7 +191,7 @@ subjects:
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: cluster-admin
+  name: fission-cr-admin
   apiGroup: rbac.authorization.k8s.io
 
 ---
@@ -95,10 +200,99 @@ kind: ServiceAccount
 metadata:
   name: fission-fetcher
   namespace: {{ .Values.functionNamespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: fission-fetcher
+  namespace: default
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - '*'
+- apiGroups:
+  - fission.io
+  resources:
+  - canaryconfigs
+  - environments
+  - functions
+  - httptriggers
+  - kuberneteswatchtriggers
+  - messagequeuetriggers
+  - packages
+  - timetriggers
+  verbs:
+  - '*'
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: fission-fetcher
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: fission-fetcher
+subjects:
+- kind: ServiceAccount
+  name: fission-fetcher
+  namespace: {{ .Values.functionNamespace }}
+
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  name: fission-builder
+  namespace: {{ .Values.builderNamespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: fission-builder
+  namespace: default
+rules:
+- apiGroups:
+  - fission.io
+  resources:
+  - canaryconfigs
+  - environments
+  - functions
+  - httptriggers
+  - kuberneteswatchtriggers
+  - messagequeuetriggers
+  - packages
+  - timetriggers
+  verbs:
+  - '*'
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: fission-builder
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: fission-builder
+subjects:
+- kind: ServiceAccount
   name: fission-builder
   namespace: {{ .Values.builderNamespace }}
 
@@ -141,16 +335,16 @@ spec:
         env:
         - name: FISSION_FUNCTION_NAMESPACE
           value: "{{ .Values.functionNamespace }}"
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
-        - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
+        - name: PPROF_ENABLED
+          value: {{ .Values.pprof.enabled | quote }}
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        {{- include "opentracing.envs" . | indent 8 }}
+        {{- include "opentelemtry.envs" . | indent 8 }}
         readinessProbe:
           httpGet:
             path: "/healthz"
@@ -171,6 +365,10 @@ spec:
         ports:
           - containerPort: 8888
             name: http
+        {{- if .Values.pprof.enabled }}
+          - containerPort: 6060
+            name: pprof
+        {{- end }}
       serviceAccountName: fission-svc
       volumes:
       - name: config-volume
@@ -210,19 +408,21 @@ spec:
         args: ["--executorPort", "8888", "--namespace", "{{ .Values.functionNamespace }}"]
         env:
         - name: FETCHER_IMAGE
+        {{- if eq .Values.fetcher.imageTag "" }}
+          value: "{{ .Values.fetcher.image }}"
+        {{- else }}
           value: "{{ .Values.fetcher.image }}:{{ .Values.fetcher.imageTag }}"
+        {{- end }}
         - name: FETCHER_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
         - name: RUNTIME_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
         - name: ADOPT_EXISTING_RESOURCES
           value: {{ .Values.executor.adoptExistingResources | default false | quote }}
+        - name: POD_READY_TIMEOUT
+          value: {{ .Values.executor.podReadyTimeout | default false | quote }}
         - name: ENABLE_ISTIO
           value: "{{ .Values.enableIstio }}"
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
-        - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
         - name: FETCHER_MINCPU
           value: {{ .Values.fetcher.resource.cpu.requests | quote }}
         - name: FETCHER_MINMEM
@@ -233,6 +433,10 @@ spec:
           value: {{ .Values.fetcher.resource.mem.limits | quote }}
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
+        - name: PPROF_ENABLED
+          value: {{ .Values.pprof.enabled | quote }}
+        {{- include "opentracing.envs" . | indent 8 }}
+        {{- include "opentelemtry.envs" . | indent 8 }}
         readinessProbe:
           httpGet:
             path: "/healthz"
@@ -251,6 +455,10 @@ spec:
           name: metrics
         - containerPort: 8888
           name: http
+        {{- if .Values.pprof.enabled }}
+        - containerPort: 6060
+          name: pprof
+        {{- end }}
       serviceAccountName: fission-svc
 {{- if .Values.extraCoreComponentPodConfig }}
 {{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
@@ -282,17 +490,17 @@ spec:
         args: ["--builderMgr", "--storageSvcUrl", "http://storagesvc.{{ .Release.Namespace }}", "--envbuilder-namespace", "{{ .Values.builderNamespace }}"]
         env:
         - name: FETCHER_IMAGE
+        {{- if eq .Values.fetcher.imageTag "" }}
+          value: "{{ .Values.fetcher.image }}"
+        {{- else }}
           value: "{{ .Values.fetcher.image }}:{{ .Values.fetcher.imageTag }}"
+        {{- end }}
         - name: FETCHER_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
         - name: BUILDER_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
         - name: ENABLE_ISTIO
           value: "{{ .Values.enableIstio }}"
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
-        - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
         - name: FETCHER_MINCPU
           value: {{ .Values.fetcher.resource.cpu.requests | quote }}
         - name: FETCHER_MINMEM
@@ -303,6 +511,10 @@ spec:
           value: {{ .Values.fetcher.resource.mem.limits | quote }}
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
+        - name: PPROF_ENABLED
+          value: {{ .Values.pprof.enabled | quote }}
+        {{- include "opentracing.envs" . | indent 8 }}
+        {{- include "opentelemtry.envs" . | indent 8 }}
       serviceAccountName: fission-svc
 {{- if .Values.extraCoreComponentPodConfig }}
 {{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
@@ -333,17 +545,17 @@ spec:
         command: ["/fission-bundle"]
         args: ["--kubewatcher", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
         env:
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
-        - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
+        - name: PPROF_ENABLED
+          value: {{ .Values.pprof.enabled | quote }}
+        {{- include "opentracing.envs" . | indent 8 }}
+        {{- include "opentelemtry.envs" . | indent 8 }}
       serviceAccountName: fission-svc
 {{- if .Values.extraCoreComponentPodConfig }}
 {{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
-
+{{- if .Values.influxdb.enabled }}
 ---
 apiVersion: v1
 kind: Service
@@ -380,7 +592,7 @@ spec:
     spec:
       containers:
       - name: influxdb
-        image: influxdb:1.7
+        image: {{ .Values.influxdb.image | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         env:
         - name: INFLUXDB_DB
@@ -398,7 +610,7 @@ spec:
 {{- if .Values.extraCoreComponentPodConfig }}
 {{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
-
+{{- end }}
 {{- if .Values.heapster }}
 ---
 apiVersion: v1
@@ -412,7 +624,7 @@ metadata:
     kubernetes.io/cluster-service: 'true'
     kubernetes.io/name: heapster
 spec:
-  type: ClusterIP 
+  type: ClusterIP
   ports:
   - port: 80
     targetPort: 8082
@@ -441,7 +653,7 @@ spec:
       - name: heapster
         image: gcr.io/google_containers/heapster-amd64:v1.5.0
         imagePullPolicy: {{ .Values.pullPolicy }}
-        command: 
+        command:
         - /heapster
         - --source=kubernetes:https://kubernetes.default
       serviceAccountName: {{ .Release.Namespace }}/fission-svc
@@ -473,6 +685,10 @@ spec:
         env:
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
+        - name: PPROF_ENABLED
+          value: {{ .Values.pprof.enabled | quote }}
+        {{- include "opentracing.envs" . | indent 8 }}
+        {{- include "opentelemtry.envs" . | indent 8 }}
       serviceAccountName: fission-svc
 {{- if .Values.extraCoreComponentPodConfig }}
 {{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
@@ -509,6 +725,12 @@ spec:
 {{- if .Values.nats.enabled }}
 {{- if not .Values.nats.external }}
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fission-nats-streaming
+  namespace: {{ .Release.Namespace }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -525,9 +747,10 @@ spec:
       labels:
         svc: nats-streaming
     spec:
+      serviceAccount: fission-nats-streaming
       containers:
       - name: nats-streaming
-        image: nats-streaming
+        image: {{ .Values.nats.streamingserver.image | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         args: [
           "--cluster_id", "{{ .Values.nats.clusterID }}",
@@ -599,12 +822,12 @@ spec:
         {{- else }}
           value: nats://{{ .Values.nats.hostaddress }}
         {{- end }}
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
-        - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
+        - name: PPROF_ENABLED
+          value: {{ .Values.pprof.enabled | quote }}
+        {{- include "opentracing.envs" . | indent 8 }}
+        {{- include "opentelemtry.envs" . | indent 8 }}
       serviceAccountName: fission-svc
 {{- if .Values.extraCoreComponentPodConfig }}
 {{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
@@ -635,7 +858,11 @@ spec:
     spec:
       containers:
       - name: mqtrigger
+      {{- if eq .Values.imageTag "" }}
+        image: "{{ .Values.image }}"
+      {{- else }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+      {{- end }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--mqt", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
@@ -646,23 +873,25 @@ spec:
           value: "{{.Values.kafka.brokers}}"
         - name: MESSAGE_QUEUE_KAFKA_VERSION
           value: "{{.Values.kafka.version}}"
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
-        - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
+        - name: PPROF_ENABLED
+          value: {{ .Values.pprof.enabled | quote }}
+        {{- include "opentracing.envs" . | indent 8 }}
+        {{- include "opentelemtry.envs" . | indent 8 }}
         # TLS authentication is TLS with authentication (2 way)
         # More info: https://docs.confluent.io/current/kafka/authentication_ssl.html#ssl-overview
         {{- if .Values.kafka.authentication.tls.enabled }}
         - name: TLS_ENABLED
           value: "true"
         - name: MESSAGE_QUEUE_SECRETS
-          value: /etc/fission/secrets        
+          value: /etc/fission/secrets
+        - name: INSECURE_SKIP_VERIFY
+          value: "{{ .Values.kafka.authentication.tls.insecureSkipVerify }}"
         volumeMounts:
         - name: kafka-secrets
           mountPath: /etc/fission/secrets
-        {{- end }}        
+        {{- end }}
       serviceAccountName: fission-svc
       {{- if .Values.kafka.authentication.tls.enabled }}
       volumes:
@@ -675,7 +904,7 @@ spec:
 {{- if .Values.kafka.authentication.tls.enabled }}
 apiVersion: v1
 kind: Secret
-metadata: 
+metadata:
   name: mqtrigger-kafka-secrets
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -725,15 +954,15 @@ spec:
     spec:
       containers:
       - name: mqtrigger
+      {{- if eq .Values.imageTag "" }}
+        image: "{{ .Values.image }}"
+      {{- else }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+      {{- end }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--mqt", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
         env:
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
-        - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}        
         - name: MESSAGE_QUEUE_TYPE
           value: azure-storage-queue
         - name: AZURE_STORAGE_ACCOUNT_NAME
@@ -745,6 +974,10 @@ spec:
               key: key
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
+        - name: PPROF_ENABLED
+          value: {{ .Values.pprof.enabled | quote }}
+        {{- include "opentracing.envs" . | indent 8 }}
+        {{- include "opentelemtry.envs" . | indent 8 }}
       serviceAccountName: fission-svc
 {{- if .Values.extraCoreComponentPodConfig }}
 {{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
@@ -776,19 +1009,39 @@ spec:
         image: {{ include "fission-bundleImage" . | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--storageServicePort", "8000", "--filePath", "/fission"]
+        {{- if and (.Values.persistence.enabled) (eq (.Values.persistence.storageType | default "local") "s3") }}
+        args: ["--storageServicePort", "8000", "--storageType", "s3"]
+        {{- else }}
+        args: ["--storageServicePort", "8000", "--storageType", "local"]
+        {{- end }}
         env:
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
-        - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
         - name: PRUNE_INTERVAL
           value: "{{.Values.pruneInterval}}"
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
+        - name: PPROF_ENABLED
+          value: {{ .Values.pprof.enabled | quote }}
+        {{- if and (.Values.persistence.enabled) (eq (.Values.persistence.storageType | default "local") "s3") }}
+        - name: STORAGE_S3_ENDPOINT
+          value: {{ .Values.persistence.s3.endPoint }}
+        - name: STORAGE_S3_BUCKET_NAME
+          value: {{ .Values.persistence.s3.bucketName }}
+        - name: STORAGE_S3_SUB_DIR
+          value: {{ .Values.persistence.s3.subDir }}
+        - name: STORAGE_S3_ACCESS_KEY_ID
+          value: {{ .Values.persistence.s3.accessKeyId }}
+        - name: STORAGE_S3_SECRET_ACCESS_KEY
+          value: {{ .Values.persistence.s3.secretAccessKey }}
+        - name: STORAGE_S3_REGION
+          value: {{ .Values.persistence.s3.region }}
+        {{- end }}
+        {{- include "opentracing.envs" . | indent 8 }}
+        {{- include "opentelemtry.envs" . | indent 8 }}
+        {{- if ne (.Values.persistence.storageType | default "local") "s3" }}
         volumeMounts:
         - name: fission-storage
           mountPath: /fission
+        {{- end }}
         readinessProbe:
           httpGet:
             path: "/healthz"
@@ -805,15 +1058,104 @@ spec:
         ports:
           - containerPort: 8000
             name: http
+          {{- if .Values.pprof.enabled }}
+          - containerPort: 6060
+            name: pprof
+          {{- end }}
       serviceAccountName: fission-svc
+      {{- if and (.Values.persistence.enabled) (ne (.Values.persistence.storageType | default "local") "s3") }}
       volumes:
       - name: fission-storage
-      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default "fission-storage-pvc" }}
       {{- else }}
+      volumes:
+      - name: fission-storage
         emptyDir: {}
       {{- end }}
 {{- if .Values.extraCoreComponentPodConfig }}
 {{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
+
+{{- if .Values.mqt_keda.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqtrigger-keda
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: mqtrigger-keda
+    messagequeue: keda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      svc: mqtrigger-keda
+      messagequeue: keda
+  template:
+    metadata:
+      labels:
+        svc: mqtrigger-keda
+        messagequeue: keda
+    spec:
+      containers:
+      - name:  mqtrigger-keda
+        image: {{ include "fission-bundleImage" . | quote }}
+        imagePullPolicy: {{ .Values.pullPolicy }}
+        command: ["/fission-bundle"]
+        args: ["--mqt_keda", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
+        env:
+        - name: DEBUG_ENV
+          value: {{ .Values.debugEnv | quote }}
+        - name: CONNECTOR_IMAGE_PULL_POLICY
+          value: "{{ .Values.pullPolicy }}"
+        - name: KAFKA_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.kafka.image }}:{{ .Values.mqt_keda.connector_images.kafka.tag }}"
+        - name: RABBITMQ_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.rabbitmq.image }}:{{ .Values.mqt_keda.connector_images.rabbitmq.tag }}"
+        - name: AWS-KINESIS-STREAM_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.awskinesis.image }}:{{ .Values.mqt_keda.connector_images.awskinesis.tag }}"
+        - name: AWS-SQS-QUEUE_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.aws_sqs.image }}:{{ .Values.mqt_keda.connector_images.aws_sqs.tag }}"
+        - name: STAN_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.nats_steaming.image }}:{{ .Values.mqt_keda.connector_images.nats_steaming.tag }}"
+        - name: GCP-PUB-SUB_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.gcp_pub_sub.image }}:{{ .Values.mqt_keda.connector_images.gcp_pub_sub.tag }}"
+        - name: REDIS_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.redis.image }}:{{ .Values.mqt_keda.connector_images.redis.tag }}"
+        {{- include "opentracing.envs" . | indent 8 }}
+        {{- include "opentelemtry.envs" . | indent 8 }}
+      serviceAccountName: fission-svc
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
+{{- end }}
+{{- end }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Values.functionNamespace }}
+  name: event-fetcher
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["events"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: fission-fetcher-pod-reader
+  namespace: {{ .Values.functionNamespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: event-fetcher
+subjects:
+- kind: ServiceAccount
+  name: fission-fetcher
+  namespace: {{ .Values.functionNamespace }}
