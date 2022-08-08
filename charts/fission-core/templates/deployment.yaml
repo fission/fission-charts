@@ -104,6 +104,15 @@ metadata:
   namespace: {{ .Values.builderNamespace }}
 
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: feature-config
+  namespace: {{ .Release.Namespace }}
+data:
+  "config.yaml": {{ include "config" . | b64enc }}
+
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -120,7 +129,7 @@ spec:
     spec:
       containers:
       - name: controller
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--controllerPort", "8888"]
@@ -144,7 +153,15 @@ spec:
             port: 8888
           initialDelaySeconds: 35
           periodSeconds: 5
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config/config.yaml
+          subPath: config.yaml
       serviceAccount: fission-svc
+      volumes:
+      - name: config-volume
+        configMap:
+          name: feature-config
 
 ---
 apiVersion: extensions/v1beta1
@@ -163,7 +180,7 @@ spec:
     spec:
       containers:
       - name: router
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--routerPort", "8888", "--executorUrl", "http://executor.{{ .Release.Namespace }}"]
@@ -180,6 +197,12 @@ spec:
             value: {{ .Values.routerRoundTripKeepAliveTime | default "30s" | quote }}
           - name: ROUTER_ROUND_TRIP_MAX_RETRIES
             value: {{ .Values.routerRoundTripMaxRetries | default 10 | quote }}
+          - name: ROUTER_ROUND_TRIP_SVC_ADDRESS_MAX_RETRIES
+            value: {{ .Values.routerRoundTripSvcAddressMaxRetries | default 5 | quote }}
+          - name: ROUTER_ROUND_TRIP_SVC_ADDRESS_UPDATE_TIMEOUT
+            value: {{ .Values.routerRoundTripSvcAddressUpdateTimeout | default 30 | quote }}
+          - name: DEBUG_ENV
+            value: {{ .Values.debugEnv | quote }}
         readinessProbe:
           httpGet:
             path: "/router-healthz"
@@ -227,7 +250,7 @@ spec:
     spec:
       containers:
       - name: executor
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--executorPort", "8888", "--namespace", "{{ .Values.functionNamespace }}", "--fission-namespace", "{{ .Release.Namespace }}"]
@@ -277,7 +300,7 @@ spec:
     spec:
       containers:
       - name: buildermgr
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--builderMgr", "--storageSvcUrl", "http://storagesvc.{{ .Release.Namespace }}", "--envbuilder-namespace", "{{ .Values.builderNamespace }}"]
@@ -306,7 +329,7 @@ spec:
     spec:
       containers:
       - name: kubewatcher
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--kubewatcher", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
@@ -328,7 +351,7 @@ spec:
     spec:
       containers:
       - name: timer
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--timer", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
@@ -351,7 +374,7 @@ spec:
     spec:
       containers:
       - name: storagesvc
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--storageServicePort", "8000", "--filePath", "/fission"]
