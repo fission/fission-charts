@@ -180,6 +180,38 @@ entries:
     version: v1.15.0
   - apiVersion: v2
     appVersion: v1.15.0-rc2
+    created: "2022-08-08T09:19:51.366278614Z"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 14.11.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: f9e3168ba6d71886047030c7e7b545b5c18b3710781a1a051d808bb1b98f3d00
+    home: https://fission.io/
+    icon: https://fission.io/images/fission-logo-white.svg
+    keywords:
+    - fission
+    - serverless
+    - platform
+    - faas
+    - functions
+    - Integration & Delivery
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    sources:
+    - https://github.com/fission/fission
+    - https://github.com/fission/keda-connectors
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-v1.15.0-rc2/fission-all-v1.15.0-rc2.tgz
+    version: v1.15.0-rc2
+  - apiVersion: v2
+    appVersion: v1.15.0-rc2
     created: "2022-07-06T09:35:02.44616Z"
     dependencies:
     - condition: prometheus.enabled
@@ -212,30 +244,6 @@ entries:
     version: v1.15.0-rc2
   - apiVersion: v2
     appVersion: v1.15.0-rc1
-    created: "2022-07-06T09:35:02.441393Z"
-    dependencies:
-    - condition: prometheus.enabled
-      name: prometheus
-      repository: https://prometheus-community.github.io/helm-charts
-      version: 13.2.1
-    description: Fission is a fast serverless framework for Kubernetes.
-    digest: 26102956b0208ca86f3785319c8f3f9d785461e8193ea3f155bc1773a30e9eb9
-    home: https://fission.io/
-    keywords:
-    - fission
-    - serverless
-    maintainers:
-    - email: vishal@infracloud.io
-      name: Vishal Biyani
-    - email: sanket@infracloud.io
-      name: Sanket Sudake
-    name: fission-all
-    type: application
-    urls:
-    - https://fission.github.io/fission-charts/fission-all-v1.15.0-rc1.tgz
-    version: v1.15.0-rc1
-  - apiVersion: v2
-    appVersion: v1.15.0-rc1
     created: "2022-08-08T09:19:17.474063843Z"
     dependencies:
     - condition: prometheus.enabled
@@ -257,6 +265,30 @@ entries:
     type: application
     urls:
     - https://github.com/fission/fission-charts/releases/download/fission-all-v1.15.0-rc1/fission-all-v1.15.0-rc1.tgz
+    version: v1.15.0-rc1
+  - apiVersion: v2
+    appVersion: v1.15.0-rc1
+    created: "2022-07-06T09:35:02.441393Z"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 13.2.1
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 26102956b0208ca86f3785319c8f3f9d785461e8193ea3f155bc1773a30e9eb9
+    home: https://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    type: application
+    urls:
+    - https://fission.github.io/fission-charts/fission-all-v1.15.0-rc1.tgz
     version: v1.15.0-rc1
   - apiVersion: v2
     appVersion: 1.14.1
@@ -2304,4 +2336,4 @@ entries:
     urls:
     - https://fission.github.io/fission-charts/fission-workflows-0.1.0.tgz
     version: 0.1.0
-generated: "2022-08-08T09:19:17.474986013Z"
+generated: "2022-08-08T09:19:51.367050505Z"
