@@ -25,12 +25,15 @@ controller/config.go
 {{- define "config" -}}
 canary:
   enabled: {{ .Values.canaryDeployment.enabled }}
-  {{- if .Values.prometheus.enabled }}
-  prometheusSvc: "http://{{ .Release.Name }}-prometheus-server.{{ .Release.Namespace }}"
-  {{- else }}
   prometheusSvc: {{ .Values.prometheus.serviceEndpoint | default "" | quote }}
-  {{- end }}
   {{- printf "\n" -}}
+auth:
+  enabled: {{ .Values.authentication.enabled | default false }}
+  {{- if .Values.authentication.enabled }}
+  authUriPath: {{ .Values.authentication.authUriPath | default "/auth/login" | quote}}
+  jwtExpiryTime: {{ .Values.authentication.jwtExpiryTime | default 120 }}
+  jwtIssuer: {{ .Values.authentication.jwtIssuer | default "fission" | quote }}
+  {{- end }}
 {{- end -}}
 
 {{/*
@@ -38,8 +41,42 @@ This template generates the image name for the deployment depending on the value
 */}}
 {{- define "fission-bundleImage" -}}
 {{- if .Values.repository -}}
+  {{- if eq .Values.imageTag "" -}}
+    {{ .Values.repository }}/{{ .Values.image }}
+  {{- else -}}
     {{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}
+  {{- end }}
 {{- else -}}
-    {{ .Values.image }}:{{ .Values.imageTag }}    
+  {{- if eq .Values.imageTag "" -}}
+    {{ .Values.image }}
+  {{- else -}}
+    {{ .Values.image }}:{{ .Values.imageTag }}
+  {{- end }}
 {{- end }}
 {{- end -}}
+
+{{- define "opentelemtry.envs" }}
+- name: OTEL_EXPORTER_OTLP_ENDPOINT
+  value: "{{ .Values.openTelemetry.otlpCollectorEndpoint }}"
+- name: OTEL_EXPORTER_OTLP_INSECURE
+  value: "{{ .Values.openTelemetry.otlpInsecure }}"
+{{- if .Values.openTelemetry.otlpHeaders }}
+- name: OTEL_EXPORTER_OTLP_HEADERS
+  value: "{{ .Values.openTelemetry.otlpHeaders }}"
+{{- end }}
+- name: OTEL_TRACES_SAMPLER
+  value: "{{ .Values.openTelemetry.tracesSampler }}"
+- name: OTEL_TRACES_SAMPLER_ARG
+  value: "{{ .Values.openTelemetry.tracesSamplingRate }}"
+- name: OTEL_PROPAGATORS
+  value: "{{ .Values.openTelemetry.propagators }}"
+{{- end }}
+
+{{- define "opentracing.envs" }}
+- name: OPENTRACING_ENABLED
+  value: {{ .Values.openTracing.enabled | default false | quote }}
+- name: TRACE_JAEGER_COLLECTOR_ENDPOINT
+  value: "{{ .Values.openTracing.collectorEndpoint }}"
+- name: TRACING_SAMPLING_RATE
+  value: {{ .Values.openTracing.samplingRate | default "0.5" | quote }}
+{{- end }}
