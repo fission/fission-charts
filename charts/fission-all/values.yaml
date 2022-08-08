@@ -25,11 +25,14 @@ image: fission/fission-bundle
 ## It is also used by the chart to identify version of the few more images apart from fission-bundle.
 ## Keep it empty for using latest tag.
 ##
-imageTag: v1.16.0-rc1
+imageTag: v1.16.0-rc2
 
 ## pullPolicy represents the pull policy to use for images in the chart.
 ##
 pullPolicy: IfNotPresent
+
+## imageppullsecrets 
+imagePullSecrets: []
 
 ## priorityClassName represents the priority class name to use for Fission components.
 ## Refer to https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
@@ -89,7 +92,7 @@ fetcher:
   ## image represents the image of the fetcher component.
   image: fission/fetcher
   ## imageTag represents the tag of the image of the fetcher component.
-  imageTag: v1.16.0-rc1
+  imageTag: v1.16.0-rc2
 
   ## Fetcher is only for to downloading or uploading archive.
   ## Normally, you don't need to change the value here, unless necessary.
@@ -128,6 +131,17 @@ executor:
   ## This is applicable to Pool Manager executor type only.
   ##
   podReadyTimeout: 300s
+  
+  ## Pod resources as:
+  ##  resources:
+  ##    limits:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##    requests:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##
+  resources: {}
 
 ## router is responsible for routing function calls to the appropriate function.
 ##
@@ -234,57 +248,77 @@ router:
   ##
   resources: {}
 
-## Message queue trigger config
-## NATS Streaming, enabled by default
+## The builder manager watches the package & environments CRD changes and manages the builds of function source code.
+## 
+buildermgr:
+  ## Pod resources as:
+  ##  resources:
+  ##    limits:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##    requests:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##
+  resources: {}
+
+## controller is the component that the client talks to.
+## It contains CRUD APIs for functions, triggers, environments, Kubernetes event watches, etc. and proxy APIs to internal 3rd-party services.
 ##
-nats:
-  ## whether or not to use NATS
+controller:
+  ## Pod resources as:
+  ##  resources:
+  ##    limits:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##    requests:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
   ##
-  enabled: false
+  resources: {}
 
-  ## if true, don't install NATS, but
-  ## use the existing NATS cluster
-  ##
-  external: false
-
-  ## Address of NATS server (domain:port)
-  ## change from default for external NATS
-  ##
-  hostaddress: "nats-streaming:4222"
-
-  ## Authorization token to use with NATS
-  ##
-  authToken: "defaultFissionAuthToken"
-
-  ## NATS streaming clusterID
-  ##
-  clusterID: "fissionMQTrigger"
-
-  ## Client name registered with NATS streaming
-  ##
-  clientID: "fission"
-
-  ## Queue group registered with NATS streaming
-  ##
-  queueGroup: "fission-messageQueueNatsTrigger"
-
-  ## The image to use for NATS streaming server
-  ##
-  streamingserver:
-    image: nats-streaming
-    tag: "0.23.0"
-
-## Port at which NATS streaming service should be exposed
-## (only if nats enabled and not external)
+## kubewatcher watches the Kubernetes API and invokes functions associated with watches, sending the watch event to the function.
 ##
-natsStreamingPort: 31316
+kubewatcher:
+  ## Pod resources as:
+  ##  resources:
+  ##    limits:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##    requests:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##
+  resources: {}
 
-## Azure-storage-queue: enable and configure the details
+## The storage service is the home for all archives of packages with sizes larger than 256KB.
 ##
-azureStorageQueue:
-  enabled: false
-  key: ""
-  accountName: ""
+storagesvc:
+  ## Pod resources as:
+  ##  resources:
+  ##    limits:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##    requests:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##
+  resources: {}
+
+## The timer works like kubernetes CronJob but instead of creating a pod to do the task
+## It sends a request to router to invoke the function.
+##
+timer:
+  ## Pod resources as:
+  ##  resources:
+  ##    limits:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##    requests:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##
+  resources: {}
 
 ## Kafka: enable and configure the details
 ##
@@ -327,6 +361,12 @@ kafka:
   ## Should be >= 0.11.2.0 to enable Kafka record headers support
   ##
   # version: "0.11.2.0"
+
+serviceMonitor:
+  enabled: false
+  ##namespace in which you want to deploy servicemonitor
+  ##
+  namespace: ""
 
 ## Persist data to a persistent volume.
 ##
@@ -454,7 +494,7 @@ preUpgradeChecks:
   image: fission/pre-upgrade-checks
   ## pre-install/pre-upgrade checks image version
   ##
-  imageTag: v1.16.0-rc1
+  imageTag: v1.16.0-rc2
 
 ## Fission post-install/post-upgrade reporting live in this image
 ##
@@ -465,15 +505,12 @@ postInstallReportImage: fission/reporter
 ##
 debugEnv: false
 
-## Prometheus for scrapping service metrics
+## Prometheus related configuration to query metrics
 ##
 prometheus:
-  ## set this flag to true if prometheus needs to be deployed along with fission
-  ##
-  enabled: false
-
-  ## If enabled is false, please assign the prometheus service URL
-  ## that is accessible by components.
+  ## please assign the prometheus service URL
+  ## that is accessible by Fission components.
+  ## This is mainly used to enable canary deployment.
   ##
   serviceEndpoint: ""
 
@@ -593,12 +630,23 @@ mqt_keda:
     nats_steaming:
       image: fission/keda-nats-streaming-http-connector
       tag: v0.9
-    gcp_pub_sub:
+    gcp_pubsub:
       image: fission/keda-gcp-pubsub-http-connector
       tag: v0.3
     redis:
       image: fission/keda-redis-http-connector
       tag: v0.1
+
+  ## Pod resources as:
+  ##  resources:
+  ##    limits:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##    requests:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##
+  resources: {}
 
 ## Enable Pprof based profiling used mostly by Fission developers
 ##

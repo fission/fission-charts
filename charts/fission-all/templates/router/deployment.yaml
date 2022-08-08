@@ -83,7 +83,7 @@ spec:
         {{- include "opentracing.envs" . | indent 8 }}
         {{- include "opentelemtry.envs" . | indent 8 }}
         resources:
-          {{- toYaml .Values.router.resources | indent 10 }}
+          {{- toYaml .Values.router.resources | nindent 10 }}
         readinessProbe:
           httpGet:
             path: "/router-healthz"
@@ -130,6 +130,10 @@ spec:
 {{- else if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets: 
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
 {{- if .Values.router.extraCoreComponentPodConfig }}
 {{ toYaml .Values.router.extraCoreComponentPodConfig | indent 6 -}}
 {{- else }}

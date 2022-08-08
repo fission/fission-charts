@@ -17,6 +17,10 @@ spec:
       labels:
         svc: controller
         application: fission-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8080"
     spec:
       containers:
       - name: controller
@@ -37,6 +41,8 @@ spec:
               fieldPath: metadata.namespace
         {{- include "opentracing.envs" . | indent 8 }}
         {{- include "opentelemtry.envs" . | indent 8 }}
+        resources:
+          {{- toYaml .Values.controller.resources | nindent 10 }}
         {{- if .Values.terminationMessagePath }}
         terminationMessagePath: {{ .Values.terminationMessagePath }}
         {{- end }}
@@ -61,6 +67,8 @@ spec:
           mountPath: /etc/config/config.yaml
           subPath: config.yaml
         ports:
+          - containerPort: 8080
+            name: metrics
           - containerPort: 8888
             name: http
         {{- if .Values.pprof.enabled }}
@@ -76,6 +84,10 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets: 
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
 {{- if .Values.extraCoreComponentPodConfig }}
 {{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
