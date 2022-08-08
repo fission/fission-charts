@@ -1169,6 +1169,24 @@ entries:
     urls:
     - https://fission.github.io/fission-charts/fission-all-0.3.0-rc.tgz
     version: 0.3.0-rc
+  - apiVersion: v1
+    appVersion: 0.3.0-rc
+    created: "2022-08-08T08:56:43.868808537Z"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: f3711bbcc15c1b8b12f5ba7d6bc4665e7033c13762b85166aa08b54121c48d8a
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-0.3.0-rc/fission-all-0.3.0-rc.tgz
+    version: 0.3.0-rc
   fission-core:
   - apiVersion: v2
     appVersion: v1.15.0-rc1
@@ -2262,4 +2280,4 @@ entries:
     urls:
     - https://fission.github.io/fission-charts/fission-workflows-0.1.0.tgz
     version: 0.1.0
-generated: "2022-07-06T09:35:02.333083Z"
+generated: "2022-08-08T08:56:43.869421467Z"
