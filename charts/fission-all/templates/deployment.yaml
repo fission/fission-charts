@@ -49,113 +49,9 @@ rules:
   resources:
   - packages
   verbs:
-  - '*'
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - rolebindings
-  verbs:
-  - '*'
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: fission-cr-admin
-rules:
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  - pods
-  - secrets
-  - services
-  - serviceaccounts
-  - namespaces
-  - events
-  verbs:
-  - create
-  - delete
   - get
-  - list
   - watch
-  - patch
-- apiGroups:
-  - apps
-  resources:
-  - deployments
-  - deployments/scale
-  verbs:
-  - '*'
-- apiGroups:
-  - apiextensions.k8s.io
-  resources:
-  - customresourcedefinitions
-  verbs:
-  - create
-  - delete
-  - get
   - list
-  - watch
-  - patch
-- apiGroups:
-  - fission.io
-  resources:
-  - canaryconfigs
-  - environments
-  - functions
-  - httptriggers
-  - kuberneteswatchtriggers
-  - messagequeuetriggers
-  - packages
-  - timetriggers
-  verbs:
-  - '*'
-- apiGroups:
-  - autoscaling
-  resources:
-  - horizontalpodautoscalers
-  verbs:
-  - '*'
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - rolebindings
-  verbs:
-  - '*'
-- apiGroups: ["rbac.authorization.k8s.io"]
-  resources: ["clusterroles"]
-  verbs: ["bind"]
-- apiGroups:
-  - keda.sh
-  resources:
-  - scaledjobs
-  - scaledobjects
-  - scaledjobs/finalizers
-  - scaledjobs/status
-  - triggerauthentications
-  - triggerauthentications/status
-  verbs:
-  - '*'
-- apiGroups:
-  - keda.k8s.io
-  resources:
-  - scaledjobs
-  - scaledobjects
-  - scaledjobs/finalizers
-  - scaledjobs/status
-  - triggerauthentications
-  - triggerauthentications/status
-  verbs:
-  - '*'
-- apiGroups:
-  - metrics.k8s.io
-  resources:
-  - pods
-  verbs:
-  - get
-  - list
-
 
 ---
 apiVersion: v1
@@ -190,7 +86,7 @@ subjects:
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: fission-cr-admin
+  name: cluster-admin
   apiGroup: rbac.authorization.k8s.io
 
 ---
@@ -199,99 +95,10 @@ kind: ServiceAccount
 metadata:
   name: fission-fetcher
   namespace: {{ .Values.functionNamespace }}
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: fission-fetcher
-  namespace: default
-rules:
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  - secrets
-  - pods
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - events
-  verbs:
-  - '*'
-- apiGroups:
-  - fission.io
-  resources:
-  - canaryconfigs
-  - environments
-  - functions
-  - httptriggers
-  - kuberneteswatchtriggers
-  - messagequeuetriggers
-  - packages
-  - timetriggers
-  verbs:
-  - '*'
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: fission-fetcher
-  namespace: default
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: fission-fetcher
-subjects:
-- kind: ServiceAccount
-  name: fission-fetcher
-  namespace: {{ .Values.functionNamespace }}
-
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: fission-builder
-  namespace: {{ .Values.builderNamespace }}
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: fission-builder
-  namespace: default
-rules:
-- apiGroups:
-  - fission.io
-  resources:
-  - canaryconfigs
-  - environments
-  - functions
-  - httptriggers
-  - kuberneteswatchtriggers
-  - messagequeuetriggers
-  - packages
-  - timetriggers
-  verbs:
-  - '*'
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: fission-builder
-  namespace: default
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: fission-builder
-subjects:
-- kind: ServiceAccount
   name: fission-builder
   namespace: {{ .Values.builderNamespace }}
 
@@ -305,20 +112,14 @@ data:
   "config.yaml": {{ include "config" . | b64enc }}
 
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: controller
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: controller
-    application: fission-api
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: controller
-      application: fission-api
   template:
     metadata:
       labels:
@@ -327,25 +128,19 @@ spec:
     spec:
       containers:
       - name: controller
-        image: {{ include "fission-bundleImage" . | quote }}
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--controllerPort", "8888"]
+        args: ["--controllerPort", "8888", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
         env:
-        - name: FISSION_FUNCTION_NAMESPACE
-          value: "{{ .Values.functionNamespace }}"
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
-        - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
-        - name: DEBUG_ENV
-          value: {{ .Values.debugEnv | quote }}
-        - name: PPROF_ENABLED
-          value: {{ .Values.pprof.enabled | quote }}
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+          - name: FISSION_FUNCTION_NAMESPACE
+            value: "{{ .Values.functionNamespace }}"
+          - name: TRACING_SAMPLING_RATE
+            value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
         readinessProbe:
           httpGet:
             path: "/healthz"
@@ -363,35 +158,109 @@ spec:
         - name: config-volume
           mountPath: /etc/config/config.yaml
           subPath: config.yaml
-        ports:
-          - containerPort: 8888
-            name: http
-        {{- if .Values.pprof.enabled }}
-          - containerPort: 6060
-            name: pprof
-        {{- end }}
-      serviceAccountName: fission-svc
+      serviceAccount: fission-svc
       volumes:
       - name: config-volume
         configMap:
           name: feature-config
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: router
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: fission-router
+        svc: router
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8080"
+    spec:
+      containers:
+      - name: router
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.pullPolicy }}
+        command: ["/fission-bundle"]
+        args: ["--routerPort", "8888", "--executorUrl", "http://executor.{{ .Release.Namespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: ROUTER_ROUND_TRIP_TIMEOUT
+            value: {{ .Values.routerRoundTripTimeout | default "50ms" | quote }}
+          - name: ROUTER_ROUNDTRIP_TIMEOUT_EXPONENT
+            value: {{ .Values.routerRoundTripTimeoutExponent | default 2 | quote }}
+          - name: ROUTER_ROUND_TRIP_KEEP_ALIVE_TIME
+            value: {{ .Values.routerRoundTripKeepAliveTime | default "30s" | quote }}
+          - name: ROUTER_ROUND_TRIP_MAX_RETRIES
+            value: {{ .Values.routerRoundTripMaxRetries | default 10 | quote }}
+          - name: ROUTER_ROUND_TRIP_SVC_ADDRESS_MAX_RETRIES
+            value: {{ .Values.routerRoundTripSvcAddressMaxRetries | default 5 | quote }}
+          - name: ROUTER_ROUND_TRIP_SVC_ADDRESS_UPDATE_TIMEOUT
+            value: {{ .Values.routerRoundTripSvcAddressUpdateTimeout | default 30 | quote }}
+          - name: DEBUG_ENV
+            value: {{ .Values.debugEnv | quote }}
+          - name: TRACING_SAMPLING_RATE
+            value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
+{{ if .Values.analytics }}
+          - name: ANALYTICS_URL
+            value: "https://g.fission.sh/metrics"
+{{ else if .Values.analyticsNonHelmInstall }}
+          - name: ANALYTICS_URL
+            value: "https://g.fission.sh/metrics"
+{{ end }}
+        readinessProbe:
+          httpGet:
+            path: "/router-healthz"
+            port: 8888
+          initialDelaySeconds: 1
+          periodSeconds: 1
+          failureThreshold: 30
+        livenessProbe:
+          httpGet:
+            path: "/router-healthz"
+            port: 8888
+          initialDelaySeconds: 35
+          periodSeconds: 5
+        ports:
+        - containerPort: 8080
+          name: metrics
+        - containerPort: 8888
+          name: http
+      serviceAccount: fission-svc
 
 ---
-apiVersion: apps/v1
+apiVersion: v1
+kind: Service
+metadata:
+  name: executor
+  labels:
+    svc: executor
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8888
+  selector:
+    svc: executor
+
+---
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: executor
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: executor
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: executor
   template:
     metadata:
       labels:
@@ -403,43 +272,31 @@ spec:
     spec:
       containers:
       - name: executor
-        image: {{ include "fission-bundleImage" . | quote }}
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--executorPort", "8888", "--namespace", "{{ .Values.functionNamespace }}"]
+        args: ["--executorPort", "8888", "--namespace", "{{ .Values.functionNamespace }}", "--fission-namespace", "{{ .Release.Namespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
         env:
         - name: FETCHER_IMAGE
-        {{- if eq .Values.fetcher.imageTag "" }}
-          value: "{{ .Values.fetcher.image }}"
-        {{- else }}
-          value: "{{ .Values.fetcher.image }}:{{ .Values.fetcher.imageTag }}"
-        {{- end }}
+          value: "{{ .Values.fetcherImage }}:{{ .Values.fetcherImageTag }}"
         - name: FETCHER_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
         - name: RUNTIME_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
-        - name: ADOPT_EXISTING_RESOURCES
-          value: {{ .Values.executor.adoptExistingResources | default false | quote }}
-        - name: POD_READY_TIMEOUT
-          value: {{ .Values.executor.podReadyTimeout | default false | quote }}
-        - name: ENABLE_ISTIO
-          value: "{{ .Values.enableIstio }}"
         - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
           value: "{{ .Values.traceCollectorEndpoint }}"
+        - name: ENABLE_ISTIO
+          value: "{{ .Values.enableIstio }}"
+        - name: FETCHER_MINCPU
+          value: {{ .Values.fetcherMinCpu | default "10m" | quote }}
+        - name: FETCHER_MINMEM
+          value: {{ .Values.fetcherMinMem | default "16Mi" | quote }}
+        - name: FETCHER_MAXCPU
+          value: {{ .Values.fetcherMaxCpu | default "1000m" | quote }}
+        - name: FETCHER_MAXMEM
+          value: {{ .Values.fetcherMaxMem | default "128Mi" | quote }}
         - name: TRACING_SAMPLING_RATE
           value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
-        - name: FETCHER_MINCPU
-          value: {{ .Values.fetcher.resource.cpu.requests | quote }}
-        - name: FETCHER_MINMEM
-          value: {{ .Values.fetcher.resource.mem.requests | quote }}
-        - name: FETCHER_MAXCPU
-          value: {{ .Values.fetcher.resource.cpu.limits | quote }}
-        - name: FETCHER_MAXMEM
-          value: {{ .Values.fetcher.resource.mem.limits | quote }}
-        - name: DEBUG_ENV
-          value: {{ .Values.debugEnv | quote }}
-        - name: PPROF_ENABLED
-          value: {{ .Values.pprof.enabled | quote }}
         readinessProbe:
           httpGet:
             path: "/healthz"
@@ -458,28 +315,17 @@ spec:
           name: metrics
         - containerPort: 8888
           name: http
-        {{- if .Values.pprof.enabled }}
-        - containerPort: 6060
-          name: pprof
-        {{- end }}
-      serviceAccountName: fission-svc
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
+      serviceAccount: fission-svc
 
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: buildermgr
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: buildermgr
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: buildermgr
   template:
     metadata:
       labels:
@@ -487,57 +333,42 @@ spec:
     spec:
       containers:
       - name: buildermgr
-        image: {{ include "fission-bundleImage" . | quote }}
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--builderMgr", "--storageSvcUrl", "http://storagesvc.{{ .Release.Namespace }}", "--envbuilder-namespace", "{{ .Values.builderNamespace }}"]
+        args: ["--builderMgr", "--storageSvcUrl", "http://storagesvc.{{ .Release.Namespace }}", "--envbuilder-namespace", "{{ .Values.builderNamespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
         env:
         - name: FETCHER_IMAGE
-        {{- if eq .Values.fetcher.imageTag "" }}
-          value: "{{ .Values.fetcher.image }}"
-        {{- else }}
-          value: "{{ .Values.fetcher.image }}:{{ .Values.fetcher.imageTag }}"
-        {{- end }}
+          value: "{{ .Values.fetcherImage }}:{{ .Values.fetcherImageTag }}"
         - name: FETCHER_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
         - name: BUILDER_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
-        - name: ENABLE_ISTIO
-          value: "{{ .Values.enableIstio }}"
         - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
           value: "{{ .Values.traceCollectorEndpoint }}"
+        - name: ENABLE_ISTIO
+          value: "{{ .Values.enableIstio }}"
         - name: TRACING_SAMPLING_RATE
           value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
         - name: FETCHER_MINCPU
-          value: {{ .Values.fetcher.resource.cpu.requests | quote }}
+          value: {{ .Values.fetcherMinCpu | default "10m" | quote }}
         - name: FETCHER_MINMEM
-          value: {{ .Values.fetcher.resource.mem.requests | quote }}
+          value: {{ .Values.fetcherMinMem | default "16Mi" | quote }}
         - name: FETCHER_MAXCPU
-          value: {{ .Values.fetcher.resource.cpu.limits | quote }}
+          value: {{ .Values.fetcherMaxCpu | default "1000m" | quote }}
         - name: FETCHER_MAXMEM
-          value: {{ .Values.fetcher.resource.mem.limits | quote }}
-        - name: DEBUG_ENV
-          value: {{ .Values.debugEnv | quote }}
-        - name: PPROF_ENABLED
-          value: {{ .Values.pprof.enabled | quote }}
-      serviceAccountName: fission-svc
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
+          value: {{ .Values.fetcherMaxMem | default "128Mi" | quote }}          
+      serviceAccount: fission-svc
 
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: kubewatcher
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: kubewatcher
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: kubewatcher
   template:
     metadata:
       labels:
@@ -545,24 +376,15 @@ spec:
     spec:
       containers:
       - name: kubewatcher
-        image: {{ include "fission-bundleImage" . | quote }}
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--kubewatcher", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
+        args: ["--kubewatcher", "--routerUrl", "http://router.{{ .Release.Namespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
         env:
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
         - name: TRACING_SAMPLING_RATE
           value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
-        - name: DEBUG_ENV
-          value: {{ .Values.debugEnv | quote }}
-        - name: PPROF_ENABLED
-          value: {{ .Values.pprof.enabled | quote }}
-      serviceAccountName: fission-svc
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
-{{- if .Values.influxdb.enabled }}
+      serviceAccount: fission-svc
+
 ---
 apiVersion: v1
 kind: Service
@@ -580,18 +402,14 @@ spec:
     svc: influxdb
 
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: influxdb
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: influxdb
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: influxdb
   template:
     metadata:
       labels:
@@ -599,25 +417,22 @@ spec:
     spec:
       containers:
       - name: influxdb
-        image: {{ .Values.influxdb.image | quote }}
+        image: fission/influxdb
         imagePullPolicy: {{ .Values.pullPolicy }}
         env:
-        - name: INFLUXDB_DB
-          value: fissionFunctionLog
-        - name: INFLUXDB_ADMIN_USER
-          valueFrom:
-            secretKeyRef:
-              name: influxdb
-              key: username
-        - name: INFLUXDB_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: influxdb
-              key: password
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
-{{- end }}
+          - name: PRE_CREATE_DB
+            value: fissionFunctionLog
+          - name: ADMIN_USER
+            valueFrom:
+              secretKeyRef:
+                name: influxdb
+                key: username
+          - name: INFLUXDB_INIT_PWD
+            valueFrom:
+              secretKeyRef:
+                name: influxdb
+                key: password
+
 {{- if .Values.heapster }}
 ---
 apiVersion: v1
@@ -631,26 +446,22 @@ metadata:
     kubernetes.io/cluster-service: 'true'
     kubernetes.io/name: heapster
 spec:
-  type: ClusterIP
+  type: ClusterIP 
   ports:
   - port: 80
     targetPort: 8082
   selector:
     svc: heapster
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: heapster
   namespace: kube-system
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: heapster
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: heapster
   template:
     metadata:
       labels:
@@ -660,24 +471,20 @@ spec:
       - name: heapster
         image: gcr.io/google_containers/heapster-amd64:v1.5.0
         imagePullPolicy: {{ .Values.pullPolicy }}
-        command:
+        command: 
         - /heapster
         - --source=kubernetes:https://kubernetes.default
-      serviceAccountName: {{ .Release.Namespace }}/fission-svc
+      serviceAccount: {{ .Release.Namespace }}/fission-svc
 {{- end }}
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: timer
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: timer
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: timer
   template:
     metadata:
       labels:
@@ -685,19 +492,11 @@ spec:
     spec:
       containers:
       - name: timer
-        image: {{ include "fission-bundleImage" . | quote }}
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--timer", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
-        env:
-        - name: DEBUG_ENV
-          value: {{ .Values.debugEnv | quote }}
-        - name: PPROF_ENABLED
-          value: {{ .Values.pprof.enabled | quote }}
-      serviceAccountName: fission-svc
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
+      serviceAccount: fission-svc
 
 #
 # This is commented out until fission-ui allows configuring the
@@ -705,7 +504,7 @@ spec:
 # "fission".
 #
 #---
-#apiVersion: apps/v1
+#apiVersion: extensions/v1beta1
 #kind: Deployment
 #metadata:
 #  name: fission-ui
@@ -725,18 +524,11 @@ spec:
 #      - name: kubectl-proxy
 #        image: {{ .Values.repository }}/lachlanevenson/k8s-kubectl
 #        args: ["proxy", "--port", "8001", "--address", "127.0.0.1"]
-#      serviceAccountName: fission-svc
+#      serviceAccount: fission-svc
 
 {{- if .Values.nats.enabled }}
-{{- if not .Values.nats.external }}
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: fission-nats-streaming
-  namespace: {{ .Release.Namespace }}
----
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
@@ -744,62 +536,33 @@ metadata:
   name: nats-streaming
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: nats-streaming
   template:
     metadata:
       labels:
         svc: nats-streaming
     spec:
-      serviceAccount: fission-nats-streaming
       containers:
       - name: nats-streaming
-        image: {{ .Values.nats.streamingserver.image | quote }}
+        image: nats-streaming
         imagePullPolicy: {{ .Values.pullPolicy }}
         args: [
           "--cluster_id", "{{ .Values.nats.clusterID }}",
           "--auth", "{{ .Values.nats.authToken }}",
-          "--max_channels", "0",
-          "--http_port", "4223"
+          "--max_channels", "0"
         ]
         ports:
         - containerPort: 4222
+          hostPort: 4222
           protocol: TCP
-        - containerPort: 4223
-          protocol: TCP
-        readinessProbe:
-          httpGet:
-            path: "/streaming/serverz"
-            port: 4223
-          initialDelaySeconds: 30
-          periodSeconds: 1
-          failureThreshold: 30
-        livenessProbe:
-          httpGet:
-            path: "/streaming/serverz"
-            port: 4223
-          initialDelaySeconds: 30
-          periodSeconds: 5
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
-{{- end }}
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: mqtrigger-nats-streaming
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: mqtrigger
-    messagequeue: nats-streaming
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: mqtrigger
-      messagequeue: nats-streaming
   template:
     metadata:
       labels:
@@ -808,55 +571,30 @@ spec:
     spec:
       containers:
       - name: mqtrigger
-        image: {{ include "fission-bundleImage" . | quote }}
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--mqt", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
+        args: ["--mqt", "--routerUrl", "http://router.{{ .Release.Namespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
         env:
         - name: MESSAGE_QUEUE_TYPE
           value: nats-streaming
-        - name: MESSAGE_QUEUE_CLUSTER_ID
-          value: {{ .Values.nats.clusterID }}
-        - name: MESSAGE_QUEUE_QUEUE_GROUP
-          value: {{ .Values.nats.queueGroup }}
-        - name: MESSAGE_QUEUE_CLIENT_ID
-          value: {{ .Values.nats.clientID }}
         - name: MESSAGE_QUEUE_URL
-        {{- if .Values.nats.authToken }}
-          value: nats://{{ .Values.nats.authToken }}@{{ .Values.nats.hostaddress }}
-        {{- else }}
-          value: nats://{{ .Values.nats.hostaddress }}
-        {{- end }}
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
+          value: nats://{{ .Values.nats.authToken }}@nats-streaming:4222
         - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
-        - name: DEBUG_ENV
-          value: {{ .Values.debugEnv | quote }}
-        - name: PPROF_ENABLED
-          value: {{ .Values.pprof.enabled | quote }}
-      serviceAccountName: fission-svc
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
+          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}          
+      serviceAccount: fission-svc
 {{- end }}
 
 {{- if .Values.kafka.enabled }}
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: mqtrigger-kafka
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: mqtrigger
-    messagequeue: kafka
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: mqtrigger
-      messagequeue: kafka
   template:
     metadata:
       labels:
@@ -865,14 +603,10 @@ spec:
     spec:
       containers:
       - name: mqtrigger
-      {{- if eq .Values.imageTag "" }}
-        image: "{{ .Values.image }}"
-      {{- else }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-      {{- end }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--mqt", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
+        args: ["--mqt", "--routerUrl", "http://router.{{ .Release.Namespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
         env:
         - name: MESSAGE_QUEUE_TYPE
           value: kafka
@@ -880,81 +614,21 @@ spec:
           value: "{{.Values.kafka.brokers}}"
         - name: MESSAGE_QUEUE_KAFKA_VERSION
           value: "{{.Values.kafka.version}}"
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
         - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
-        - name: DEBUG_ENV
-          value: {{ .Values.debugEnv | quote }}
-        - name: PPROF_ENABLED
-          value: {{ .Values.pprof.enabled | quote }}
-        # TLS authentication is TLS with authentication (2 way)
-        # More info: https://docs.confluent.io/current/kafka/authentication_ssl.html#ssl-overview
-        {{- if .Values.kafka.authentication.tls.enabled }}
-        - name: TLS_ENABLED
-          value: "true"
-        - name: MESSAGE_QUEUE_SECRETS
-          value: /etc/fission/secrets
-        - name: INSECURE_SKIP_VERIFY
-          value: "{{ .Values.kafka.authentication.tls.insecureSkipVerify }}"
-        volumeMounts:
-        - name: kafka-secrets
-          mountPath: /etc/fission/secrets
-        {{- end }}
-      serviceAccountName: fission-svc
-      {{- if .Values.kafka.authentication.tls.enabled }}
-      volumes:
-      - name: kafka-secrets
-        secret:
-          secretName: mqtrigger-kafka-secrets
-      {{- end }}
-
----
-{{- if .Values.kafka.authentication.tls.enabled }}
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mqtrigger-kafka-secrets
-  labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-data:
-  {{- if .Files.Get  (printf "%s" .Values.kafka.authentication.tls.caCert) }}
-  caCert: {{ .Files.Get (printf "%s" .Values.kafka.authentication.tls.caCert) | b64enc }}
-  {{- else }}
-  {{ fail "Invalid chart. CA Certificate not found." }}
-  {{- end }}
-  {{- if .Files.Get (printf "%s" .Values.kafka.authentication.tls.userCert) }}
-  userCert: {{ .Files.Get (printf "%s" .Values.kafka.authentication.tls.userCert) | b64enc }}
-  {{- else }}
-  {{ fail "Invalid chart. User Certificate not found." }}
-  {{- end }}
-  {{- if .Files.Get (printf "%s" .Values.kafka.authentication.tls.userKey) }}
-  userKey: {{ .Files.Get (printf "%s" .Values.kafka.authentication.tls.userKey) | b64enc }}
-  {{- else }}
-  {{ fail "Invalid chart. User Key not found." }}
-  {{- end }}
-{{- end }}
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
+          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}          
+      serviceAccount: fission-svc
 {{- end }}
 
 {{- if .Values.azureStorageQueue.enabled }}
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: mqtrigger-azure-storage-queue
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: mqtrigger
-    messagequeue: azure-storage-queue
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: mqtrigger
-      messagequeue: azure-storage-queue
   template:
     metadata:
       labels:
@@ -963,19 +637,13 @@ spec:
     spec:
       containers:
       - name: mqtrigger
-      {{- if eq .Values.imageTag "" }}
-        image: "{{ .Values.image }}"
-      {{- else }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-      {{- end }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--mqt", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
+        args: ["--mqt", "--routerUrl", "http://router.{{ .Release.Namespace }}", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
         env:
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
         - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
+          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}        
         - name: MESSAGE_QUEUE_TYPE
           value: azure-storage-queue
         - name: AZURE_STORAGE_ACCOUNT_NAME
@@ -985,30 +653,17 @@ spec:
             secretKeyRef:
               name: azure-storage-account-key
               key: key
-        - name: DEBUG_ENV
-          value: {{ .Values.debugEnv | quote }}
-        - name: PPROF_ENABLED
-          value: {{ .Values.pprof.enabled | quote }}
-      serviceAccountName: fission-svc
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
+      serviceAccount: fission-svc
 {{- end }}
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: storagesvc
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: storagesvc
-    application: fission-storage
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      svc: storagesvc
-      application: fission-storage
   template:
     metadata:
       labels:
@@ -1017,44 +672,18 @@ spec:
     spec:
       containers:
       - name: storagesvc
-        image: {{ include "fission-bundleImage" . | quote }}
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        {{- if and (.Values.persistence.enabled) (eq (.Values.persistence.storageType | default "local") "s3") }}
-        args: ["--storageServicePort", "8000", "--storageType", "s3"]
-        {{- else }}
-        args: ["--storageServicePort", "8000", "--storageType", "local"]
-        {{- end }}
+        args: ["--storageServicePort", "8000", "--filePath", "/fission", "--collectorEndpoint", "{{ .Values.traceCollectorEndpoint }}"]
         env:
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
         - name: TRACING_SAMPLING_RATE
           value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
         - name: PRUNE_INTERVAL
           value: "{{.Values.pruneInterval}}"
-        - name: DEBUG_ENV
-          value: {{ .Values.debugEnv | quote }}
-        - name: PPROF_ENABLED
-          value: {{ .Values.pprof.enabled | quote }}
-        {{- if and (.Values.persistence.enabled) (eq (.Values.persistence.storageType | default "local") "s3") }}
-        - name: STORAGE_S3_ENDPOINT
-          value: {{ .Values.persistence.s3.endPoint }}
-        - name: STORAGE_S3_BUCKET_NAME
-          value: {{ .Values.persistence.s3.bucketName }}
-        - name: STORAGE_S3_SUB_DIR
-          value: {{ .Values.persistence.s3.subDir }}
-        - name: STORAGE_S3_ACCESS_KEY_ID
-          value: {{ .Values.persistence.s3.accessKeyId }}
-        - name: STORAGE_S3_SECRET_ACCESS_KEY
-          value: {{ .Values.persistence.s3.secretAccessKey }}
-        - name: STORAGE_S3_REGION
-          value: {{ .Values.persistence.s3.region }}
-        {{- end }}
-        {{- if ne (.Values.persistence.storageType | default "local") "s3" }}
         volumeMounts:
         - name: fission-storage
           mountPath: /fission
-        {{- end }}
         readinessProbe:
           httpGet:
             path: "/healthz"
@@ -1068,107 +697,12 @@ spec:
             port: 8000
           initialDelaySeconds: 35
           periodSeconds: 5
-        ports:
-          - containerPort: 8000
-            name: http
-          {{- if .Values.pprof.enabled }}
-          - containerPort: 6060
-            name: pprof
-          {{- end }}
-      serviceAccountName: fission-svc
-      {{- if and (.Values.persistence.enabled) (ne (.Values.persistence.storageType | default "local") "s3") }}
+      serviceAccount: fission-svc
       volumes:
       - name: fission-storage
+      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default "fission-storage-pvc" }}
       {{- else }}
-      volumes:
-      - name: fission-storage
         emptyDir: {}
-      {{- end }}
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
-
-{{- if .Values.mqt_keda.enabled }}
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mqtrigger-keda
-  labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    svc: mqtrigger-keda
-    messagequeue: keda
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      svc: mqtrigger-keda
-      messagequeue: keda
-  template:
-    metadata:
-      labels:
-        svc: mqtrigger-keda
-        messagequeue: keda
-    spec:
-      containers:
-      - name:  mqtrigger-keda
-        image: {{ include "fission-bundleImage" . | quote }}
-        imagePullPolicy: {{ .Values.pullPolicy }}
-        command: ["/fission-bundle"]
-        args: ["--mqt_keda", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
-        env:
-        - name: TRACE_JAEGER_COLLECTOR_ENDPOINT
-          value: "{{ .Values.traceCollectorEndpoint }}"
-        - name: TRACING_SAMPLING_RATE
-          value: {{ .Values.traceSamplingRate | default "0.5" | quote }}
-        - name: DEBUG_ENV
-          value: {{ .Values.debugEnv | quote }}
-        - name: CONNECTOR_IMAGE_PULL_POLICY
-          value: "{{ .Values.pullPolicy }}"
-        - name: KAFKA_IMAGE
-          value: "{{ .Values.mqt_keda.connector_images.kafka.image }}:{{ .Values.mqt_keda.connector_images.kafka.tag }}"
-        - name: RABBITMQ_IMAGE
-          value: "{{ .Values.mqt_keda.connector_images.rabbitmq.image }}:{{ .Values.mqt_keda.connector_images.rabbitmq.tag }}"
-        - name: AWS-KINESIS-STREAM_IMAGE
-          value: "{{ .Values.mqt_keda.connector_images.awskinesis.image }}:{{ .Values.mqt_keda.connector_images.awskinesis.tag }}"
-        - name: AWS-SQS-QUEUE_IMAGE
-          value: "{{ .Values.mqt_keda.connector_images.aws_sqs.image }}:{{ .Values.mqt_keda.connector_images.aws_sqs.tag }}"
-        - name: STAN_IMAGE
-          value: "{{ .Values.mqt_keda.connector_images.nats_steaming.image }}:{{ .Values.mqt_keda.connector_images.nats_steaming.tag }}"
-        - name: GCP-PUB-SUB_IMAGE
-          value: "{{ .Values.mqt_keda.connector_images.gcp_pub_sub.image }}:{{ .Values.mqt_keda.connector_images.gcp_pub_sub.tag }}"
-      serviceAccountName: fission-svc
-{{- if .Values.extraCoreComponentPodConfig }}
-{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
-{{- end }}
-{{- end }}
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  namespace: {{ .Values.functionNamespace }}
-  name: event-fetcher
-rules:
-- apiGroups: [""] # "" indicates the core API group
-  resources: ["pods"]
-  verbs: ["get", "watch", "list"]
-- apiGroups: [""] # "" indicates the core API group
-  resources: ["events"]
-  verbs: ["*"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: fission-fetcher-pod-reader
-  namespace: {{ .Values.functionNamespace }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: event-fetcher
-subjects:
-- kind: ServiceAccount
-  name: fission-fetcher
-  namespace: {{ .Values.functionNamespace }}
+      {{- end -}}
