@@ -1,8 +1,8 @@
-{{- if .Values.analyticsNonHelmInstall }}
+{{ if .Values.analytics }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "fullname" . }}-{{ .Chart.Version }}-{{ randNumeric 3 }}
+  name: {{ template "fullname" . }}-{{ .Chart.Version }}
   labels:
     # The "release" convention makes it easy to tie a release to all of the
     # Kubernetes resources that were created as part of that release.
@@ -10,8 +10,12 @@ metadata:
     # This makes it easy to audit chart usage.
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     app: {{ template "name" . }}
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
-  #ttlSecondsAfterFinished: 120
   template:
     metadata:
       name: {{ template "fullname" . }}
@@ -26,16 +30,6 @@ spec:
       restartPolicy: Never
       containers:
         - name: post-install-job
-        {{- if .Values.imageTag }}
-          image: {{ .Values.postInstallReportImage }}:{{ .Values.imageTag }}
-        {{- else }}
-          image: {{ .Values.postInstallReportImage }}
-        {{- end }}
-          imagePullPolicy: {{ .Values.pullPolicy }}
-          command: [ "/reporter" ]
-          args: ["event", "-c", "fission-use", "-a", "yaml-post-install", "-l", "{{ .Chart.Name }}-{{ .Chart.Version }}"]
-          env:
-            - name: GA_TRACKING_ID
-              value: "{{ .Values.gaTrackingID }}"
-      serviceAccountName: fission-svc
-{{- end }}
+          image: "fission/alpinecurl"
+          command: ["sh", "-c", "/usr/bin/curl -m 5 -H \"Content-Type: application/json\" -X POST -d '{\"type\": \"helm-post-install\", \"chartName\": \"{{ .Chart.Name }}\", \"chartVersion\": \"{{ .Chart.Version }}\"}' https://g.fission.sh/analytics || true"]
+{{ end }}
