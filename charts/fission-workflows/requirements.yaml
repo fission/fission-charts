@@ -1,0 +1,4 @@
+#dependencies:
+#  - name: fission-all
+#    version: ^0.3.0-rc
+#    repository: https://fission.github.io/fission-charts/
