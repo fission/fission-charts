@@ -1,0 +1,34 @@
+1. Install the client CLI.
+
+Mac:
+  $ curl -Lo fission https://github.com/fission/fission/releases/download/{{ .Chart.Version }}/fission-{{ .Chart.Version }}-darwin-amd64 && chmod +x fission && sudo mv fission /usr/local/bin/
+
+Linux:
+  $ curl -Lo fission https://github.com/fission/fission/releases/download/{{ .Chart.Version }}/fission-{{ .Chart.Version }}-linux-amd64 && chmod +x fission && sudo mv fission /usr/local/bin/
+
+Windows:
+  For Windows, you can use the linux binary on WSL. Or you can download this windows executable: https://github.com/fission/fission/releases/download/{{ .Chart.Version }}/fission-{{ .Chart.Version }}-windows-amd64.exe
+
+2. You're ready to use Fission!
+
+  # Create an environment
+  $ fission env create --name nodejs --image fission/node-env
+
+  # Get a hello world
+  $ curl https://raw.githubusercontent.com/fission/examples/master/nodejs/hello.js > hello.js
+
+  # Register this function with Fission
+  $ fission function create --name hello --env nodejs --code hello.js
+
+{{- if .Values.authentication.enabled }}
+
+  # Create token
+  $ FISSION_USERNAME=$(kubectl get secrets/router --template={{`{{.data.username}}`}} -n fission | base64 -d)
+  $ FISSION_PASSWORD=$(kubectl get secrets/router --template={{`{{.data.password}}`}} -n fission | base64 -d)
+  $ export FISSION_AUTH_TOKEN=$(fission token create --username $FISSION_USERNAME --password $FISSION_PASSWORD)
+{{- end }}
+
+  # Run this function
+  $ fission function test --name hello
+  Hello, world!
+
