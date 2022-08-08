@@ -20,13 +20,13 @@ image: fission/fission-bundle
 pullPolicy: IfNotPresent
 
 ## Fission image version
-imageTag: 1.6.0
+imageTag: 1.7.0-rc.1
 
 ## Fission fetcher repository
 fetcherImage: fission/fetcher
 
 ## Fission fetcher image version
-fetcherImageTag: 1.6.0
+fetcherImageTag: 1.7.0-rc.1
 
 ## Port at which Fission controller service should be exposed
 controllerPort: 31313
@@ -63,6 +63,12 @@ router:
   deployAsDaemonSet: false
   svcAddressMaxRetries: 5
   svcAddressUpdateTimeout: 30s
+  
+  ## Display endpoint access logs
+  ## To be aware of enabling logging endpoint access log, it increases
+  ## router resource utilization when under heavy workloads.
+  displayAccessLog: false
+  
   ## Add annotations for router
   # svcAnnotations:
   #   cloud.google.com/load-balancer-type: Internal
@@ -97,6 +103,9 @@ router:
 
     ## Max retries times of a failed request
     maxRetries: 10
+
+  ## Sample with a rate per time window (traces/second)
+  traceSamplingRate: 0.5
 
 ## Message queue trigger config
 ### NATS Streaming, enabled by default
@@ -178,7 +187,7 @@ persistence:
 ##               operator: In
 ##               values:
 ##                 - app
-extraCoreComponentPodConfig:
+#extraCoreComponentPodConfig:
 #  affinity:
 #  tolerations:
 #  nodeSelector:
@@ -205,8 +214,14 @@ preUpgradeChecksImage: fission/pre-upgrade-checks
 ## summary is returned as part of http response
 debugEnv: false
 
-## set this flag to true if prometheus needs to be deployed along with fission
-prometheusDeploy: true
+## Prometheus for scrapping service metrics
+prometheus:
+  ## set this flag to true if prometheus needs to be deployed along with fission
+  enabled: true
+  
+  ## If enabled is false, please assign the prometheus service URL
+  ## that is accessible by components.
+  serviceEndpoint: ""
 
 ## set this flag to false if you dont need canary deployment feature
 canaryDeployment:
