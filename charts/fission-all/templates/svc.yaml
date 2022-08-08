@@ -4,13 +4,14 @@ metadata:
   name: router
   labels:
     svc: router
+    application: fission-router
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.routerServiceType }}
   ports:
   - port: 80
     targetPort: 8888
-{{ if eq .Values.serviceType "NodePort" }}
+{{ if eq .Values.routerServiceType "NodePort" }}
     nodePort: {{ .Values.routerPort }}
 {{ end }}
   selector:
@@ -23,6 +24,7 @@ metadata:
   name: controller
   labels:
     svc: controller
+    application: fission-api
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   type: {{ .Values.serviceType }}
@@ -36,6 +38,7 @@ spec:
     svc: controller
 
 ---
+{{- if eq .Values.messageQueue.type "nats-streaming" }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -53,6 +56,7 @@ spec:
 {{ end }}
   selector:
     svc: nats-streaming
+{{- end }}
 
 ---
 apiVersion: v1

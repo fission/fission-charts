@@ -6,6 +6,9 @@ metadata:
   labels:
     name: fission-function
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    {{- if .Values.enableIstio }}
+    istio-injection: enabled
+    {{- end }}
 
 ---
 apiVersion: v1
@@ -15,6 +18,9 @@ metadata:
   labels:
     name: fission-builder
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    {{- if .Values.enableIstio }}
+    istio-injection: enabled
+    {{- end }}
 
 ---
 apiVersion: v1
@@ -122,6 +128,7 @@ spec:
     metadata:
       labels:
         svc: controller
+        application: fission-api
     spec:
       containers:
       - name: controller
@@ -129,6 +136,24 @@ spec:
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--controllerPort", "8888"]
+        env:
+          - name: FISSION_FUNCTION_NAMESPACE
+            value: "{{ .Values.functionNamespace }}"
+          - name: ENABLE_ISTIO
+            value: "{{ .Values.enableIstio }}"
+        readinessProbe:
+          httpGet:
+            path: "/healthz"
+            port: 8888
+          initialDelaySeconds: 1
+          periodSeconds: 1
+          failureThreshold: 30
+        livenessProbe:
+          httpGet:
+            path: "/healthz"
+            port: 8888
+          initialDelaySeconds: 35
+          periodSeconds: 5
       serviceAccount: fission-svc
 
 ---
@@ -143,6 +168,7 @@ spec:
   template:
     metadata:
       labels:
+        application: fission-router
         svc: router
     spec:
       containers:
@@ -151,6 +177,19 @@ spec:
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--routerPort", "8888", "--executorUrl", "http://executor.{{ .Release.Namespace }}"]
+        readinessProbe:
+          httpGet:
+            path: "/router-healthz"
+            port: 8888
+          initialDelaySeconds: 1
+          periodSeconds: 1
+          failureThreshold: 30
+        livenessProbe:
+          httpGet:
+            path: "/router-healthz"
+            port: 8888
+          initialDelaySeconds: 35
+          periodSeconds: 5
       serviceAccount: fission-svc
 
 ---
@@ -196,6 +235,21 @@ spec:
           value: "{{ .Values.pullPolicy }}"
         - name: RUNTIME_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
+        - name: ENABLE_ISTIO
+          value: "{{ .Values.enableIstio }}"
+        readinessProbe:
+          httpGet:
+            path: "/healthz"
+            port: 8888
+          initialDelaySeconds: 1
+          periodSeconds: 1
+          failureThreshold: 30
+        livenessProbe:
+          httpGet:
+            path: "/healthz"
+            port: 8888
+          initialDelaySeconds: 35
+          periodSeconds: 5
       serviceAccount: fission-svc
 
 ---
@@ -223,6 +277,8 @@ spec:
           value: "{{ .Values.fetcherImage }}:{{ .Values.fetcherImageTag }}"
         - name: FETCHER_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
+        - name: ENABLE_ISTIO
+          value: "{{ .Values.enableIstio }}"
       serviceAccount: fission-svc
 
 ---
@@ -444,6 +500,7 @@ spec:
 #      serviceAccount: fission-svc
 
 ---
+{{- if eq .Values.messageQueue.type "nats-streaming" }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -469,6 +526,7 @@ spec:
         - containerPort: 4222
           hostPort: 4222
           protocol: TCP
+{{- end }}
 
 ---
 apiVersion: extensions/v1beta1
@@ -492,9 +550,19 @@ spec:
         args: ["--mqt"]
         env:
         - name: MESSAGE_QUEUE_TYPE
-          value: nats-streaming
+          value: {{ .Values.messageQueue.type }}
+        {{- if eq .Values.messageQueue.type "nats-streaming" }}
         - name: MESSAGE_QUEUE_URL
           value: nats://{{ .Values.nats.authToken }}@nats-streaming:4222
+        {{- else if eq .Values.messageQueue.type "azure-storage-queue" }}
+        - name: AZURE_STORAGE_ACCOUNT_NAME
+          value: {{ required "An Azure storage account name is required." .Values.azureStorageQueue.accountName }}
+        - name: AZURE_STORAGE_ACCOUNT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: azure-storage-account-key
+              key: key
+        {{- end }}
       serviceAccount: fission-svc
 
 ---
@@ -523,6 +591,19 @@ spec:
         volumeMounts:
         - name: fission-storage
           mountPath: /fission
+        readinessProbe:
+          httpGet:
+            path: "/healthz"
+            port: 8000
+          initialDelaySeconds: 1
+          periodSeconds: 1
+          failureThreshold: 30
+        livenessProbe:
+          httpGet:
+            path: "/healthz"
+            port: 8000
+          initialDelaySeconds: 35
+          periodSeconds: 5
       serviceAccount: fission-svc
       volumes:
       - name: fission-storage
