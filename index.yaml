@@ -956,15 +956,15 @@ entries:
     - https://fission.github.io/fission-charts/fission-all-1.0-rc2.tgz
     version: 1.0-rc2
   - apiVersion: v1
-    appVersion: 1.0-rc1
-    created: "2022-07-06T09:35:02.352956Z"
+    appVersion: 1.0-rc2
+    created: "2022-08-08T11:15:45.956224994Z"
     dependencies:
     - condition: prometheusDeploy
       name: prometheus
-      repository: https://kubernetes-charts.storage.googleapis.com
+      repository: https://prometheus-community.github.io/helm-charts
       version: 7.1.0
     description: Fission is a fast serverless framework for Kubernetes.
-    digest: f9f10dde74733aefabab05c6051c235841a471cf80da31e2f4e08888a23590af
+    digest: cd2e711a569d2854c5d8318777c8e355498faeac7d2486509a2df46c3edfea60
     home: http://fission.io/
     keywords:
     - fission
@@ -976,8 +976,8 @@ entries:
       name: Ta Ching Chen
     name: fission-all
     urls:
-    - https://fission.github.io/fission-charts/fission-all-1.0-rc1.tgz
-    version: 1.0-rc1
+    - https://github.com/fission/fission-charts/releases/download/fission-all-1.0-rc2/fission-all-1.0-rc2.tgz
+    version: 1.0-rc2
   - apiVersion: v1
     appVersion: 1.0-rc1
     created: "2022-08-08T11:15:00.683065112Z"
@@ -1000,6 +1000,29 @@ entries:
     name: fission-all
     urls:
     - https://github.com/fission/fission-charts/releases/download/fission-all-1.0-rc1/fission-all-1.0-rc1.tgz
+    version: 1.0-rc1
+  - apiVersion: v1
+    appVersion: 1.0-rc1
+    created: "2022-07-06T09:35:02.352956Z"
+    dependencies:
+    - condition: prometheusDeploy
+      name: prometheus
+      repository: https://kubernetes-charts.storage.googleapis.com
+      version: 7.1.0
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: f9f10dde74733aefabab05c6051c235841a471cf80da31e2f4e08888a23590af
+    home: http://fission.io/
+    keywords:
+    - fission
+    - serverless
+    maintainers:
+    - email: soamvasani@platform9.com
+      name: Soam Vasani
+    - email: contact@tachingchen.com
+      name: Ta Ching Chen
+    name: fission-all
+    urls:
+    - https://fission.github.io/fission-charts/fission-all-1.0-rc1.tgz
     version: 1.0-rc1
   - apiVersion: v1
     appVersion: 0.12.0
@@ -2580,4 +2603,4 @@ entries:
     urls:
     - https://fission.github.io/fission-charts/fission-workflows-0.1.0.tgz
     version: 0.1.0
-generated: "2022-08-08T11:15:00.683764708Z"
+generated: "2022-08-08T11:15:45.957004295Z"
