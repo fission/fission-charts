@@ -1,14 +1,15 @@
 apiVersion: v1
-appVersion: 1.10.0
+appVersion: 1.1.0
 description: Fission is a fast serverless framework for Kubernetes.
+engine: gotpl
 home: http://fission.io/
 keywords:
 - fission
 - serverless
 maintainers:
-- email: soamvasani+1@gmail.com
+- email: soamvasani@platform9.com
   name: Soam Vasani
-- email: hello@tachingchen.com
+- email: contact@tachingchen.com
   name: Ta Ching Chen
 name: fission-all
-version: 1.10.0
+version: 1.1.0
