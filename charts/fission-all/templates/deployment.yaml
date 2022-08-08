@@ -23,6 +23,37 @@ metadata:
     {{- end }}
 
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: secret-configmap-getter
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - secrets
+  - configmaps
+  verbs:
+  - get
+  - watch
+  - list
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: package-getter
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - packages
+  verbs:
+  - get
+  - watch
+  - list
+
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -35,21 +66,6 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: fission-admin
   namespace: {{ .Release.Namespace }}
-subjects:
-  - kind: ServiceAccount
-    name: fission-svc
-    namespace: {{ .Release.Namespace }}
-roleRef:
-  kind: ClusterRole
-  name: admin
-  apiGroup: rbac.authorization.k8s.io
-
----
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: fission-function-admin
-  namespace: {{ .Values.functionNamespace }}
 subjects:
   - kind: ServiceAccount
     name: fission-svc
@@ -79,41 +95,12 @@ kind: ServiceAccount
 metadata:
   name: fission-fetcher
   namespace: {{ .Values.functionNamespace }}
-
----
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: fission-fetcher-crd
-subjects:
-- kind: ServiceAccount
-  name: fission-fetcher
-  namespace: {{ .Values.functionNamespace }}
-roleRef:
-  kind: ClusterRole
-  name: cluster-admin
-  apiGroup: rbac.authorization.k8s.io
-
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: fission-builder
   namespace: {{ .Values.builderNamespace }}
-
----
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: fission-builder-crd
-subjects:
-- kind: ServiceAccount
-  name: fission-builder
-  namespace: {{ .Values.builderNamespace }}
-roleRef:
-  kind: ClusterRole
-  name: cluster-admin
-  apiGroup: rbac.authorization.k8s.io
 
 ---
 apiVersion: extensions/v1beta1
@@ -168,6 +155,10 @@ spec:
       labels:
         application: fission-router
         svc: router
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8080"
     spec:
       containers:
       - name: router
@@ -175,6 +166,11 @@ spec:
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--routerPort", "8888", "--executorUrl", "http://executor.{{ .Release.Namespace }}"]
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
         readinessProbe:
           httpGet:
             path: "/router-healthz"
@@ -188,6 +184,11 @@ spec:
             port: 8888
           initialDelaySeconds: 35
           periodSeconds: 5
+        ports:
+        - containerPort: 8080
+          name: metrics
+        - containerPort: 8888
+          name: http
       serviceAccount: fission-svc
 
 ---
@@ -219,6 +220,10 @@ spec:
     metadata:
       labels:
         svc: executor
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8080"
     spec:
       containers:
       - name: executor
@@ -248,6 +253,11 @@ spec:
             port: 8888
           initialDelaySeconds: 35
           periodSeconds: 5
+        ports:
+        - containerPort: 8080
+          name: metrics
+        - containerPort: 8888
+          name: http
       serviceAccount: fission-svc
 
 ---
@@ -447,7 +457,8 @@ spec:
         - name: fission-log
           hostPath:
               path: /var/log/fission
-
+  updateStrategy:
+    type: RollingUpdate
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
