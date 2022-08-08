@@ -197,21 +197,6 @@ spec:
         - name: RUNTIME_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
       serviceAccount: fission-svc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: buildermgr
-  labels:
-    svc: buildermgr
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-spec:
-  type: ClusterIP
-  ports:
-  - port: 80
-    targetPort: 8889
-  selector:
-    svc: buildermgr
 
 ---
 apiVersion: extensions/v1beta1
@@ -232,7 +217,7 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--builderMgrPort", "8889", "--storageSvcUrl", "http://storagesvc.{{ .Release.Namespace }}", "--envbuilder-namespace", "{{ .Values.builderNamespace }}"]
+        args: ["--builderMgr", "--storageSvcUrl", "http://storagesvc.{{ .Release.Namespace }}", "--envbuilder-namespace", "{{ .Values.builderNamespace }}"]
         env:
         - name: FETCHER_IMAGE
           value: "{{ .Values.fetcherImage }}:{{ .Values.fetcherImageTag }}"
@@ -310,6 +295,48 @@ spec:
                 key: password
 
 ---
+{{- if .Values.heapster }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: heapster
+  namespace: kube-system
+  labels:
+    svc: heapster
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    kubernetes.io/cluster-service: 'true'
+    kubernetes.io/name: heapster
+spec:
+  type: ClusterIP 
+  ports:
+  - port: 80
+    targetPort: 8082
+  selector:
+    svc: heapster
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: heapster
+  namespace: kube-system
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        svc: heapster
+    spec:
+      containers:
+      - name: heapster
+        image: gcr.io/google_containers/heapster-amd64:v1.5.0
+        command: 
+        - /heapster
+        - --source=kubernetes:https://kubernetes.default
+      serviceAccount: {{ .Release.Namespace }}/fission-svc
+---      
+{{- end -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -324,7 +351,7 @@ spec:
     spec:
       containers:
         - name: fluentd
-          image: {{ .Values.logger.fluentdImage }}
+          image: "{{ .Values.logger.fluentdImage }}:{{ .Values.logger.fluentdImageTag }}"
           imagePullPolicy: {{ .Values.pullPolicy }}
           env:
             - name: INFLUXDB_ADDRESS
@@ -433,7 +460,11 @@ spec:
       containers:
       - name: nats-streaming
         image: nats-streaming
-        args: ["--cluster_id", "{{ .Values.nats.clusterID }}", "--auth", "{{ .Values.nats.authToken }}"]
+        args: [
+          "--cluster_id", "{{ .Values.nats.clusterID }}",
+          "--auth", "{{ .Values.nats.authToken }}",
+          "--max_channels", "0"
+        ]
         ports:
         - containerPort: 4222
           hostPort: 4222
@@ -486,13 +517,16 @@ spec:
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
         args: ["--storageServicePort", "8000", "--filePath", "/fission"]
+        env:
+        - name: PRUNE_INTERVAL
+          value: "{{.Values.pruneInterval}}"
         volumeMounts:
         - name: fission-storage
           mountPath: /fission
       serviceAccount: fission-svc
       volumes:
       - name: fission-storage
-      {{- if .Values.persistence.enabled }}   
+      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default "fission-storage-pvc" }}
       {{- else }}

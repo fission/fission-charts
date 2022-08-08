@@ -13,13 +13,13 @@ image: fission/fission-bundle
 pullPolicy: IfNotPresent
 
 ## Fission image version
-imageTag: 0.4.1
+imageTag: 0.5.0
 
 ## Fission fetcher repository
 fetcherImage: fission/fetcher
 
 ## Fission fetcher image version
-fetcherImageTag: 0.4.1
+fetcherImageTag: 0.5.0
 
 ## Port at which Fission controller service should be exposed
 controllerPort: 31313
@@ -42,6 +42,7 @@ builderNamespace: fission-builder
 logger:
   influxdbAdmin: "admin"
   fluentdImage: fission/fluentd
+  fluentdImageTag: 0.5.0
 
 ## Message queue trigger config
 ### NATS Streaming
@@ -66,3 +67,12 @@ persistence:
 ## Analytics let us count how many people installed fission. Set to
 ## false to disable analytics.
 analytics: true
+
+
+## Enable Heapster only in clusters where heapster does not exist already
+heapster: false
+
+## Archive pruner is a garbage collector for archives on the fission storage service.
+## This interval configures the frequency at which it runs inside the storagesvc pod.
+## The value is in minutes.
+pruneInterval: 60
