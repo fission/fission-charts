@@ -9,11 +9,14 @@ serviceType: ClusterIP
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP.
 routerServiceType: LoadBalancer
 
+## Image base repository
+repository: index.docker.io
+
 ## Fission image repository
 image: fission/fission-bundle
 
 ## Fission image version
-imageTag: 0.11.0
+imageTag: 0.12.0
 
 ## Image pull policy
 pullPolicy: IfNotPresent
@@ -22,7 +25,7 @@ pullPolicy: IfNotPresent
 fetcherImage: fission/fetcher
 
 ## Fission fetcher image version
-fetcherImageTag: 0.11.0
+fetcherImageTag: 0.12.0
 
 ## Port at which Fission controller service should be exposed
 controllerPort: 31313
@@ -65,3 +68,14 @@ pruneInterval: 60
 
 ## Fission pre-install/pre-upgrade checks live in this image
 preUpgradeChecksImage: fission/pre-upgrade-checks
+
+## if there are any pod specialization errors when a function is triggered and this flag is set to true, the error
+## summary is returned as part of http response
+debugEnv: true
+
+## set this flag to true if prometheus needs to be deployed along with fission
+prometheusDeploy: false
+
+## set this flag to false if you dont need canary deployment feature
+canaryDeployment:
+  enabled: false
