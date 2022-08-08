@@ -25,7 +25,7 @@ image: fission/fission-bundle
 ## It is also used by the chart to identify version of the few more images apart from fission-bundle.
 ## Keep it empty for using latest tag.
 ##
-imageTag: v1.16.0-rc2
+imageTag: v1.16.0
 
 ## pullPolicy represents the pull policy to use for images in the chart.
 ##
@@ -92,7 +92,7 @@ fetcher:
   ## image represents the image of the fetcher component.
   image: fission/fetcher
   ## imageTag represents the tag of the image of the fetcher component.
-  imageTag: v1.16.0-rc2
+  imageTag: v1.16.0
 
   ## Fetcher is only for to downloading or uploading archive.
   ## Normally, you don't need to change the value here, unless necessary.
@@ -494,7 +494,7 @@ preUpgradeChecks:
   image: fission/pre-upgrade-checks
   ## pre-install/pre-upgrade checks image version
   ##
-  imageTag: v1.16.0-rc2
+  imageTag: v1.16.0
 
 ## Fission post-install/post-upgrade reporting live in this image
 ##
@@ -617,25 +617,25 @@ mqt_keda:
   connector_images:
     kafka:
       image: fission/keda-kafka-http-connector
-      tag: v0.9
+      tag: v0.10
     rabbitmq:
       image: fission/keda-rabbitmq-http-connector
-      tag: v0.8
+      tag: v0.9
     awskinesis:
       image: fission/keda-aws-kinesis-http-connector
-      tag: v0.8
+      tag: v0.9
     aws_sqs:
       image: fission/keda-aws-sqs-http-connector
-      tag: v0.8
+      tag: v0.9
     nats_steaming:
       image: fission/keda-nats-streaming-http-connector
-      tag: v0.9
+      tag: v0.11
     gcp_pubsub:
       image: fission/keda-gcp-pubsub-http-connector
-      tag: v0.3
+      tag: v0.4
     redis:
       image: fission/keda-redis-http-connector
-      tag: v0.1
+      tag: v0.2
 
   ## Pod resources as:
   ##  resources:
