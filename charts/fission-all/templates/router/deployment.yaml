@@ -83,6 +83,7 @@ spec:
           value: {{ .Values.pprof.enabled | quote }}
         - name: DISPLAY_ACCESS_LOG
           value: {{ .Values.router.displayAccessLog | default false | quote }}
+        {{- include "fission-resource-namespace.envs" . | indent 8 }}  
         {{- include "opentelemtry.envs" . | indent 8 }}
         resources:
           {{- toYaml .Values.router.resources | nindent 10 }}
@@ -122,7 +123,7 @@ spec:
         {{- else if .Values.terminationMessagePolicy }}
         terminationMessagePolicy: {{ .Values.terminationMessagePolicy }}
         {{- end }}
-      serviceAccountName: fission-svc
+      serviceAccountName: fission-router
       volumes:
       - name: config-volume
         configMap:

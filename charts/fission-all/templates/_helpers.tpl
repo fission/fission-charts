@@ -71,3 +71,35 @@ This template generates the image name for the deployment depending on the value
 - name: OTEL_PROPAGATORS
   value: "{{ .Values.openTelemetry.propagators }}"
 {{- end }}
+
+{{- define "fission-resource-namespace.envs" }}
+- name: FISSION_RESOURCE_NAMESPACES
+{{- if not .Values.singleDefaultNamespace }}
+  value: "{{ .Values.defaultNamespace }},{{ join "," .Values.additionalFissionNamespaces }}"
+{{- else }}
+  value: {{ .Values.defaultNamespace }}  
+{{- end }}
+{{- end }}
+
+{{/*
+Define the svc's name
+*/}}
+{{- define "fission-webhook.svc" -}}
+{{- printf "webhook-service" -}}
+{{- end -}}
+
+{{- define "fission-function-ns" -}}
+{{- if .Values.functionNamespace -}}
+{{- printf "%s" .Values.functionNamespace -}}
+{{- else -}}
+{{- printf "%s" .Values.defaultNamespace -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "fission-builder-ns" -}}
+{{- if .Values.builderNamespace -}}
+{{- printf "%s" .Values.builderNamespace -}}
+{{- else -}}
+{{- printf "%s" .Values.builderNamespace -}}
+{{- end -}}
+{{- end -}}

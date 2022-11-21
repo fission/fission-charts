@@ -27,7 +27,7 @@ spec:
         image: {{ include "fission-bundleImage" . | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--executorPort", "8888", "--namespace", "{{ .Values.functionNamespace }}"]
+        args: ["--executorPort", "8888"]
         env:
         - name: FETCHER_IMAGE
         {{- if eq .Values.fetcher.imageTag "" }}
@@ -37,6 +37,12 @@ spec:
         {{- end }}
         - name: FETCHER_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
+        - name: FISSION_BUILDER_NAMESPACE
+          value: "{{ .Values.builderNamespace }}"
+        - name: FISSION_FUNCTION_NAMESPACE
+          value: "{{ .Values.functionNamespace }}"
+        - name: FISSION_DEFAULT_NAMESPACE
+          value: "{{ .Values.defaultNamespace }}"  
         - name: RUNTIME_IMAGE_PULL_POLICY
           value: "{{ .Values.pullPolicy }}"
         - name: ADOPT_EXISTING_RESOURCES
@@ -57,6 +63,21 @@ spec:
           value: {{ .Values.debugEnv | quote }}
         - name: PPROF_ENABLED
           value: {{ .Values.pprof.enabled | quote }}
+        - name: OBJECT_REAPER_INTERVAL
+          value: {{ .Values.executor.objectReaperInterval | quote }}
+        {{- if .Values.executor.poolmgr.objectReaperInterval }}
+        - name: POOLMGR_OBJECT_REAPER_INTERVAL
+          value: {{ .Values.executor.poolmgr.objectReaperInterval | quote }}
+        {{- end}}
+        {{- if .Values.executor.newdeploy.objectReaperInterval }}
+        - name: NEWDEPLOY_OBJECT_REAPER_INTERVAL
+          value: {{ .Values.executor.newdeploy.objectReaperInterval | quote }}
+        {{- end}}
+        {{- if .Values.executor.container.objectReaperInterval }}
+        - name: CONTAINER_OBJECT_REAPER_INTERVAL
+          value: {{ .Values.executor.container.objectReaperInterval | quote }}
+        {{- end}}
+        {{- include "fission-resource-namespace.envs" . | indent 8 }}
         - name: HELM_RELEASE_NAME
           value: {{ .Release.Name | quote }}
         {{- include "opentelemtry.envs" . | indent 8 }}
@@ -94,7 +115,7 @@ spec:
         {{- else if .Values.terminationMessagePolicy }}
         terminationMessagePolicy: {{ .Values.terminationMessagePolicy }}
         {{- end }}
-      serviceAccountName: fission-svc
+      serviceAccountName: fission-executor
 {{- if .Values.executor.priorityClassName }}
       priorityClassName: {{ .Values.executor.priorityClassName }}
 {{- else if .Values.priorityClassName }}

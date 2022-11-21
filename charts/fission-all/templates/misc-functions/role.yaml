@@ -1,70 +1,30 @@
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: {{ .Release.Name }}-fission-fetcher
-  namespace: {{ .Values.defaultNamespace }}
-rules:
-  - apiGroups:
-      - ""
-    resources:
-      - configmaps
-      - secrets
-      - pods
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - ""
-    resources:
-      - events
-    verbs:
-      - "*"
-  - apiGroups:
-      - fission.io
-    resources:
-      - canaryconfigs
-      - environments
-      - functions
-      - httptriggers
-      - kuberneteswatchtriggers
-      - messagequeuetriggers
-      - packages
-      - timetriggers
-    verbs:
-      - "*"
-
+{{/* 
+Passing namespace as an argument to the "fissionFunction.roles" template.
+Need to use merge function to pass in the current scope so that ".Release" values
+can be used
+ */}}
+{{ include "fissionFunction.roles" (merge (dict "namespace" .Values.defaultNamespace) .) }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .Release.Name }}-fission-builder
-  namespace: {{ .Values.defaultNamespace }}
-rules:
-  - apiGroups:
-      - fission.io
-    resources:
-      - canaryconfigs
-      - environments
-      - functions
-      - httptriggers
-      - kuberneteswatchtriggers
-      - messagequeuetriggers
-      - packages
-      - timetriggers
-    verbs:
-      - "*"
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  namespace: {{ .Values.functionNamespace }}
+  namespace: {{ template "fission-function-ns" . }}
   name: {{ .Release.Name }}-event-fetcher
 rules:
-  - apiGroups: [""] # "" indicates the core API group
-    resources: ["pods"]
-    verbs: ["get", "watch", "list"]
-  - apiGroups: [""] # "" indicates the core API group
-    resources: ["events"]
-    verbs: ["*"]
+- apiGroups:
+  - ""
+  resources:
+  - "events"
+  verbs:
+  - "get"
+  - "list"
+  - "watch"
+  - "create"
+  - "update"
+  - "patch"
+
+{{- if not .Values.singleDefaultNamespace }}
+{{- range $namespace := $.Values.additionalFissionNamespaces }}
+{{ include "fissionFunction.roles" (merge (dict "namespace" $namespace) $) }}
+{{- end }}
+{{- end }}

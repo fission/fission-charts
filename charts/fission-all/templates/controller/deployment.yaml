@@ -1,3 +1,4 @@
+{{- if or (.Values.controller.enabled) (.Values.influxdb.enabled) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,12 +33,17 @@ spec:
         command: ["/fission-bundle"]
         args: ["--controllerPort", "8888"]
         env:
+        - name: FISSION_DEFAULT_NAMESPACE
+          value: "{{ .Values.defaultNamespace }}"
+        - name: FISSION_BUILDER_NAMESPACE
+          value: "{{ .Values.builderNamespace }}"
         - name: FISSION_FUNCTION_NAMESPACE
-          value: "{{ .Values.functionNamespace }}"
+          value: "{{ .Values.functionNamespace }}"  
         - name: DEBUG_ENV
           value: {{ .Values.debugEnv | quote }}
         - name: PPROF_ENABLED
           value: {{ .Values.pprof.enabled | quote }}
+        {{- include "fission-resource-namespace.envs" . | indent 8 }} 
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
@@ -78,7 +84,7 @@ spec:
             name: pprof
         {{- end }}
   
-      serviceAccountName: fission-svc
+      serviceAccountName: fission-controller
       volumes:
       - name: config-volume
         configMap:
@@ -93,3 +99,4 @@ spec:
 {{- if .Values.extraCoreComponentPodConfig }}
 {{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
 {{- end }}
+{{- end -}}

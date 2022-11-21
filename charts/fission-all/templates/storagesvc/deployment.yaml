@@ -60,6 +60,7 @@ spec:
         - name: STORAGE_S3_REGION
           value: {{ .Values.persistence.s3.region }}
         {{- end }}
+        {{- include "fission-resource-namespace.envs" . | indent 8 }}
         {{- include "opentelemtry.envs" . | indent 8 }}
         resources:
           {{- toYaml .Values.storagesvc.resources | nindent 10 }}
@@ -96,7 +97,7 @@ spec:
         {{- if .Values.terminationMessagePolicy }}
         terminationMessagePolicy: {{ .Values.terminationMessagePolicy }}
         {{- end }}
-      serviceAccountName: fission-svc
+      serviceAccountName: fission-storagesvc
       {{- if and (.Values.persistence.enabled) (ne (.Values.persistence.storageType | default "local") "s3") }}
       volumes:
       - name: fission-storage
