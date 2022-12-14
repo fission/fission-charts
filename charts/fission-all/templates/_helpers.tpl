@@ -74,7 +74,7 @@ This template generates the image name for the deployment depending on the value
 
 {{- define "fission-resource-namespace.envs" }}
 - name: FISSION_RESOURCE_NAMESPACES
-{{- if not .Values.singleDefaultNamespace }}
+{{- if gt (len .Values.additionalFissionNamespaces) 0 }}
   value: "{{ .Values.defaultNamespace }},{{ join "," .Values.additionalFissionNamespaces }}"
 {{- else }}
   value: {{ .Values.defaultNamespace }}  
@@ -100,6 +100,6 @@ Define the svc's name
 {{- if .Values.builderNamespace -}}
 {{- printf "%s" .Values.builderNamespace -}}
 {{- else -}}
-{{- printf "%s" .Values.builderNamespace -}}
+{{- printf "%s" .Values.defaultNamespace -}}
 {{- end -}}
 {{- end -}}
