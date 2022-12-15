@@ -25,7 +25,7 @@ image: fission/fission-bundle
 ## It is also used by the chart to identify version of the few more images apart from fission-bundle.
 ## Keep it empty for using latest tag.
 ##
-imageTag: v1.18.0-rc1
+imageTag: v1.18.0-rc2
 
 ## pullPolicy represents the pull policy to use for images in the chart.
 ##
@@ -65,7 +65,6 @@ routerPort: 31314
 ## This is different from the release namespace.
 ## Please consider setting `singleDefaultNamespace` and `additionalFissionNamespaces` if you want
 ## more than one namespace to be used for Fission custom resources.
-## Fission will watch the defaultNamespace only if `singleDefaultNamespace` is true.
 ##
 defaultNamespace: default
 
@@ -81,12 +80,7 @@ builderNamespace: ""
 ##
 functionNamespace: ""
 
-## If true, fission will only watch for fission custom resources created in the `defaultNamespace` above.
-##
-singleDefaultNamespace: true
-
 ## Fission will watch the following namespaces along with the `defaultNamespace` for fission custom resources.
-## Only works if `singleDefaultNamespace` is false.
 ## additionalFissionNamespaces: 
 ## - namespace1
 ## - namespace2
@@ -110,7 +104,7 @@ fetcher:
   ## image represents the image of the fetcher component.
   image: fission/fetcher
   ## imageTag represents the tag of the image of the fetcher component.
-  imageTag: v1.18.0-rc1
+  imageTag: v1.18.0-rc2
 
   ## Fetcher is only for to downloading or uploading archive.
   ## Normally, you don't need to change the value here, unless necessary.
@@ -166,7 +160,7 @@ executor:
   ## This is an experimental section, please verify before enabling in production.
   ## Ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1
   securityContext:
-    enabled: false
+    enabled: true
     ## Mark it false, if you want to stop the non root user validation
     runAsNonRoot: true
     fsGroup: 10001
@@ -193,6 +187,14 @@ executor:
     ##
     ## objectReaperInterval: 5
 
+  serviceAccountCheck:
+    ## enables fission to create service account, roles and rolebinding for missing permission for builder and fetcher.
+    enabled: true
+    ## indicates the time interval in minutes, after that fission will create service account, roles and rolebinding for builder and fetcher.
+    ## interval will be applicable only if enable value is set to true.
+    ## default timing will be 0 minutes. That means check will run only once.
+    ## if you want to run check every 30 minutes then set interval to 30.
+    interval: 0
 ## router is responsible for routing function calls to the appropriate function.
 ##
 router:
@@ -303,7 +305,7 @@ router:
   ## This is an experimental section, please verify before enabling in production.
   ## Ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1
   securityContext:
-    enabled: false
+    enabled: true
     ## Mark it false, if you want to stop the non root user validation
     runAsNonRoot: true
     fsGroup: 10001
@@ -329,7 +331,7 @@ buildermgr:
   ## This is an experimental section, please verify before enabling in production.
   ## Ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1
   securityContext:
-    enabled: false
+    enabled: true
     ## Mark it false, if you want to stop the non root user validation
     runAsNonRoot: true
     fsGroup: 10001
@@ -357,7 +359,7 @@ controller:
   ## This is an experimental section, please verify before enabling in production.
   ## Ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1
   securityContext:
-    enabled: false
+    enabled: true
     ## Mark it false, if you want to stop the non root user validation
     runAsNonRoot: true
     fsGroup: 10001
@@ -394,7 +396,7 @@ webhook:
   ## This is an experimental section, please verify before enabling in production.
   ## Ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1
   securityContext:
-    enabled: false
+    enabled: true
     ## Mark it false, if you want to stop the non root user validation
     runAsNonRoot: true
     fsGroup: 10001
@@ -421,7 +423,7 @@ kubewatcher:
   ## This is an experimental section, please verify before enabling in production.
   ## Ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1
   securityContext:
-    enabled: false
+    enabled: true
     ## Mark it false, if you want to stop the non root user validation
     runAsNonRoot: true
     fsGroup: 10001
@@ -453,7 +455,7 @@ storagesvc:
   ## This is an experimental section, please verify before enabling in production.
   ## Ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1
   securityContext:
-    enabled: false
+    enabled: true
     ## Mark it false, if you want to stop the non root user validation
     runAsNonRoot: true
     fsGroup: 10001
@@ -480,7 +482,7 @@ timer:
   ## This is an experimental section, please verify before enabling in production.
   ## Ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1
   securityContext:
-    enabled: false
+    enabled: true
     ## Mark it false, if you want to stop the non root user validation
     runAsNonRoot: true
     fsGroup: 10001
@@ -684,7 +686,7 @@ preUpgradeChecks:
   image: fission/pre-upgrade-checks
   ## pre-install/pre-upgrade checks image version
   ##
-  imageTag: v1.18.0-rc1
+  imageTag: v1.18.0-rc2
 
 ## Fission post-install/post-upgrade reporting live in this image
 ##
@@ -725,7 +727,7 @@ canaryDeployment:
   ## This is an experimental section, please verify before enabling in production.
   ## Ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1
   securityContext:
-    enabled: false
+    enabled: true
     ## Mark it false, if you want to stop the non root user validation
     runAsNonRoot: true
     fsGroup: 10001
