@@ -47,7 +47,7 @@ _See [helm dependency](https://helm.sh/docs/helm/helm_dependency/) for command d
 
 ```console
 # Helm
-$ helm uninstall [RELEASE_NAME]
+$ helm uninstall [RELEASE_NAME] --namespace fission
 ```
 
 This removes all the Kubernetes components associated with the chart and deletes the release.
