@@ -7,6 +7,11 @@ metadata:
   name: fission-webhook-certs
   labels:
     app.kubernetes.io/component: webhook-secret
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 type: Opaque
 data:
   ca.crt: {{ b64enc (include "webhook.caBundleCertPEM" .) }}
@@ -19,6 +24,12 @@ kind: Issuer
 metadata:  
   name: fission-selfsigned-issuer  
   namespace: {{ .Release.Namespace }}  
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 spec:  
   selfSigned: {}  
 ---  
@@ -27,6 +38,12 @@ kind: Certificate
 metadata:  
   name: fission-webhook-cert  
   namespace: {{ .Release.Namespace }}  
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 spec:  
   secretName: fission-webhook-certs  
   dnsNames:  
