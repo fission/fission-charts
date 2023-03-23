@@ -4,9 +4,14 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ template "fission-function-ns" . }}
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
   labels:
     name: fission-function
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
     {{- if .Values.enableIstio }}
     istio-injection: enabled
     {{- end }}
@@ -19,9 +24,14 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ template "fission-builder-ns" . }}
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
   labels:
     name: fission-builder
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
     {{- if .Values.enableIstio }}
     istio-injection: enabled
     {{- end }}

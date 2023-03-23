@@ -6,8 +6,12 @@ metadata:
     svc: router
     application: fission-router
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-{{- if .Values.router.svcAnnotations }}
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
   annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
+{{- if .Values.router.svcAnnotations }}
 {{ toYaml .Values.router.svcAnnotations | indent 4 }}
 {{- end }}
 spec:

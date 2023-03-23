@@ -3,6 +3,12 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: runtime-podspec-patch
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 data: 
   runtime-podspec-patch.yaml: |
     {{- toYaml .Values.runtimePodSpec.podSpec | nindent 4 }}

@@ -7,6 +7,11 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     svc: mqtrigger
     messagequeue: kafka
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 spec:
   replicas: 1
   selector:
@@ -89,6 +94,11 @@ metadata:
   name: mqtrigger-kafka-secrets
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 data:
   {{- if .Files.Get  (printf "%s" .Values.kafka.authentication.tls.caCert) }}
   caCert: {{ .Files.Get (printf "%s" .Values.kafka.authentication.tls.caCert) | b64enc }}

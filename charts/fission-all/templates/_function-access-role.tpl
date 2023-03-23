@@ -5,6 +5,12 @@ kind: Role
 metadata:
   name: {{ .Release.Name }}-fission-fetcher
   namespace: {{ .namespace }}
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 rules:
 - apiGroups:
   - ""
@@ -25,6 +31,12 @@ kind: Role
 metadata:
   name: {{ .Release.Name }}-fission-builder
   namespace: {{ .namespace }}
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 rules:
 - apiGroups:
   - fission.io
@@ -45,6 +57,12 @@ kind: Role
 metadata:
   namespace: {{ .namespace }}
   name: {{ .Release.Name }}-fission-fetcher-websocket
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 rules:
 - apiGroups:
   - ""
@@ -72,6 +90,12 @@ kind: RoleBinding
 metadata:
   name: {{ .Release.Name }}-fission-fetcher
   namespace: {{ .namespace }}
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -90,6 +114,12 @@ kind: RoleBinding
 metadata:
   name: {{ .Release.Name }}-fission-builder
   namespace: {{ .namespace }}
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -108,6 +138,12 @@ kind: RoleBinding
 metadata:
   name: {{ .Release.Name }}-fission-fetcher-websocket
   namespace: {{ .namespace }}
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

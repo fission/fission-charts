@@ -10,6 +10,11 @@ metadata:
   labels:
     grafana_dashboard: "1"
     created_by: "{{ $.Chart.Name }}"
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 data:
   {{ base $path }}: '{{ $files.Get $path }}'
 ---

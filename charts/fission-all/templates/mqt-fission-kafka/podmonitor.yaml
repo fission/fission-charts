@@ -6,10 +6,15 @@ metadata:
   {{- if .Values.podMonitor.namespace }}
   namespace: {{ .Values.podMonitor.namespace }}
   {{- end }}
-  {{- with .Values.podMonitor.additionalPodMonitorLabels }}
   labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  {{- with .Values.podMonitor.additionalPodMonitorLabels }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 spec:
   namespaceSelector:
     matchNames:

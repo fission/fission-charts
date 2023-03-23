@@ -3,12 +3,17 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-{{- if eq "preupgrade" .component }}
   annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
+{{- if eq "preupgrade" .component }}
     helm.sh/hook: pre-upgrade
     helm.sh/hook-delete-policy: before-hook-creation
     helm.sh/hook-weight: "-2"
 {{- end }}
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
   name: "{{ .Release.Name }}-{{ .component }}"
   namespace: {{ .namespace }}
 {{- if eq "buildermgr" .component }}
@@ -49,11 +54,16 @@ metadata:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-{{- if eq "preupgrade" .component }}
   annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
+{{- if eq "preupgrade" .component }}
     helm.sh/hook: pre-upgrade
     helm.sh/hook-delete-policy: before-hook-creation
 {{- end }}
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
   name: "{{ .Release.Name }}-{{ .component }}"
   namespace: {{ .namespace }}
 subjects:

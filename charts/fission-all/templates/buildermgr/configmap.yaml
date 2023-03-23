@@ -3,6 +3,12 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: builder-podspec-patch
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 data: 
   builder-podspec-patch.yaml: |
     {{- toYaml .Values.builderPodSpec.podSpec | nindent 4 }}

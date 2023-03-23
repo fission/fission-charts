@@ -10,11 +10,15 @@ metadata:
     # This makes it easy to audit chart usage.
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     app: {{ template "name" . }}
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
     "helm.sh/hook": post-install
     "helm.sh/hook-delete-policy": hook-succeeded
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
 spec:
   template:
     metadata:

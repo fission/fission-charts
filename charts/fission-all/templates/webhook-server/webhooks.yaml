@@ -17,8 +17,13 @@ kind: MutatingWebhookConfiguration
 metadata:
   creationTimestamp: null
   name: mutating-webhook-configuration
-  {{- if $certManagerEnabled }}
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
   annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
+  {{- if $certManagerEnabled }}
     cert-manager.io/inject-ca-from: "{{ .Release.Namespace }}/fission-webhook-cert"
   {{- end }}
 webhooks:
@@ -50,8 +55,13 @@ kind: ValidatingWebhookConfiguration
 metadata:
   creationTimestamp: null
   name: validating-webhook-configuration
-  {{- if $certManagerEnabled }}
+  labels:
+    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Helm"
   annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
+  {{- if $certManagerEnabled }}
     cert-manager.io/inject-ca-from: "{{ .Release.Namespace }}/fission-webhook-cert"
   {{- end }}
 webhooks:
