@@ -14,7 +14,7 @@ routerServiceType: LoadBalancer
 ## repository represents base repository for images used in the chart.
 ## Keep it empty for using existing local image
 ##
-repository: index.docker.io
+repository: ghcr.io
 
 ## image represents the base image fission-bundle used by multiple Fission components.
 ## We alter arguments to the image to run a particular component.
@@ -25,7 +25,7 @@ image: fission/fission-bundle
 ## It is also used by the chart to identify version of the few more images apart from fission-bundle.
 ## Keep it empty for using latest tag.
 ##
-imageTag: v1.18.0
+imageTag: v1.19.0-rc1
 
 ## pullPolicy represents the pull policy to use for images in the chart.
 ##
@@ -63,8 +63,7 @@ routerPort: 31314
 
 ## defaultNamespace represents the namespace in which Fission custom resources will be created by the Fission user.
 ## This is different from the release namespace.
-## Please consider setting `singleDefaultNamespace` and `additionalFissionNamespaces` if you want
-## more than one namespace to be used for Fission custom resources.
+## Please consider setting `additionalFissionNamespaces` if you want more than one namespace to be used for Fission custom resources.
 ##
 defaultNamespace: default
 
@@ -104,7 +103,7 @@ fetcher:
   ## image represents the image of the fetcher component.
   image: fission/fetcher
   ## imageTag represents the tag of the image of the fetcher component.
-  imageTag: v1.18.0
+  imageTag: v1.19.0-rc1
 
   ## Fetcher is only for to downloading or uploading archive.
   ## Normally, you don't need to change the value here, unless necessary.
@@ -686,7 +685,7 @@ preUpgradeChecks:
   image: fission/pre-upgrade-checks
   ## pre-install/pre-upgrade checks image version
   ##
-  imageTag: v1.18.0
+  imageTag: v1.19.0-rc1
 
 ## Fission post-install/post-upgrade reporting live in this image
 ##
