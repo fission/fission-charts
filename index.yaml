@@ -2,6 +2,33 @@ apiVersion: v1
 entries:
   fission-all:
   - apiVersion: v2
+    appVersion: v1.19.0
+    created: "2023-05-18T13:00:38.459238754Z"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: 07ca021d9d1d4d4ef0f0c3038d921101209f64ce70bd23d174f0a76db8fbf44e
+    home: https://fission.io/
+    icon: https://fission.io/images/fission-logo-white.svg
+    keywords:
+    - fission
+    - serverless
+    - platform
+    - faas
+    - functions
+    - Integration & Delivery
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    sources:
+    - https://github.com/fission/fission
+    - https://github.com/fission/keda-connectors
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-v1.19.0/fission-all-v1.19.0.tgz
+    version: v1.19.0
+  - apiVersion: v2
     appVersion: v1.19.0-rc2
     created: "2023-05-12T05:39:07.255558518Z"
     description: Fission is a fast serverless framework for Kubernetes.
@@ -2532,4 +2559,4 @@ entries:
     urls:
     - https://github.com/fission/fission-charts/releases/download/fission-workflows-0.1.0/fission-workflows-0.1.0.tgz
     version: 0.1.0
-generated: "2023-05-12T05:39:07.256448334Z"
+generated: "2023-05-18T13:00:38.460173959Z"
