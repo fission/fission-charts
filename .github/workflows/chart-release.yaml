@@ -35,6 +35,6 @@ jobs:
           done
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@0102fa30dd78df0d0f8093c4607e6080972ff82d #v1.6.1
+        uses: helm/chart-releaser-action@a917fd15b20e8b64b94d9158ad54cd6345335584 #v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
