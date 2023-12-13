@@ -27,10 +27,11 @@ jobs:
         uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 #v3.5
         with:
           version: v3.8.1
-      - name: Import GPG key
+      - name: Install GPG Keys
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --dearmor --output keyring.gpg
-          echo "${{ secrets.PASSPHRASE }}" > passphrase-file.txt
+          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --batch
+          gpg --export > /home/runner/.gnupg/pubring.gpg
+          gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
 
       - name: Add repositories
         run: |
@@ -42,7 +43,6 @@ jobs:
         uses: helm/chart-releaser-action@a917fd15b20e8b64b94d9158ad54cd6345335584 #v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_KEY: InAccel <info@inaccel.com>
-          CR_KEYRING: keyring.gpg
-          CR_PASSPHRASE_FILE: passphrase-file.txt
+          CR_KEY: "${{ secrets.GPG_KEY_NAME }}"
+          CR_KEYRING: "/home/runner/.gnupg/secring.gpg" 
           CR_SIGN: true
