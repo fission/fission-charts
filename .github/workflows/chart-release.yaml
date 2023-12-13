@@ -33,7 +33,7 @@ jobs:
         run: |
           cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --batch 
           gpg --list-secret-keys --keyid-format LONG
-          echo "${PASSPHRASE}" | gpg --batch --passphrase-fd 0 --export-secret-keys --armor >~/.gnupg/secring.gpg
+          gpg --batch --armor --export-secret-keys Dikshant Rai >~/.gnupg/secring.gpg
           
 
 
