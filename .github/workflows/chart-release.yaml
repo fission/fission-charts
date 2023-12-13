@@ -15,15 +15,15 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
-        with:
-          fetch-depth: 0
+      # - name: Checkout
+      #   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      #   with:
+      #     fetch-depth: 0
 
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      # - name: Configure Git
+      #   run: |
+      #     git config user.name "$GITHUB_ACTOR"
+      #     git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       # - name: Install Helm
       #   uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 #v3.5
@@ -32,20 +32,17 @@ jobs:
       
       - name: Decrypt GPG Private Key
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d | openssl enc -d -aes-256-cbc -md sha256 > private-key.asc 
-          cat private-key.asc
-          gpg --batch --import private-key.asc
-        shell: bash
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import
 
       - name: List Imported Keys
         run: gpg --list-secret-keys --keyid-format LONG
 
-      - name: Check version of GPG
-        run: |
-          echo "Hello world"
-          gpg --version
-          echo "${{ secrets.PASSPHRASE }}" > passphrase-file.txt
-          cat passphrase-file.txt
+      # - name: Check version of GPG
+      #   run: |
+      #     echo "Hello world"
+      #     gpg --version
+      #     echo "${{ secrets.PASSPHRASE }}" > passphrase-file.txt
+      #     cat passphrase-file.txt
 
       # - name: Install GPG Keys
       #   run: |
