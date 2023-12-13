@@ -31,7 +31,7 @@ jobs:
 
       - name: Install GPG Keys
         run: |
-          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --no-tty --batch --yes
+          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --no-tty --batch 
           gpg --list-secret-keys --keyid-format LONG
           gpg --export-secret-keys >~/.gnupg/secring.gpg
           
