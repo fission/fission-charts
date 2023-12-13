@@ -25,14 +25,14 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Install Helm
-        uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 #v3.5
-        with:
-          version: v3.8.1
+      # - name: Install Helm
+      #   uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 #v3.5
+      #   with:
+      #     version: v3.8.1
       
       - name: Decrypt GPG Private Key
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | tr -d '\r' | base64 -d > private-key.asc
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d | jq -s -R '.' | jq -r -s '.' > private-key.asc
           cat private-key.asc
           gpg --batch --import private-key.asc
         shell: bash
