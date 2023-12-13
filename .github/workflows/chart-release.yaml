@@ -32,8 +32,8 @@ jobs:
       
       - name: Decrypt GPG Private Key
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY_ENC }}" | tr -d '\r' | base64 -d > private-key.asc.gpg
-          gpg --batch --import private-key.asc.gpg
+          echo "${{ secrets.GPG_PRIVATE_KEY_ENC }}" | tr -d '\r' | base64 -d > private-key.asc
+          gpg --batch --import private-key.asc
         shell: bash
 
       - name: List Imported Keys
