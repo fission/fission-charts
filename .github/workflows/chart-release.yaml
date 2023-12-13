@@ -31,7 +31,8 @@ jobs:
 
       - name: Install GPG Keys
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import --batch | gpg --dearmor --output keyring.gpg
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import --batch
+          gpg --list-secret-keys --keyid-format LONG
           
 
 
