@@ -32,8 +32,8 @@ jobs:
       
       - name: Decrypt GPG Private Key
         run: |
-          export GPG_TTY=$(tty)
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import
+          
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import --batch
           
 
       - name: List Imported Keys
