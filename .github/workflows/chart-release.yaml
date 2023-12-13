@@ -28,27 +28,13 @@ jobs:
       #   uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 #v3.5
       #   with:
       #     version: v3.8.1
-      
-      - name: Decrypt GPG Private Key
+
+      - name: Install GPG Keys
         run: |
-          
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import --batch
-          
+          gpg --export > /home/runner/.gnupg/pubring.gpg
+          gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
 
-      - name: List Imported Keys
-        run: gpg --list-secret-keys --keyid-format LONG
-
-      # - name: Check version of GPG
-      #   run: |
-      #     echo "Hello world"
-      #     gpg --version
-      #     echo "${{ secrets.PASSPHRASE }}" > passphrase-file.txt
-      #     cat passphrase-file.txt
-
-      # - name: Install GPG Keys
-      #   run: |
-      #     echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --dearmor --output keyring.gpg
-      #     echo "${{ secrets.PASSPHRASE }}" > passphrase-file.txt
 
       # - name: Add repositories
       #   run: |
