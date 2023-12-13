@@ -31,10 +31,6 @@ jobs:
 
       - name: Install GPG Keys
         run: |
-          echo use-agent >> ~/.gnupg/gpg.conf
-          echo pinentry-mode loopback >> ~/.gnupg/gpg.conf
-          echo allow-loopback-pinentry >> ~/.gnupg/gpg-agent.conf
-          echo RELOADAGENT | gpg-connect-agent
           cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --batch 
           gpg --list-secret-keys --keyid-format LONG
           gpg --export-secret-keys >~/.gnupg/secring.gpg
