@@ -29,6 +29,15 @@ jobs:
         uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 #v3.5
         with:
           version: v3.8.1
+      
+      - name: Decrypt GPG Private Key
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d | gpg --decrypt --output private-key.asc
+          gpg --import private-key.asc
+        shell: bash
+
+      - name: List Imported Keys
+        run: gpg --list-secret-keys --keyid-format LONG
 
       - name: Check version of GPG
         run: |
@@ -37,22 +46,22 @@ jobs:
           echo "${{ secrets.PASSPHRASE }}" > passphrase-file.txt
           cat passphrase-file.txt
 
-      - name: Install GPG Keys
-        run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --dearmor --output keyring.gpg
-          echo "${{ secrets.PASSPHRASE }}" > passphrase-file.txt
+      # - name: Install GPG Keys
+      #   run: |
+      #     echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --dearmor --output keyring.gpg
+      #     echo "${{ secrets.PASSPHRASE }}" > passphrase-file.txt
 
-      - name: Add repositories
-        run: |
-          for dir in $(ls -d charts/*/); do
-            helm dependency list $dir 2> /dev/null | tail +2 | head -n -1 | awk '{ print "helm repo add " $1 " " $3 }' | while read cmd; do $cmd; done
-          done
+      # - name: Add repositories
+      #   run: |
+      #     for dir in $(ls -d charts/*/); do
+      #       helm dependency list $dir 2> /dev/null | tail +2 | head -n -1 | awk '{ print "helm repo add " $1 " " $3 }' | while read cmd; do $cmd; done
+      #     done
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@a917fd15b20e8b64b94d9158ad54cd6345335584 #v1.6.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_KEY: "Dikshant Rai"
-          CR_KEYRING: keyring.gpg
-          CR_SIGN: true
-          CR_PASSPHRASE_FILE: passphrase-file.txt
+      # - name: Run chart-releaser
+      #   uses: helm/chart-releaser-action@a917fd15b20e8b64b94d9158ad54cd6345335584 #v1.6.0
+      #   env:
+      #     CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      #     CR_KEY: "Dikshant Rai"
+      #     CR_KEYRING: keyring.gpg
+      #     CR_SIGN: true
+      #     CR_PASSPHRASE_FILE: passphrase-file.txt
