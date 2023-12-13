@@ -32,7 +32,7 @@ jobs:
       
       - name: Decrypt GPG Private Key
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d | jq -s -R '.' | jq -r -s '.' > private-key.asc
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d | openssl enc -d -aes-256-cbc -md sha256 > private-key.asc 
           cat private-key.asc
           gpg --batch --import private-key.asc
         shell: bash
