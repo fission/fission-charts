@@ -32,8 +32,7 @@ jobs:
       - name: Install GPG Keys
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import --batch | gpg --dearmor --output keyring.gpg
-          gpg --export > /home/runner/.gnupg/pubring.gpg
-          gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
+          
 
 
       # - name: Add repositories
