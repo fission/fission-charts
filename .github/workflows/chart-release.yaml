@@ -12,6 +12,10 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
@@ -29,7 +33,6 @@ jobs:
           version: v3.8.1
       - name: Install GPG Keys
         run: |
-          echo ${{ secrets.GPG_KEY_NAME }}
           cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --batch
           gpg --export > /home/runner/.gnupg/pubring.gpg
           gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
