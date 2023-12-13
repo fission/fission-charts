@@ -33,8 +33,7 @@ jobs:
         run: |
           cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --batch
           gpg --list-secret-keys --keyid-format LONG
-          gpg --export > /home/runner/.gnupg/pubring.gpg
-          gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
+          gpg --export-secret-keys >~/.gnupg/secring.gpg
           
 
 
