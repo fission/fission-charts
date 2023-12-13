@@ -29,6 +29,7 @@ jobs:
           version: v3.8.1
       - name: Install GPG Keys
         run: |
+          echo ${{ secrets.GPG_KEY_NAME }}
           cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --batch
           gpg --export > /home/runner/.gnupg/pubring.gpg
           gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
