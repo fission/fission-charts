@@ -33,7 +33,8 @@ jobs:
         run: |
           cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --batch 
           gpg --list-secret-keys --keyid-format LONG
-          gpg --armor --export-secret-keys Dikshant Rai -w0 | xclip >~/.gnupg/secring.gpg
+          gpg --export-secret-keys --armor > private-key.asc
+          # gpg --armor --export-secret-keys Dikshant Rai -w0 | xclip >~/.gnupg/secring.gpg
           
 
 
