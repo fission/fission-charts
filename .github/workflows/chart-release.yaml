@@ -36,6 +36,7 @@ jobs:
           #export GPG_TTY=$(tty)
           gpg --export > /home/runner/.gnupg/pubring.gpg
           gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
+          cat secring.gpg
 
          
       - name: Add repositories
@@ -48,6 +49,6 @@ jobs:
         uses: helm/chart-releaser-action@a917fd15b20e8b64b94d9158ad54cd6345335584 #v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_KEY: Dikshant Rai
+          CR_KEY: "Dikshant Rai"
           CR_KEYRING: "/home/runner/.gnupg/secring.gpg"
           CR_SIGN: true 
