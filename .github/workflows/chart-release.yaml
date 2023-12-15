@@ -65,5 +65,4 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_KEY: "Dikshant Rai"
-          CR_KEYRING: "/home/runner/.gnupg/secring.gpg"
           CR_SIGN: true 
