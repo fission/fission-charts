@@ -36,7 +36,7 @@ jobs:
           #export GPG_TTY=$(tty)
           gpg --export > /home/runner/.gnupg/pubring.gpg
           gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
-          cat secring.gpg
+          cat /home/runner/.gnupg/secring.gpg
 
          
       - name: Add repositories
