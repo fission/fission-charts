@@ -29,14 +29,29 @@ jobs:
         with:
           version: v3.8.1
 
-      - name: Install GPG Keys
+      # - name: Install GPG Keys
+      #   run: |
+      #     cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --batch 
+      #     gpg --list-secret-keys --keyid-format LONG
+      #     #export GPG_TTY=$(tty)
+      #     gpg --export > /home/runner/.gnupg/pubring.gpg
+      #     gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
+      - name: Prepare GPG key
         run: |
-          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --batch 
-          gpg --list-secret-keys --keyid-format LONG
-          #export GPG_TTY=$(tty)
-          gpg --export > /home/runner/.gnupg/pubring.gpg
-          gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
-          cat /home/runner/.gnupg/secring.gpg
+          gpg_dir=.cr-gpg
+          mkdir "$gpg_dir"
+          keyring="$gpg_dir/secring.gpg"
+          base64 -d <<< "$GPG_KEYRING_BASE64" > "$keyring"
+          passphrase_file="$gpg_dir/passphrase"
+          echo "$GPG_PASSPHRASE" > "$passphrase_file"
+          echo "CR_PASSPHRASE_FILE=$passphrase_file" >> "$GITHUB_ENV"
+          echo "CR_KEYRING=$keyring" >> "$GITHUB_ENV"
+        env:
+          GPG_KEYRING_BASE64: "${{ secrets.GPG_KEYRING_BASE64 }}"
+          GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE }}"
+
+
+         
 
          
       - name: Add repositories
