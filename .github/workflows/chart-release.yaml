@@ -29,13 +29,27 @@ jobs:
       #   with:
       #     version: v3.8.1
 
-      - name: Install GPG Keys
+      # - name: Install GPG Keys
+      #   run: |
+      #     cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --batch 
+      #     gpg --list-secret-keys --keyid-format LONG
+      #     #export GPG_TTY=$(tty)
+      #     gpg --export > /home/runner/.gnupg/pubring.gpg
+      #     gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
+      - name: Prepare keys for signing
+        env:
+          SIGNING_KEY_BASE64: ${{ secrets.GPG_PRIVATE_KEY }}
+          SIGNING_KEY_PASSPHRASE_BASE64: ${{ secrets.PASSPHRASE }}
+          KEY_PATH: ".gpg-dir"
+          SIGNING_KEY_PATH: ".gpg-dir/secring.gpg"
+          SIGNING_KEY_PASSPHRASE_PATH: ".gpg-dir/passphrase"
         run: |
-          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --import --batch 
+          mkdir "$KEY_PATH"
+          base64 -d <<< "$SIGNING_KEY_BASE64" > "$SIGNING_KEY_PATH"
+          base64 -d <<< "$SIGNING_KEY_PASSPHRASE_BASE64" > "$SIGNING_KEY_PASSPHRASE_PATH"
+          echo "CR_PASSPHRASE_FILE=$SIGNING_KEY_PASSPHRASE_PATH" >> "$GITHUB_ENV"
+          echo "CR_KEYRING=$SIGNING_KEY_PATH" >> "$GITHUB_ENV"
           gpg --list-secret-keys --keyid-format LONG
-          #export GPG_TTY=$(tty)
-          gpg --export > /home/runner/.gnupg/pubring.gpg
-          gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
          
 
           
