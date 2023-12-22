@@ -70,10 +70,11 @@ jobs:
   linter-artifacthub:
     runs-on: ubuntu-latest
     container:
-      image: artifacthub/ah
+      image: public.ecr.aws/artifacthub/ah:v1.14.0
+      options: --user 1001
     steps:
-      - name: Checkout code
-        uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Run ah lint
-        working-directory: ./charts/fission-charts
+        working-directory: ./charts/fission-all
         run: ah lint
