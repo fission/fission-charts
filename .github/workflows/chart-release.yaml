@@ -75,5 +75,5 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@master
       - name: Run ah lint
-        working-directory: ./charts/artifact-hub
+        working-directory: ./charts/fission-all
         run: ah lint
