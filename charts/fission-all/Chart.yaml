@@ -1,7 +1,7 @@
 apiVersion: v2
 name: fission-all
-version: v1.22.0-test
-appVersion: v1.22.0-test
+version: v1.22.1-test
+appVersion: v1.22.1-test
 description: Fission is a fast serverless framework for Kubernetes.
 home: https://fission.io/
 icon: https://fission.io/images/fission-logo-white.svg
