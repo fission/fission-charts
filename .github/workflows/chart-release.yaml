@@ -66,3 +66,14 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_KEY: "Dikshant Rai"
           CR_SIGN: true 
+  
+    linter-artifacthub:
+    runs-on: ubuntu-20.04
+    container:
+      image: artifacthub/ah
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+      - name: Run ah lint
+        working-directory: ./charts/artifact-hub
+        run: ah lint
