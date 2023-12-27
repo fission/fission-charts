@@ -24,5 +24,5 @@ engine: gotpl
 type: application
 annotations:
   artifacthub.io/signKey: |
-    fingerprint: C2EAE29FDF8A387050C82CD5ABBDD4FD6A1FFCBF6
+    fingerprint: 2EAE29FDF8A387050C82CD5ABBDD4FD6A1FFCBF6
     url: https://keybase.io/fission_server/pgp_keys.asc
