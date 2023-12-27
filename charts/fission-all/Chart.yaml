@@ -1,7 +1,7 @@
 apiVersion: v2
 name: fission-all
-version: v1.22.3-test
-appVersion: v1.22.3-test
+version: v1.22.4-test
+appVersion: v1.22.4-test
 description: Fission is a fast serverless framework for Kubernetes.
 home: https://fission.io/
 icon: https://fission.io/images/fission-logo-white.svg
@@ -25,4 +25,4 @@ type: application
 annotations:
   artifacthub.io/signKey: |
     fingerprint: C2EAE29FDF8A387050C82CD5ABBDD4FD6A1FFCBF6
-    url: https://keybase.io/hashicorp/pgp_keys.asc
+    url: https://keybase.io/fission_server/pgp_keys.asc
