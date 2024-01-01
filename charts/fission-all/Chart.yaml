@@ -25,4 +25,4 @@ type: application
 annotations:
   artifacthub.io/signKey: |
     fingerprint: 2EAE29FDF8A387050C82CD5ABBDD4FD6A1FFCBF6
-    url: https://raw.githubusercontent.com/fission/fission-charts/main/charts/fission-all/public_key/pgp_keys.asc
+    url: https://raw.githubusercontent.com/fission/fission-charts/main/public_key/pgp_keys.asc
