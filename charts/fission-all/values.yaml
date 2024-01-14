@@ -92,6 +92,13 @@ createNamespace: true
 ##
 enableIstio: false
 
+## Kubernetes client QPS and Burst settings
+##
+## kubernetesClientQPS represents the maximum queries per second to the kubernetes api server from client instances of fission components.
+kubernetesClientQPS: 200
+## kubernetesClientBurst represents the maximum burst queries to the kubernetes api server from client instances of fission components.
+kubernetesClientBurst: 500
+
 ## fetcher is a light weight component that helps in running functions.
 ## fetcher helps in fetching function source code/build and uploading it when function is invoked.
 ##
@@ -682,7 +689,7 @@ authentication:
   ## jwtSigningKey is the signing key used for
   ## signing the JWT token
   ##
-  jwtSigningKey: serverless
+  jwtSigningKey: 
   ## jwtExpiryTime is the JWT expiry time
   ## in seconds
   ## default '120'
