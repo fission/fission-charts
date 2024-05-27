@@ -6,6 +6,38 @@ entries:
         fingerprint: 2EAE29FDF8A387050C82CD5ABBDD4FD6A1FFCBF6
         url: https://raw.githubusercontent.com/fission/fission-charts/main/public_key/pgp_keys.asc
     apiVersion: v2
+    appVersion: v1.20.2
+    created: "2024-05-27T13:03:30.623929457Z"
+    description: Fission is a fast serverless framework for Kubernetes.
+    digest: fcc005a36d886c5db1b37cea5689e0528846d97bf8fe84e292031458911a84c7
+    home: https://fission.io/
+    icon: https://fission.io/images/fission-logo-white.svg
+    keywords:
+    - fission
+    - serverless
+    - platform
+    - faas
+    - functions
+    - Integration & Delivery
+    kubeVersion: '>=1.23.0-0'
+    maintainers:
+    - email: vishal@infracloud.io
+      name: Vishal Biyani
+    - email: sanket@infracloud.io
+      name: Sanket Sudake
+    name: fission-all
+    sources:
+    - https://github.com/fission/fission
+    - https://github.com/fission/keda-connectors
+    type: application
+    urls:
+    - https://github.com/fission/fission-charts/releases/download/fission-all-v1.20.2/fission-all-v1.20.2.tgz
+    version: v1.20.2
+  - annotations:
+      artifacthub.io/signKey: |
+        fingerprint: 2EAE29FDF8A387050C82CD5ABBDD4FD6A1FFCBF6
+        url: https://raw.githubusercontent.com/fission/fission-charts/main/public_key/pgp_keys.asc
+    apiVersion: v2
     appVersion: v1.20.1
     created: "2024-01-14T16:05:20.665050117Z"
     description: Fission is a fast serverless framework for Kubernetes.
@@ -2765,4 +2797,4 @@ entries:
     urls:
     - https://github.com/fission/fission-charts/releases/download/fission-workflows-0.1.0/fission-workflows-0.1.0.tgz
     version: 0.1.0
-generated: "2024-01-14T16:05:20.665435243Z"
+generated: "2024-05-27T13:03:30.624316346Z"
