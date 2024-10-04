@@ -25,7 +25,7 @@ image: fission/fission-bundle
 ## It is also used by the chart to identify version of the few more images apart from fission-bundle.
 ## Keep it empty for using latest tag.
 ##
-imageTag: v1.20.4
+imageTag: v1.20.5
 
 ## pullPolicy represents the pull policy to use for images in the chart.
 ##
@@ -67,11 +67,15 @@ defaultNamespace: default
 ## if builderNamespace is set to empty then builder resources will be created in the same namespace as the Fission resources.
 ## This is different from the release namespace.
 ##
+## Note: This parameter is deprecated and will be removed in future fission releases.
+##
 builderNamespace: ""
 
 ## functionNamespace represents the namespace in which Fission Function resources will be created.
 ## if functionNamespace is set to empty then function resources will be created in the same namespace as the Fission resources.
 ## This is different from the release namespace.
+##
+## Note: This parameter is deprecated and will be removed in future fission releases.
 ##
 functionNamespace: ""
 
@@ -87,6 +91,16 @@ additionalFissionNamespaces: []
 ## Set to false if you want to create the namespaces manually.
 ##
 createNamespace: true
+
+## disableOwnerReference decides to set OwnerReference to K8s resources like deployment, services, hpa etc. created by Fission.
+## If set to true, the K8s resources created by Fission will not have OwnerReference set.
+## Set to false if you want to add OwnerReference to K8s resources created by Fission.
+##
+## Set to true if you are using cross namespace meaning `builderNamespace` and `functionNamespace` are set.
+##
+## Note: This flag is temporary addition and would be removed in future fission releases.
+##
+disableOwnerReference: false
 
 ## enableIstio indicates whether to enable istio integration.
 ##
@@ -106,7 +120,7 @@ fetcher:
   ## image represents the image of the fetcher component.
   image: fission/fetcher
   ## imageTag represents the tag of the image of the fetcher component.
-  imageTag: v1.20.4
+  imageTag: v1.20.5
 
   ## Fetcher is only for to downloading or uploading archive.
   ## Normally, you don't need to change the value here, unless necessary.
@@ -674,7 +688,7 @@ preUpgradeChecks:
   image: fission/pre-upgrade-checks
   ## pre-install/pre-upgrade checks image version
   ##
-  imageTag: v1.20.4
+  imageTag: v1.20.5
 
 ## Fission post-install/post-upgrade reporting live in this image
 ##
@@ -806,28 +820,28 @@ mqt_keda:
   connector_images:
     kafka:
       image: ghcr.io/fission/keda-kafka-http-connector
-      tag: v0.15
+      tag: v0.17
     rabbitmq:
       image: ghcr.io/fission/keda-rabbitmq-http-connector
-      tag: v0.13
+      tag: v0.15
     awskinesis:
       image: ghcr.io/fission/keda-aws-kinesis-http-connector
-      tag: v0.13
+      tag: v0.15
     aws_sqs:
       image: ghcr.io/fission/keda-aws-sqs-http-connector
-      tag: v0.14
+      tag: v0.16
     nats_steaming:
       image: ghcr.io/fission/keda-nats-streaming-http-connector
-      tag: v0.16
+      tag: v0.18
     nats_jetstream:
       image: ghcr.io/fission/keda-nats-jetstream-http-connector
-      tag: v0.7
+      tag: v0.9
     gcp_pubsub:
       image: ghcr.io/fission/keda-gcp-pubsub-http-connector
-      tag: v0.9
+      tag: v0.11
     redis:
       image: ghcr.io/fission/keda-redis-http-connector
-      tag: v0.6
+      tag: v0.8
 
   ## Pod resources as:
   ##  resources:
