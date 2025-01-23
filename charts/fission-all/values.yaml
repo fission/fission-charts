@@ -25,7 +25,7 @@ image: fission/fission-bundle
 ## It is also used by the chart to identify version of the few more images apart from fission-bundle.
 ## Keep it empty for using latest tag.
 ##
-imageTag: v1.21.0-rc1
+imageTag: v1.21.0-rc2
 
 ## pullPolicy represents the pull policy to use for images in the chart.
 ##
@@ -117,10 +117,14 @@ kubernetesClientBurst: 500
 ## fetcher helps in fetching function source code/build and uploading it when function is invoked.
 ##
 fetcher:
+  ## repository represents the repository of the fetcher component.
+  ##
+  ## By default, it is empty, which means global repository will be used.
+  repository: ""
   ## image represents the image of the fetcher component.
   image: fission/fetcher
   ## imageTag represents the tag of the image of the fetcher component.
-  imageTag: v1.21.0-rc1
+  imageTag: v1.21.0-rc2
 
   ## Fetcher is only for to downloading or uploading archive.
   ## Normally, you don't need to change the value here, unless necessary.
@@ -683,12 +687,16 @@ preUpgradeChecks:
   ## Run pre-install/pre-upgrade checks if true
   ##
   enabled: true
+  ## Repository for pre-install/pre-upgrade checks image
+  ## By default it uses the global repository
+  ##
+  repository: ""
   ## pre-install/pre-upgrade checks live in this image
   ##
   image: fission/pre-upgrade-checks
   ## pre-install/pre-upgrade checks image version
   ##
-  imageTag: v1.21.0-rc1
+  imageTag: v1.21.0-rc2
 
 ## Fission post-install/post-upgrade reporting live in this image
 ##
