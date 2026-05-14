@@ -25,7 +25,7 @@ image: fission/fission-bundle
 ## It is also used by the chart to identify version of the few more images apart from fission-bundle.
 ## Keep it empty for using latest tag.
 ##
-imageTag: v1.22.0
+imageTag: v1.23.0
 
 ## pullPolicy represents the pull policy to use for images in the chart.
 ##
@@ -124,7 +124,7 @@ fetcher:
   ## image represents the image of the fetcher component.
   image: fission/fetcher
   ## imageTag represents the tag of the image of the fetcher component.
-  imageTag: v1.22.0
+  imageTag: v1.23.0
 
   ## Fetcher is only for to downloading or uploading archive.
   ## Normally, you don't need to change the value here, unless necessary.
@@ -218,6 +218,14 @@ executor:
 ## router is responsible for routing function calls to the appropriate function.
 ##
 router:
+  ## internalPort is the port that backs the router's internal listener.
+  ## /fission-function/<ns>/<name> is registered ONLY on this listener
+  ## (see GHSA-3g33-6vg6-27m8). The Service exposes it as a named port
+  ## "internal" and a NetworkPolicy gates it to fission-bundle pods
+  ## (executor / kubewatcher / timer / mqtrigger / mqtrigger-keda /
+  ## canaryconfig / buildermgr) only.
+  ##
+  internalPort: 8889
   ## router priorityClassName
   ## Ref. https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
   ## Recommended to use system-cluster-critical for router pods.
@@ -706,7 +714,7 @@ preUpgradeChecks:
   image: fission/pre-upgrade-checks
   ## pre-install/pre-upgrade checks image version
   ##
-  imageTag: v1.22.0
+  imageTag: v1.23.0
 
 ## Fission post-install/post-upgrade reporting live in this image
 ##
@@ -838,28 +846,28 @@ mqt_keda:
   connector_images:
     kafka:
       image: ghcr.io/fission/keda-kafka-http-connector
-      tag: v0.17
+      tag: v0.20
     rabbitmq:
       image: ghcr.io/fission/keda-rabbitmq-http-connector
-      tag: v0.15
+      tag: v0.17
     awskinesis:
       image: ghcr.io/fission/keda-aws-kinesis-http-connector
-      tag: v0.15
+      tag: v0.19
     aws_sqs:
       image: ghcr.io/fission/keda-aws-sqs-http-connector
-      tag: v0.16
+      tag: v0.20
     nats_steaming:
       image: ghcr.io/fission/keda-nats-streaming-http-connector
-      tag: v0.18
+      tag: v0.20
     nats_jetstream:
       image: ghcr.io/fission/keda-nats-jetstream-http-connector
-      tag: v0.9
+      tag: v0.12
     gcp_pubsub:
       image: ghcr.io/fission/keda-gcp-pubsub-http-connector
-      tag: v0.11
+      tag: v0.14
     redis:
       image: ghcr.io/fission/keda-redis-http-connector
-      tag: v0.8
+      tag: v0.10
 
   ## Pod resources as:
   ##  resources:
@@ -926,3 +934,47 @@ grafana:
   dashboards:
     ## Disabled by default. switch to true to deploy them
     enable: false
+
+
+## NetworkPolicy: ingress isolation for every Fission component that
+## exposes a non-metrics listener. When enabled, the chart renders one
+## ingress-only NetworkPolicy per service:
+##   - storagesvc           (port 8000)  ← buildermgr, fetcher sidecars
+##   - router               (port 8888)  ← external + internal publishers
+##   - executor             (port 8888)  ← router only
+##   - webhook-server       (port 9443)  ← kube-apiserver (admission)
+##   - env-builder pods     (8000/8001)  ← buildermgr only
+##   - function pods        (8000/8888)  ← executor + router
+## All metrics endpoints (port 8080) remain reachable from any source so
+## Prometheus / podMonitor scrapes work regardless of namespace.
+##
+## Defense-in-depth control for in-cluster plain-HTTP traffic, which has
+## no application-layer authentication today. Off by default for
+## backwards compatibility — recommend enabling in production deployments
+## that don't already restrict pod-to-pod traffic.
+##
+## Requires a NetworkPolicy-aware CNI (Calico, Cilium, Weave, etc.).
+## Egress rules are intentionally not added in this round.
+networkPolicy:
+  enabled: false
+
+
+## InternalAuth: HMAC-SHA256 application-layer authentication for the
+## internal control-plane HTTP services. See the design at docs/internal-auth/00-design.md for the full design.
+## When enabled, the chart materialises Secret/fission-internal-auth and
+## mounts FISSION_INTERNAL_AUTH_SECRET into storagesvc, buildermgr,
+## executor and router. Storagesvc rejects unsigned /v1/archive requests;
+## the storagesvc-client transparently signs every outgoing request.
+##
+## The secret value is preserved across `helm upgrade` via Helm's
+## `lookup` — once a value is generated, subsequent upgrades reuse it.
+## Override `secret` to bring your own value; set `oldSecret` to the
+## previous value during a rotation window so the verifier accepts both.
+##
+## Disabled here means the cluster falls back to NetworkPolicy + namespace
+## isolation only, matching pre-1.(N+1) behaviour.
+internalAuth:
+  enabled: true
+  # secret: "" — auto-generated on first install; preserved on upgrade.
+  # oldSecret: "" — set during rotation; accepted by the verifier alongside `secret`.
+

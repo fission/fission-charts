@@ -36,7 +36,13 @@ spec:
         image: {{ include "fission-bundleImage" . | quote }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command: ["/fission-bundle"]
-        args: ["--routerPort", "8888", "--executorUrl", "http://executor.{{ .Release.Namespace }}"]
+        args:
+          - "--routerPort"
+          - "8888"
+          - "--routerInternalPort"
+          - {{ .Values.router.internalPort | default 8889 | quote }}
+          - "--executorUrl"
+          - "http://executor.{{ .Release.Namespace }}"
         env:
         {{- if .Values.authentication.enabled }}
         - name: AUTH_USERNAME
@@ -86,6 +92,7 @@ spec:
         {{- include "fission-resource-namespace.envs" . | indent 8 }}
         {{- include "kube_client.envs" . | indent 8 }}
         {{- include "opentelemtry.envs" . | indent 8 }}
+        {{- include "internalAuth.envs" . | indent 8 }}
         resources:
           {{- toYaml .Values.router.resources | nindent 10 }}
         readinessProbe:
@@ -110,6 +117,8 @@ spec:
           name: metrics
         - containerPort: 8888
           name: http
+        - containerPort: {{ .Values.router.internalPort | default 8889 }}
+          name: internal
         {{- if .Values.pprof.enabled }}
         - containerPort: 6060
           name: pprof

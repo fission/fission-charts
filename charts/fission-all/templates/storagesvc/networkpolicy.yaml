@@ -1,0 +1,72 @@
+{{- if .Values.networkPolicy.enabled }}
+# Restrict ingress to the storagesvc HTTP API to the Fission components
+# that genuinely need it: per-env builder pods (which carry a fetcher
+# sidecar to download source / upload deploy archives) and function pods
+# (whose fetcher sidecar downloads its package at specialise time).
+# Storagesvc has no application-layer authentication on /v1/archive
+# endpoints, so this NetworkPolicy is a defense-in-depth control against
+# in-cluster attackers reaching the archive store directly.
+#
+# Off by default for backwards compatibility. Enable with:
+#   helm upgrade ... --set networkPolicy.enabled=true
+#
+# Each podSelector below is paired with an empty `namespaceSelector: {}` so
+# the rule matches pods in any namespace — env-builder and function pods
+# typically live in user namespaces (e.g. `default`) while storagesvc lives
+# in the Fission install namespace (e.g. `fission`). Without
+# `namespaceSelector`, NetworkPolicy podSelector only matches pods in the
+# same namespace as the policy itself.
+#
+# CNI must support NetworkPolicy ingress for this to take effect (Calico,
+# Cilium, Weave, etc.). EKS without an addon and some other defaults are no-ops.
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: storagesvc-allow-internal
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: storagesvc
+spec:
+  podSelector:
+    matchLabels:
+      svc: storagesvc
+      application: fission-storage
+  policyTypes:
+    - Ingress
+  ingress:
+    # Per-environment builder pods. These are created by buildermgr to host
+    # both the env's `/builder` container and a `fetcher` sidecar; the
+    # sidecar downloads source archives from storagesvc before each build
+    # and uploads the resulting deploy archive after. buildermgr stamps
+    # them with `owner=buildermgr`.
+    - from:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              owner: buildermgr
+      ports:
+        - port: 8000
+          protocol: TCP
+    # Function pods managed by the executor. Each carries a fetcher sidecar
+    # that downloads its package archive at specialisation time. The
+    # `executorType` label is set by the executor when the pod is created
+    # (one of poolmgr / newdeploy / container).
+    - from:
+        - namespaceSelector: {}
+          podSelector:
+            matchExpressions:
+              - key: executorType
+                operator: In
+                values: ["poolmgr", "newdeploy", "container"]
+      ports:
+        - port: 8000
+          protocol: TCP
+    # Allow the metrics endpoint from any source so Prometheus / podMonitor
+    # scraping works regardless of where the operator is deployed. Metrics
+    # contain no archive content, only counts.
+    - ports:
+        - port: 8080
+          protocol: TCP
+{{- end }}
