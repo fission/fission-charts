@@ -25,7 +25,7 @@ image: fission/fission-bundle
 ## It is also used by the chart to identify version of the few more images apart from fission-bundle.
 ## Keep it empty for using latest tag.
 ##
-imageTag: v1.24.0
+imageTag: v1.25.0
 
 ## pullPolicy represents the pull policy to use for images in the chart.
 ##
@@ -102,6 +102,21 @@ createNamespace: true
 ##
 disableOwnerReference: false
 
+## finalizerEnabled is a chart-wide toggle for finalizer-based cleanup of the
+## Kubernetes resources Fission controllers create. When enabled (default), a
+## controller adds a cleanup finalizer to the CRs it owns and tears their backing
+## resources down on delete before releasing it — the reliable mechanism for
+## cross-namespace cleanup, which owner-reference GC cannot do (see
+## builderNamespace / functionNamespace). Currently honoured by the executor
+## (Function); other Fission controllers will adopt the same flag over time.
+##
+## Disable (set false) only if you need deletes to never block on a controller
+## being available; cleanup then falls back to best-effort reaping. A finalizer
+## left behind because its controller is down can be cleared manually with:
+##   kubectl patch <resource> <name> -n <ns> --type=merge -p '{"metadata":{"finalizers":[]}}'
+##
+finalizerEnabled: true
+
 ## enableIstio indicates whether to enable istio integration.
 ##
 enableIstio: false
@@ -124,7 +139,7 @@ fetcher:
   ## image represents the image of the fetcher component.
   image: fission/fetcher
   ## imageTag represents the tag of the image of the fetcher component.
-  imageTag: v1.24.0
+  imageTag: v1.25.0
 
   ## Fetcher is only for to downloading or uploading archive.
   ## Normally, you don't need to change the value here, unless necessary.
@@ -145,6 +160,41 @@ fetcher:
 ## executor is responsible for providing resources to your functions.
 ##
 executor:
+  ## replicas decides how many executor pods to deploy. Defaults to 1.
+  ## To run more than one safely you MUST enable leaderElection below: the
+  ## executor is active-passive, so only the elected leader performs the
+  ## mutating controller/reaper work; the standbys keep warm caches and take
+  ## over on failure (faster failover + zero-downtime rolling upgrades).
+  ##
+  replicas: 1
+  ## leaderElection enables Lease-based leader election for the executor.
+  ## Leave disabled (default) for single-replica installs — behaviour is then
+  ## identical to before. Set enabled: true together with replicas > 1 for HA.
+  ##
+  leaderElection:
+    enabled: false
+  ## strategy is the Deployment rollout strategy for the executor. Leave unset
+  ## for the Kubernetes default. With leaderElection enabled, a surge strategy
+  ## keeps a standby warm across upgrades, e.g.:
+  ##   strategy:
+  ##     type: RollingUpdate
+  ##     rollingUpdate:
+  ##       maxSurge: 1
+  ##       maxUnavailable: 0
+  ##
+  strategy: {}
+  ## terminationGracePeriodSeconds gives in-flight work time to drain on
+  ## shutdown. Leave unset for the Kubernetes default (30s). Keep it at or
+  ## above GRACEFUL_SHUTDOWN_TIMEOUT.
+  ##
+  terminationGracePeriodSeconds: null
+  ## podDisruptionBudget (opt-in) protects executor availability during
+  ## voluntary disruptions (node drains). Only meaningful with replicas > 1.
+  ##
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable:
   ## executor priorityClassName
   ## Ref. https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
   ## Recommended to use system-cluster-critical for executor pods.
@@ -226,6 +276,37 @@ router:
   ## canaryconfig / buildermgr) only.
   ##
   internalPort: 8889
+  ## strategy is the Deployment rollout strategy for the router (ignored when
+  ## deployAsDaemonSet is true). Leave unset for the Kubernetes default. The
+  ## router is stateless, so a surge strategy gives zero-downtime rollouts:
+  ##   strategy:
+  ##     type: RollingUpdate
+  ##     rollingUpdate:
+  ##       maxSurge: 1
+  ##       maxUnavailable: 0
+  ##
+  strategy: {}
+  ## terminationGracePeriodSeconds gives in-flight requests time to drain on
+  ## shutdown. Leave unset for the Kubernetes default (30s). Keep it at or
+  ## above GRACEFUL_SHUTDOWN_TIMEOUT.
+  ##
+  terminationGracePeriodSeconds: null
+  ## podDisruptionBudget (opt-in) protects router availability during voluntary
+  ## disruptions. Only meaningful with replicas > 1 (not a DaemonSet).
+  ##
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable:
+  ## autoscaling (opt-in) deploys a HorizontalPodAutoscaler for the router. The
+  ## router is stateless and replica-independent, so it scales out cleanly.
+  ## Ignored when deployAsDaemonSet is true.
+  ##
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
   ## router priorityClassName
   ## Ref. https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
   ## Recommended to use system-cluster-critical for router pods.
@@ -346,6 +427,15 @@ router:
 ## The builder manager watches the package & environments CRD changes and manages the builds of function source code.
 ##
 buildermgr:
+  ## replicas to deploy. To run more than one safely, enable leaderElection
+  ## below — active-passive HA: only the elected leader runs the controller.
+  ##
+  replicas: 1
+  ## leaderElection enables Lease-based leader election. Leave disabled
+  ## (default) for single-replica installs; set true with replicas > 1 for HA.
+  ##
+  leaderElection:
+    enabled: false
   ## Pod resources as:
   ##  resources:
   ##    limits:
@@ -410,6 +500,15 @@ webhook:
 ## kubewatcher watches the Kubernetes API and invokes functions associated with watches, sending the watch event to the function.
 ##
 kubewatcher:
+  ## replicas to deploy. To run more than one safely, enable leaderElection
+  ## below — active-passive HA: only the elected leader runs the controller.
+  ##
+  replicas: 1
+  ## leaderElection enables Lease-based leader election. Leave disabled
+  ## (default) for single-replica installs; set true with replicas > 1 for HA.
+  ##
+  leaderElection:
+    enabled: false
   ## Pod resources as:
   ##  resources:
   ##    limits:
@@ -479,6 +578,15 @@ storagesvc:
 ## It sends a request to router to invoke the function.
 ##
 timer:
+  ## replicas to deploy. To run more than one safely, enable leaderElection
+  ## below — active-passive HA: only the elected leader runs the controller.
+  ##
+  replicas: 1
+  ## leaderElection enables Lease-based leader election. Leave disabled
+  ## (default) for single-replica installs; set true with replicas > 1 for HA.
+  ##
+  leaderElection:
+    enabled: false
   ## Pod resources as:
   ##  resources:
   ##    limits:
@@ -506,6 +614,15 @@ timer:
 ##
 kafka:
   enabled: false
+  ## replicas to deploy. To run more than one safely, enable leaderElection
+  ## below — active-passive HA: only the elected leader consumes the queue.
+  ##
+  replicas: 1
+  ## leaderElection enables Lease-based leader election. Leave disabled
+  ## (default) for single-replica installs; set true with replicas > 1 for HA.
+  ##
+  leaderElection:
+    enabled: false
   ## note: below link is only for reference.
   ## Please use the brokers link for your kafka here.
   ##
@@ -673,19 +790,6 @@ logger:
     # privileged: true
     # runAsUser: 0
 
-  ## Enable PodSecurityPolicies to allow privileged container
-  ## Only required in some clusters and when enableSecurityContext is true
-  ##
-  podSecurityPolicy:
-    enabled: false
-
-    ## Configure additional capabilities
-    ##
-    additionalCapabilities:
-    # example values for linkerd
-    #- NET_RAW
-    #- NET_ADMIN
-
 ## Enable InfluxDB
 ##
 influxdb:
@@ -714,7 +818,7 @@ preUpgradeChecks:
   image: fission/pre-upgrade-checks
   ## pre-install/pre-upgrade checks image version
   ##
-  imageTag: v1.24.0
+  imageTag: v1.25.0
 
 ## Fission post-install/post-upgrade reporting live in this image
 ##
@@ -738,6 +842,15 @@ prometheus:
 canaryDeployment:
 ## set this flag to true if you need canary deployment feature
   enabled: false
+  ## replicas to deploy. To run more than one safely, enable leaderElection
+  ## below — active-passive HA: only the elected leader progresses rollouts.
+  ##
+  replicas: 1
+  ## leaderElection enables Lease-based leader election. Leave disabled
+  ## (default) for single-replica installs; set true with replicas > 1 for HA.
+  ##
+  leaderElection:
+    enabled: false
 
   ## Pod resources as:
   ##  resources:
@@ -843,6 +956,15 @@ openTelemetry:
 ##
 mqt_keda:
   enabled: true
+  ## replicas to deploy. To run more than one safely, enable leaderElection
+  ## below — active-passive HA: only the elected leader reconciles ScaledObjects.
+  ##
+  replicas: 1
+  ## leaderElection enables Lease-based leader election. Leave disabled
+  ## (default) for single-replica installs; set true with replicas > 1 for HA.
+  ##
+  leaderElection:
+    enabled: false
   connector_images:
     kafka:
       image: ghcr.io/fission/keda-kafka-http-connector
