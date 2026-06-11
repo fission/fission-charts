@@ -5,6 +5,9 @@ metadata:
   labels:
     svc: router
     application: fission-router
+    {{- if .Values.router.svcLabels }}
+    {{- toYaml .Values.router.svcLabels | nindent 4 }}
+    {{- end }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 {{- if .Values.router.svcAnnotations }}
   annotations:
