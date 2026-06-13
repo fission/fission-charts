@@ -75,8 +75,14 @@ spec:
           value: {{ .Values.router.roundTrip.timeoutExponent | default 2 | quote }}
         - name: ROUTER_ROUND_TRIP_KEEP_ALIVE_TIME
           value: {{ .Values.router.roundTrip.keepAliveTime | default "30s" | quote }}
+        # NOTE: not `| default true`: sprig's default treats false as empty, so
+        # an explicit `disableKeepAlive: false` would silently coerce back to
+        # "true" and make keep-alive impossible to enable (the values.yaml
+        # default is false; nil also renders "false").
         - name: ROUTER_ROUND_TRIP_DISABLE_KEEP_ALIVE
-          value: {{ .Values.router.roundTrip.disableKeepAlive | default true | quote }}
+          value: {{ if .Values.router.roundTrip.disableKeepAlive }}"true"{{ else }}"false"{{ end }}
+        - name: ROUTER_ROUND_TRIP_MAX_IDLE_CONNS_PER_HOST
+          value: {{ .Values.router.roundTrip.maxIdleConnsPerHost | default 32 | quote }}
         - name: ROUTER_ROUND_TRIP_MAX_RETRIES
           value: {{ .Values.router.roundTrip.maxRetries | default 10 | quote }}
         - name: ROUTER_SVC_ADDRESS_MAX_RETRIES
@@ -85,6 +91,22 @@ spec:
           value: {{ .Values.router.svcAddressUpdateTimeout | default "30s" | quote }}
         - name: ROUTER_UNTAP_SERVICE_TIMEOUT
           value: {{ .Values.router.unTapServiceTimeout | default "3600s" | quote }}
+        {{- if kindIs "bool" .Values.router.endpointSliceCache.mode }}
+        {{- fail "router.endpointSliceCache.mode must be a quoted string (\"on\"/\"off\") — unquoted on/off are YAML 1.1 booleans, and an unquoted off would silently default back to \"on\"" }}
+        {{- end }}
+        {{- $epsMode := .Values.router.endpointSliceCache.mode | default "on" }}
+        {{- if not (has $epsMode (list "off" "on")) }}
+        {{- fail (printf "router.endpointSliceCache.mode must be one of off|on (shadow was removed with the RFC-0002 phase-4 defaults flip), got %q" $epsMode) }}
+        {{- end }}
+        - name: ROUTER_ENDPOINTSLICE_CACHE_MODE
+          value: {{ $epsMode | quote }}
+        - name: ROUTER_ENDPOINTSLICE_ENDPOINT_LB
+          value: {{ .Values.router.endpointSliceCache.endpointLB | default false | quote }}
+        {{- /* NOTE: `| default true` would coerce an explicit `false` back to
+             true (sprig default treats false as unset), so the escape hatch
+             is rendered with if/else — same pattern as disableKeepAlive. */}}
+        - name: ROUTER_INCREMENTAL_ROUTES
+          value: {{ if hasKey .Values.router "incrementalRoutes" }}{{ if .Values.router.incrementalRoutes }}"true"{{ else }}"false"{{ end }}{{ else }}"true"{{ end }}
         - name: USE_ENCODED_PATH
           value: {{ .Values.router.useEncodedPath | default false | quote }}
         - name: DEBUG_ENV
@@ -93,6 +115,12 @@ spec:
           value: {{ .Values.pprof.enabled | quote }}
         - name: DISPLAY_ACCESS_LOG
           value: {{ .Values.router.displayAccessLog | default false | quote }}
+        - name: GATEWAY_API_ENABLED
+          value: {{ .Values.gatewayAPI.enabled | default false | quote }}
+        {{- if .Values.gatewayAPI.defaultParentRef }}
+        - name: GATEWAY_DEFAULT_PARENTREF
+          value: {{ .Values.gatewayAPI.defaultParentRef | quote }}
+        {{- end }}
         {{- include "fission-resource-namespace.envs" . | indent 8 }}
         {{- include "kube_client.envs" . | indent 8 }}
         {{- include "opentelemtry.envs" . | indent 8 }}
