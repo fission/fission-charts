@@ -25,7 +25,7 @@ image: fission/fission-bundle
 ## It is also used by the chart to identify version of the few more images apart from fission-bundle.
 ## Keep it empty for using latest tag.
 ##
-imageTag: v1.25.0
+imageTag: v1.26.0
 
 ## pullPolicy represents the pull policy to use for images in the chart.
 ##
@@ -121,12 +121,55 @@ finalizerEnabled: true
 ##
 enableIstio: false
 
+## gatewayAPI configures the router's Gateway API route provider. When enabled,
+## the router creates a gateway.networking.k8s.io HTTPRoute for each HTTPTrigger
+## whose routeConfig.provider is "gateway", attaching it to an operator-managed
+## Gateway (Fission does not create Gateways or GatewayClasses). Enabling it also
+## grants the router RBAC for httproutes/referencegrants. Requires the Gateway
+## API CRDs and a Gateway controller (e.g. Envoy Gateway) installed in the cluster.
+gatewayAPI:
+  enabled: false
+  ## defaultParentRef is an optional default Gateway that HTTPRoutes attach to
+  ## when a trigger does not list its own routeConfig.gateway.parentRefs.
+  ## Format: "name" or "namespace/name".
+  defaultParentRef: ""
+
 ## Kubernetes client QPS and Burst settings
 ##
 ## kubernetesClientQPS represents the maximum queries per second to the kubernetes api server from client instances of fission components.
 kubernetesClientQPS: 200
 ## kubernetesClientBurst represents the maximum burst queries to the kubernetes api server from client instances of fission components.
 kubernetesClientBurst: 500
+
+## packageRegistry publishes built function packages to a container registry
+## as OCI images instead of storing tarballs. Functions then cold-start
+## faster on Kubernetes 1.33+ (code is mounted directly by the kubelet).
+## Without a registry, builds keep using internal storage — no change.
+## NOTE: the registry must be reachable from inside the cluster AND from
+## every node.
+##
+packageRegistry:
+  enabled: false
+  ## Repository root. Packages are pushed to
+  ## <repositoryPrefix>/<namespace>/<package>, e.g. ghcr.io/myorg/fission-packages.
+  repositoryPrefix: ""
+  ## Secret names (kubernetes.io/dockerconfigjson, in the builder namespace):
+  ## pushSecret needs write access (used at build time); pullSecret needs
+  ## read access (attached to packages for pulling). Keep them separate.
+  pushSecret: ""
+  pullSecret: ""
+  ## On a failed push: true keeps the build and stores a tarball instead
+  ## (the package gets condition OCIPublished=False); false fails the build.
+  fallbackToStorage: true
+  ## --- Advanced (mainly for self-hosted / in-cluster registries) ---
+  ## publishedPrefix: if nodes reach the registry by a DIFFERENT address
+  ## than pods do (e.g. an in-cluster registry exposed via NodePort), set
+  ## the node-visible prefix here; it is recorded in packages while pushes
+  ## go to repositoryPrefix.
+  publishedPrefix: ""
+  ## insecureHosts: comma-separated host[:port] list allowed to use plain
+  ## HTTP instead of TLS.
+  insecureHosts: ""
 
 ## fetcher is a light weight component that helps in running functions.
 ## fetcher helps in fetching function source code/build and uploading it when function is invoked.
@@ -139,7 +182,12 @@ fetcher:
   ## image represents the image of the fetcher component.
   image: fission/fetcher
   ## imageTag represents the tag of the image of the fetcher component.
-  imageTag: v1.25.0
+  imageTag: v1.26.0
+  ## allowInsecureRegistries is a comma-separated list of registry hosts
+  ## (host[:port]) permitted to serve OCI package images over plain HTTP.
+  ## Default empty: registries must serve TLS (localhost and private RFC-1918
+  ## IP addresses are implicitly trusted by the underlying client).
+  allowInsecureRegistries: ""
 
   ## Fetcher is only for to downloading or uploading archive.
   ## Normally, you don't need to change the value here, unless necessary.
@@ -209,6 +257,36 @@ executor:
   ## adoptExistingResources decides whether to adopt existing resources when executor restarts or Fission is redeployed.
   ##
   adoptExistingResources: false
+  ## Mount OCI packages directly into function pods (needs Kubernetes 1.33+;
+  ## older clusters automatically fall back to downloading the package).
+  ## Gives noticeably faster cold starts. Set false to always download.
+  ##
+  enableOCIImageVolume: true
+  ## How long an unused per-package warm pool is kept before removal; it is
+  ## recreated automatically on the next request. Shared environment pools
+  ## are never removed.
+  ##
+  ociPoolIdleReapTime: 5m
+  ## functionServices opts the pool manager into creating a headless selector
+  ## Service per invoked function (RFC-0002 EndpointSlice-native data plane),
+  ## so the built-in EndpointSlice controller publishes the function's
+  ## specialized pods for the router's slice-fed endpoint index.
+  ## On by default since RFC-0002 phase 4; set false to fall back to the
+  ## legacy executor-RPC-only data plane. Inert without the router-side
+  ## endpointSliceCache mode.
+  ##
+  functionServices:
+    enabled: true
+  ## specializationConcurrency bounds concurrently running specializations in
+  ## the executor (EXECUTOR_SPECIALIZATION_CONCURRENCY). 0 keeps the
+  ## historical unbounded behavior — and is the recommended setting: the bound
+  ## is shared by fast poolmgr specializations (~100ms) and newdeploy/container
+  ## creations that hold a slot while waiting minutes for Deployment readiness,
+  ## so a small bound under mixed load head-of-line blocks poolmgr cold starts.
+  ## Only set this if poolmgr-heavy specialization bursts are overwhelming your
+  ## nodes, and size it generously.
+  ##
+  specializationConcurrency: 0
   ## podReadyTimeout represents the timeout in seconds for waiting for pod to become ready.
   ## This is applicable to Pool Manager executor type only.
   ##
@@ -334,6 +412,25 @@ router:
   ## unTapService is called to free up the resources once the function invocation is done.
   ##
   unTapServiceTimeout: 3600s
+  ## endpointSliceCache gates the router's EndpointSlice-fed endpoint index
+  ## (RFC-0002 EndpointSlice-native data plane).
+  ## mode: on  — the index serves the warm path; the executor is called only
+  ##             for cold starts, capacity, and strict-mode functions. The
+  ##             default since RFC-0002 phase 4.
+  ##       off — never watch slices (the legacy executor-RPC data plane).
+  ## ALWAYS QUOTE the value ("on"/"off"): unquoted on/off are YAML 1.1
+  ## booleans, and an unquoted off coerces to false, which the template
+  ## treats as unset and silently DEFAULTS BACK TO "on" — the opposite of
+  ## the intent.
+  ## The migration-era "shadow" mode was removed with the defaults flip.
+  ## The poolmgr benefit additionally requires executor.functionServices.enabled.
+  ## endpointLB additionally dials newdeploy/container pod IPs directly
+  ## (least-outstanding across ready endpoints) instead of the Service VIP;
+  ## off by default.
+  ##
+  endpointSliceCache:
+    mode: "on"
+    endpointLB: false
   ## displayAccessLog display endpoing access logs
   ## Please be aware of enabling logging endpoint access log, it increases
   ## router resource utilization when under heavy workloads.
@@ -343,6 +440,16 @@ router:
   ##
   # svcAnnotations:
   #   cloud.google.com/load-balancer-type: Internal
+
+  ## incrementalRoutes selects the router's incremental route-update path
+  ## (RFC-0013): trigger/function events apply per-event diffs to a route
+  ## table, canary weight ticks and function updates swap an atomic handler
+  ## pointer, and the muxes are rebuilt only on route-shape changes (trigger
+  ## create/delete or path/method/host edits).
+  ## false reinstates the legacy full-rebuild-on-every-event loop; the
+  ## escape hatch is scheduled for removal one release after it ships.
+  ##
+  incrementalRoutes: true
 
   ## useEncodedPath decideds to match encoded path.
   ## If true, "/foo%2Fbar" will match the path "/{var}";
@@ -363,8 +470,15 @@ router:
     ## so that kubernetes will be able to reap old function pod quickly.
     ##
     ## For details, see https://github.com/fission/fission/issues/723
+    ## Since RFC-0014 the router pools connections to function pods; this is
+    ## the escape hatch back to a fresh connection per request.
     ##
     disableKeepAlive: false
+
+    ## maxIdleConnsPerHost bounds the router's pooled idle connections per
+    ## function address (each poolmgr pod is its own address).
+    ##
+    maxIdleConnsPerHost: 32
 
     ## keepAliveTime is period for an active network connection to function pod.
     ##
@@ -510,6 +624,58 @@ kubewatcher:
   leaderElection:
     enabled: false
   ## Pod resources as:
+  ##  resources:
+  ##    limits:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##    requests:
+  ##      cpu: <tbd>
+  ##      memory: <tbd>
+  ##
+  resources: {}
+
+  ## Security Context
+  ## It holds pod-level and container level security configuration.
+  ## This is an experimental section, please verify before enabling in production.
+  ## Ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1
+  securityContext:
+    enabled: true
+    ## Mark it false, if you want to stop the non root user validation
+    runAsNonRoot: true
+    fsGroup: 10001
+    runAsUser: 10001
+    runAsGroup: 10001
+
+## The MCP (Model Context Protocol) server exposes opted-in functions as tools
+## for LLM agents. Off by default. When enabled it runs fission-bundle --mcpPort
+## as a ClusterIP-only Service and proxies tools/call to the router internal
+## listener. Agents authenticate with a bearer JWT when authentication.enabled is
+## set (the allowed_namespaces claim scopes which tools they may use). With
+## authentication disabled the endpoint can only run unauthenticated (every
+## caller gets a wildcard scope) if you explicitly set allowInsecure below;
+## otherwise enabling MCP without authentication fails the chart render.
+##
+mcp:
+  enabled: false
+  ## Port the MCP server listens on (ClusterIP Service of the same port).
+  ##
+  port: 8890
+  ## allowInsecure permits running the MCP endpoint UNAUTHENTICATED when
+  ## authentication.enabled is false (dev/test only — every caller can list and
+  ## invoke all Tool-exposed functions). Leave false in production; enable
+  ## authentication instead so agents are scoped by a signed JWT.
+  ##
+  allowInsecure: false
+  ## replicas to deploy. The server is stateless and runs without leader
+  ## election — every replica reconciles and serves the full tool list. Contested
+  ## explicit tool names (FunctionSpec.tool.toolName) are resolved deterministically
+  ## (smallest namespace/name wins) so replicas converge identically; prefer the
+  ## default "<namespace>-<name>" naming to avoid contention entirely.
+  ##
+  replicas: 1
+  ## Pod resources. Recommended to set limits in production: each in-flight
+  ## tools/call buffers up to ~1 MiB of function response (capped, bounded
+  ## concurrency), so memory scales with concurrent calls.
   ##  resources:
   ##    limits:
   ##      cpu: <tbd>
@@ -818,7 +984,7 @@ preUpgradeChecks:
   image: fission/pre-upgrade-checks
   ## pre-install/pre-upgrade checks image version
   ##
-  imageTag: v1.25.0
+  imageTag: v1.26.0
 
 ## Fission post-install/post-upgrade reporting live in this image
 ##
