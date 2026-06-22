@@ -25,7 +25,7 @@ image: fission/fission-bundle
 ## It is also used by the chart to identify version of the few more images apart from fission-bundle.
 ## Keep it empty for using latest tag.
 ##
-imageTag: v1.26.0
+imageTag: v1.27.0
 
 ## pullPolicy represents the pull policy to use for images in the chart.
 ##
@@ -182,7 +182,7 @@ fetcher:
   ## image represents the image of the fetcher component.
   image: fission/fetcher
   ## imageTag represents the tag of the image of the fetcher component.
-  imageTag: v1.26.0
+  imageTag: v1.27.0
   ## allowInsecureRegistries is a comma-separated list of registry hosts
   ## (host[:port]) permitted to serve OCI package images over plain HTTP.
   ## Default empty: registries must serve TLS (localhost and private RFC-1918
@@ -698,6 +698,60 @@ mcp:
     runAsUser: 10001
     runAsGroup: 10001
 
+## Multi-namespace tenancy (docs/multiple-namespace).
+##
+tenancy:
+  ## mode selects the multi-namespace tenancy posture (docs/multiple-namespace).
+  ## One of:
+  ##   static  (default) — Fission resources only in the env-seeded namespace set
+  ##           (defaultNamespace + additionalFissionNamespaces); per-namespace
+  ##           Roles rendered by Helm; no tenant controller. Behaves exactly as
+  ##           pre-tenancy Fission.
+  ##   dynamic — namespaces onboarded/offboarded at runtime via FissionTenant CRs
+  ##           or the fission.io/enabled label, with NO control-plane restart. The
+  ##           tenant controller provisions narrow per-namespace fetcher/builder
+  ##           RBAC + per-namespace derived HMAC keys; data-plane managers watch
+  ##           Fission CRDs cluster-wide and filter to the onboarded set; tenant
+  ##           Secrets/ConfigMaps/workloads are NEVER in a cluster-wide cache. The
+  ##           recommended posture for untrusted multi-tenant clusters.
+  ##   cluster — opt-in trusted-cluster mode. The controller auto-onboards every
+  ##           namespace (no FissionTenant CR needed), so fetcher/builder pods keep
+  ##           their narrow per-namespace RBAC + keys, but the control plane
+  ##           (executor/buildermgr) reads Secrets/ConfigMaps and manages workloads
+  ##           CLUSTER-WIDE for operational simplicity. Label a namespace
+  ##           `fission.io/enabled=false` to opt it OUT of auto-onboarding (and to
+  ##           offboard one already onboarded). SECURITY TRADE-OFF: a compromised
+  ##           executor/buildermgr can read any namespace's Secrets. Use ONLY on
+  ##           single-tenant/trusted clusters.
+  ## dynamic and cluster set FISSION_TENANCY_MODE on the data-plane components and
+  ## render the tenant controller; static renders neither.
+  mode: static
+
+## The tenant controller is the multi-namespace tenancy lifecycle controller
+## (docs/multiple-namespace). It is rendered automatically when tenancy.mode is
+## dynamic or cluster (and never when static); the settings below tune it.
+##
+tenantController:
+  replicas: 1
+  ## Run active-passive with leader election when replicas > 1.
+  leaderElection:
+    enabled: false
+  ## On install/upgrade, seed a FissionTenant for each namespace already in
+  ## defaultNamespace + additionalFissionNamespaces (idempotent post-upgrade
+  ## hook). Restarts nothing. Set false to manage tenants exclusively via
+  ## `fission tenant` / the fission.io/enabled label.
+  seedExistingNamespaces: true
+  ## Pod resources.
+  resources: {}
+  ## Security Context (pod + container level). Experimental; verify before
+  ## enabling in production.
+  securityContext:
+    enabled: true
+    runAsNonRoot: true
+    fsGroup: 10001
+    runAsUser: 10001
+    runAsGroup: 10001
+
 ## The storage service is the home for all archives of packages with sizes larger than 256KB.
 ##
 storagesvc:
@@ -984,7 +1038,7 @@ preUpgradeChecks:
   image: fission/pre-upgrade-checks
   ## pre-install/pre-upgrade checks image version
   ##
-  imageTag: v1.26.0
+  imageTag: v1.27.0
 
 ## Fission post-install/post-upgrade reporting live in this image
 ##
@@ -1084,6 +1138,11 @@ openTelemetry:
   ## Set this flag to false if you are using secure endpoint for the collector.
   ##
   otlpInsecure: true
+  ## RFC-0016 phase 4: also push control-plane logs (carrying trace_id) to the
+  ## OTLP collector, in addition to traces. Off by default so enabling traces
+  ## alone does not change log behavior; requires otlpCollectorEndpoint set.
+  ##
+  logsEnabled: false
   ## Key-value pairs to be used as headers associated with gRPC or HTTP requests to the collector.
   ## Eg. otlpHeaders: "key1=value1,key2=value2"
   ##

@@ -75,6 +75,8 @@ Helper template to construct image names with repository and tag
   value: "{{ .Values.openTelemetry.otlpCollectorEndpoint }}"
 - name: OTEL_EXPORTER_OTLP_INSECURE
   value: "{{ .Values.openTelemetry.otlpInsecure }}"
+- name: OTEL_LOGS_ENABLED
+  value: "{{ .Values.openTelemetry.logsEnabled }}"
 {{- if .Values.openTelemetry.otlpHeaders }}
 - name: OTEL_EXPORTER_OTLP_HEADERS
   value: "{{ .Values.openTelemetry.otlpHeaders }}"
@@ -98,9 +100,28 @@ Helper template to construct image names with repository and tag
 {{- if gt (len .Values.additionalFissionNamespaces) 0 }}
   value: "{{ .Values.defaultNamespace }},{{ join "," .Values.additionalFissionNamespaces }}"
 {{- else }}
-  value: {{ .Values.defaultNamespace }}  
+  value: {{ .Values.defaultNamespace }}
 {{- end }}
+- name: FISSION_TENANCY_MODE
+  value: "{{ include "fission.tenancyMode" . }}"
 {{- end }}
+
+{{/*
+fission.tenancyMode — the configured multi-namespace tenancy posture, normalised
+to one of static|dynamic|cluster. Single source of truth for every gate.
+*/}}
+{{- define "fission.tenancyMode" -}}
+{{- dig "mode" "static" (.Values.tenancy | default dict) -}}
+{{- end -}}
+
+{{/*
+fission.tenancyControllerEnabled — true (non-empty) when the tenant controller and
+the dynamic-cluster machinery should be rendered, i.e. tenancy.mode is dynamic OR
+cluster. Empty string (falsey) for static. Use: {{- if include "fission.tenancyControllerEnabled" . }}
+*/}}
+{{- define "fission.tenancyControllerEnabled" -}}
+{{- if ne (include "fission.tenancyMode" .) "static" -}}true{{- end -}}
+{{- end -}}
 
 {{- define "kube_client.envs" }}
 - name: KUBE_CLIENT_QPS

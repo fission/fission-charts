@@ -1,0 +1,11 @@
+{{- /*
+Multi-namespace tenancy render-time invariant: tenancy.mode must be one of the
+three known postures. An unknown value would silently fall back to static in the
+data plane (utils.TenancyMode) while the chart might still render controller RBAC
+from a mistyped gate, i.e. a half-wired install. Fail the render instead. This
+mirrors the chart's other fail-closed guards (e.g. the MQT cert checks).
+*/ -}}
+{{- $mode := include "fission.tenancyMode" . }}
+{{- if not (has $mode (list "static" "dynamic" "cluster")) }}
+{{- fail (printf "multi-namespace tenancy misconfigured: tenancy.mode must be one of static|dynamic|cluster, got %q. static = env-seeded namespaces only; dynamic = runtime per-namespace onboarding (least-privilege, recommended for untrusted multi-tenant); cluster = opt-in trusted-cluster watch-all (control plane reads Secrets cluster-wide)." $mode) }}
+{{- end }}
